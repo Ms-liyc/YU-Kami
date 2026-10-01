@@ -2,7 +2,7 @@
   <el-container class="layout">
     <el-aside :width="collapsed ? '64px' : '240px'" class="aside">
       <div class="logo" @click="collapsed = !collapsed">
-        <div class="logo-icon">YK</div>
+        <img src="/logo.png" alt="YU-Kami" class="logo-img" />
         <transition name="fade">
           <span v-if="!collapsed" class="logo-text">YU-Kami</span>
         </transition>
@@ -60,7 +60,7 @@
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.4.1</span>
+        <span>v1.5.0</span>
       </div>
     </el-aside>
 
@@ -96,6 +96,7 @@
         </div>
       </el-header>
       <el-main class="main">
+        <DefaultPasswordBanner />
         <PaymentSetupBanner />
         <router-view v-slot="{ Component }">
           <transition name="page" mode="out-in">
@@ -114,6 +115,7 @@ import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import PaymentSetupBanner from '../components/PaymentSetupBanner.vue'
+import DefaultPasswordBanner from '../components/DefaultPasswordBanner.vue'
 
 const { t } = useI18n()
 
@@ -162,18 +164,12 @@ function handleLogout() {
   cursor: pointer;
   border-bottom: 1px solid #1e293b;
 }
-.logo-icon {
+.logo-img {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #4f6ef7, #7c3aed);
   border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 800;
-  font-size: 13px;
   flex-shrink: 0;
+  object-fit: contain;
 }
 .logo-text {
   color: #fff;

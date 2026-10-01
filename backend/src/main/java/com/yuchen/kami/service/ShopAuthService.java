@@ -49,6 +49,6 @@ public class ShopAuthService {
 
     private LoginResponse buildLoginResponse(ShopUser user) {
         String token = jwtTokenProvider.generateToken(user.getId(), user.getUsername(), "SHOP_USER");
-        return new LoginResponse(token, user.getUsername(), user.getNickname(), "SHOP_USER");
+        return new LoginResponse(token, user.getUsername(), user.getNickname(), "SHOP_USER", false);
     }
 }

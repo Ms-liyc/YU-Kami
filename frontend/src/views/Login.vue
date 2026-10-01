@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="login-left">
       <div class="brand">
-        <div class="brand-icon">YK</div>
+        <img src="/logo.png" alt="YU-Kami" class="brand-logo" />
         <h1>YU-Kami</h1>
         <p>屿宸科技 · 企业级卡密管理平台</p>
       </div>
@@ -62,6 +62,9 @@ async function handleLogin() {
     const res = await request.post('/admin/auth/login', form.value)
     auth.setAuth(res.data)
     ElMessage.success('登录成功')
+    if (res.data.warnDefaultPassword) {
+      ElMessage.warning('检测到默认密码，请尽快在后台修改')
+    }
     router.push('/dashboard')
   } finally {
     loading.value = false
@@ -84,12 +87,11 @@ async function handleLogin() {
   color: #fff;
 }
 .brand { margin-bottom: 48px; }
-.brand-icon {
-  width: 56px; height: 56px;
-  background: linear-gradient(135deg, #4f6ef7, #7c3aed);
+.brand-logo {
+  width: 64px; height: 64px;
   border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 18px; margin-bottom: 20px;
+  margin-bottom: 20px;
+  object-fit: contain;
 }
 .brand h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
 .brand p { color: #94a3b8; font-size: 16px; }

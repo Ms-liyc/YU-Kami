@@ -112,8 +112,8 @@ psql -U yukami -d yukami -f backend/src/main/resources/db/schema.sql
 
 # 3. 后端编译运行
 cd backend
-mvn clean package -DskipTests
-java -jar target/yu-kami-1.2.0.jar
+./mvnw clean package -DskipTests   # Windows: mvnw.cmd
+java -jar target/yu-kami-1.5.0.jar
 
 # 4. 前端编译
 cd ../frontend
@@ -147,6 +147,8 @@ DB_USER=yukami
 DB_PASSWORD=your-db-password
 REDIS_HOST=localhost
 REDIS_PORT=6379
+
+# 完整模板见 .env.example
 
 # 支付对接（可选，按你的部署环境填写，无固定值）
 # PAYMENT_BASE_URL=https://your-domain.com
@@ -280,6 +282,14 @@ Content-Type: application/json
 ## 🛣️ 开发路线图
 
 ### 📅 更新日志
+
+#### v1.5.0
+
+* 📄 **开源基础完善**：MIT LICENSE、`.env.example`、GitHub Actions CI、Maven Wrapper
+* 🔒 **默认密码安全**：登录检测初始密码，后台一键修改
+* 🎨 **品牌统一**：Logo / Favicon 应用于登录页、管理端、商城
+* 📱 **微信扫码优化**：二维码本地生成，不再依赖外网服务
+* 🐛 **体验修复**：订单管理增加「已支付」筛选
 
 #### v1.4.1
 

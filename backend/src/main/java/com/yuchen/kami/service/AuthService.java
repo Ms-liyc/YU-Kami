@@ -1,8 +1,10 @@
 package com.yuchen.kami.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.yuchen.kami.dto.ChangePasswordRequest;
 import com.yuchen.kami.dto.LoginRequest;
 import com.yuchen.kami.dto.LoginResponse;
+import com.yuchen.kami.common.BusinessException;
 import com.yuchen.kami.entity.SysUser;
 import com.yuchen.kami.mapper.SysUserMapper;
 import com.yuchen.kami.security.JwtTokenProvider;
@@ -30,6 +32,24 @@ public class AuthService {
         }
         String token = jwtTokenProvider.generateToken(user.getId(), user.getUsername(), user.getRole());
         auditService.log(user.getId(), user.getUsername(), "LOGIN", "sys_user", "管理员登录", ip);
-        return new LoginResponse(token, user.getUsername(), user.getNickname(), user.getRole());
+        boolean warnDefault = isDefaultPassword(user.getPassword());
+        return new LoginResponse(token, user.getUsername(), user.getNickname(), user.getRole(), warnDefault);
+    }
+
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+        SysUser user = sysUserMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new BusinessException("当前密码不正确");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        sysUserMapper.updateById(user);
+        auditService.log(userId, user.getUsername(), "CHANGE_PASSWORD", "sys_user", "修改登录密码", null);
+    }
+
+    private boolean isDefaultPassword(String encodedPassword) {
+        return passwordEncoder.matches("admin123", encodedPassword);
     }
 }

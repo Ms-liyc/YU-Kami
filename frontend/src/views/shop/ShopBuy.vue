@@ -48,6 +48,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
+import QRCode from 'qrcode'
 import shopRequest from '../../api/shopRequest'
 
 const { t } = useI18n()
@@ -110,7 +111,7 @@ async function handlePay() {
     } else if (data.payType === 'REDIRECT' && data.payUrl) {
       window.location.href = data.payUrl
     } else if (data.payType === 'QRCODE' && data.codeUrl) {
-      qrCodeUrl.value = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(data.codeUrl)}`
+      qrCodeUrl.value = await QRCode.toDataURL(data.codeUrl, { width: 220, margin: 1 })
       qrDialog.value = true
       startPoll()
     }

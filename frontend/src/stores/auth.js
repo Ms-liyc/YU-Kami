@@ -18,6 +18,12 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('username', data.username)
     localStorage.setItem('nickname', data.nickname)
     localStorage.setItem('role', data.role)
+    if (data.warnDefaultPassword) {
+      localStorage.setItem('warnDefaultPassword', '1')
+      localStorage.removeItem('yukami-default-password-dismissed')
+    } else {
+      localStorage.removeItem('warnDefaultPassword')
+    }
   }
 
   function logout() {

@@ -42,6 +42,7 @@ services:
       JWT_SECRET: YuChen-Kami-Docker-JWT-Secret-Change-In-Production
       HMAC_SECRET: YuChen-HMAC-Docker-Secret-Change-In-Production
       AES_KEY: YuChenAES256KeyChangeInProd!!
+      # 环境变量模板见项目根目录 .env.example
       # 支付对接（可选）：按你的公网域名自行配置，详见 docs/PAYMENT.md
       # PAYMENT_BASE_URL: https://your-domain.com
       # PAYMENT_RETURN_URL: https://your-domain.com/shop/orders
