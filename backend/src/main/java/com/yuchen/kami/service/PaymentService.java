@@ -39,6 +39,7 @@ public class PaymentService {
     private final AlipayPaymentService alipayPaymentService;
     private final WechatPaymentService wechatPaymentService;
     private final WechatOAuthService wechatOAuthService;
+    private final PromotionService promotionService;
 
     public List<PaymentConfig> availableChannels() {
         return paymentConfigMapper.selectList(new LambdaQueryWrapper<PaymentConfig>()
@@ -160,6 +161,7 @@ public class PaymentService {
                 .set(ShopOrder::getDeliveredAt, LocalDateTime.now()));
 
         redisTemplate.opsForValue().set("order:card:" + order.getId(), cardKey, Duration.ofHours(24));
+        promotionService.confirmByOrder(order);
         log.info("订单发货完成: {}", orderNo);
         return true;
     }

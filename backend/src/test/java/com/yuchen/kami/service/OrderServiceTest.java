@@ -21,6 +21,8 @@ class OrderServiceTest {
     @Mock private ShopOrderMapper shopOrderMapper;
     @Mock private ShopUserMapper shopUserMapper;
     @Mock private ProductService productService;
+    @Mock private PromotionService promotionService;
+    @Mock private com.yuchen.kami.mapper.PromotionMapper promotionMapper;
 
     @InjectMocks private OrderService orderService;
 

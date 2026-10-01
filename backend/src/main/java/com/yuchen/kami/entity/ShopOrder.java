@@ -27,6 +27,10 @@ public class ShopOrder {
     private Long productId;
     private String productName;
     private BigDecimal amount;
+    private BigDecimal originalAmount;
+    private BigDecimal discountAmount;
+    private String couponCode;
+    private Long promotionId;
     private Integer quantity;
     private String status;
     private String paymentMethod;

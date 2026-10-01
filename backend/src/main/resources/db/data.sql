@@ -1,1 +1,0 @@
--- 初始数据由应用启动时 DataInitializer 自动创建

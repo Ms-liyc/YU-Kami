@@ -1,4 +1,5 @@
--- YU-Kami 企业级卡密系统数据库初始化脚本 (PostgreSQL)
+-- YU-Kami 数据库唯一初始化脚本 (PostgreSQL)
+-- 新环境只需执行本文件；初始账号/支付渠道由应用启动时 DataInitializer 写入
 
 CREATE TABLE IF NOT EXISTS sys_user (
     id          BIGINT PRIMARY KEY,
@@ -141,6 +142,34 @@ CREATE TABLE IF NOT EXISTS shop_user (
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 营销规则（促销活动 + 优惠券共用一张表，kind 区分）
+CREATE TABLE IF NOT EXISTS promotion (
+    id              BIGINT PRIMARY KEY,
+    kind            VARCHAR(16)  NOT NULL DEFAULT 'ACTIVITY',
+    code            VARCHAR(64)  UNIQUE,
+    name            VARCHAR(128) NOT NULL,
+    description     TEXT,
+    type            VARCHAR(32)  NOT NULL,
+    discount_value  DECIMAL(12,2) NOT NULL,
+    min_amount      DECIMAL(12,2),
+    max_discount    DECIMAL(12,2),
+    start_at        TIMESTAMP    NOT NULL,
+    end_at          TIMESTAMP    NOT NULL,
+    product_ids     VARCHAR(512),
+    is_holiday      SMALLINT     NOT NULL DEFAULT 0,
+    priority        INTEGER      NOT NULL DEFAULT 0,
+    usage_limit     INTEGER,
+    used_count      INTEGER      NOT NULL DEFAULT 0,
+    per_user_limit  INTEGER      NOT NULL DEFAULT 1,
+    status          SMALLINT     NOT NULL DEFAULT 1,
+    deleted         SMALLINT     NOT NULL DEFAULT 0,
+    created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_promotion_time ON promotion(start_at, end_at);
+CREATE INDEX IF NOT EXISTS idx_promotion_kind ON promotion(kind);
+
 CREATE TABLE IF NOT EXISTS shop_order (
     id              BIGINT PRIMARY KEY,
     order_no        VARCHAR(64)  NOT NULL UNIQUE,
@@ -148,6 +177,10 @@ CREATE TABLE IF NOT EXISTS shop_order (
     product_id      BIGINT       NOT NULL,
     product_name    VARCHAR(128) NOT NULL,
     amount          DECIMAL(12,2) NOT NULL,
+    original_amount DECIMAL(12,2),
+    discount_amount DECIMAL(12,2) DEFAULT 0,
+    coupon_code     VARCHAR(64),
+    promotion_id    BIGINT,
     quantity        INTEGER      NOT NULL DEFAULT 1,
     status          VARCHAR(32)  NOT NULL DEFAULT 'PENDING',
     payment_method  VARCHAR(32),
@@ -175,3 +208,7 @@ CREATE TABLE IF NOT EXISTS payment_config (
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 以下为全库表清单（共 14 张）：
+-- sys_user, product, card_batch, card_key, redeem_record, audit_log,
+-- api_client, webhook_config, webhook_log, shop_user, promotion, shop_order, payment_config

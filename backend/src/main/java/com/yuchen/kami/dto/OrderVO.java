@@ -13,6 +13,10 @@ public class OrderVO {
     private Long productId;
     private String productName;
     private BigDecimal amount;
+    private BigDecimal originalAmount;
+    private BigDecimal discountAmount;
+    private String couponCode;
+    private String promotionName;
     private Integer quantity;
     private String status;
     private String statusLabel;

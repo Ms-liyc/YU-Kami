@@ -6,16 +6,18 @@ import com.yuchen.kami.common.BusinessException;
 import com.yuchen.kami.common.PageResult;
 import com.yuchen.kami.dto.CreateOrderRequest;
 import com.yuchen.kami.dto.OrderVO;
+import com.yuchen.kami.dto.PricingResult;
 import com.yuchen.kami.entity.Product;
+import com.yuchen.kami.entity.Promotion;
 import com.yuchen.kami.entity.ShopOrder;
 import com.yuchen.kami.entity.ShopUser;
+import com.yuchen.kami.mapper.PromotionMapper;
 import com.yuchen.kami.mapper.ShopOrderMapper;
 import com.yuchen.kami.mapper.ShopUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -29,6 +31,8 @@ public class OrderService {
     private final ShopOrderMapper shopOrderMapper;
     private final ShopUserMapper shopUserMapper;
     private final ProductService productService;
+    private final PromotionService promotionService;
+    private final PromotionMapper promotionMapper;
 
     @Transactional
     public ShopOrder createOrder(Long userId, CreateOrderRequest request) {
@@ -37,13 +41,19 @@ public class OrderService {
             throw new BusinessException("产品已下架");
         }
         int qty = request.getQuantity() != null ? request.getQuantity() : 1;
+        PricingResult pricing = promotionService.calculate(product, qty, userId, request.getCouponCode());
+
         ShopOrder order = new ShopOrder();
         order.setOrderNo("O" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
                 + String.format("%04d", (int) (Math.random() * 10000)));
         order.setUserId(userId);
         order.setProductId(product.getId());
         order.setProductName(product.getName());
-        order.setAmount(product.getValue().multiply(BigDecimal.valueOf(qty)));
+        order.setOriginalAmount(pricing.getOriginalAmount());
+        order.setDiscountAmount(pricing.getDiscountAmount());
+        order.setAmount(pricing.getFinalAmount());
+        order.setPromotionId(pricing.getPromotionId());
+        order.setCouponCode(pricing.getCouponCode());
         order.setQuantity(qty);
         order.setStatus(ShopOrder.STATUS_PENDING);
         shopOrderMapper.insert(order);
@@ -118,6 +128,15 @@ public class OrderService {
         vo.setProductId(order.getProductId());
         vo.setProductName(order.getProductName());
         vo.setAmount(order.getAmount());
+        vo.setOriginalAmount(order.getOriginalAmount());
+        vo.setDiscountAmount(order.getDiscountAmount());
+        vo.setCouponCode(order.getCouponCode());
+        if (order.getPromotionId() != null) {
+            Promotion promotion = promotionMapper.selectById(order.getPromotionId());
+            if (promotion != null) {
+                vo.setPromotionName(promotion.getName());
+            }
+        }
         vo.setQuantity(order.getQuantity());
         vo.setStatus(order.getStatus());
         vo.setStatusLabel(statusLabel(order.getStatus()));

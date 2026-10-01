@@ -7,9 +7,14 @@ import com.yuchen.kami.dto.OrderVO;
 import com.yuchen.kami.dto.PayOrderRequest;
 import com.yuchen.kami.dto.PaymentChannelVO;
 import com.yuchen.kami.dto.PrepayResponse;
+import com.yuchen.kami.dto.PricingPreviewRequest;
+import com.yuchen.kami.dto.PricingResult;
+import com.yuchen.kami.entity.Product;
 import com.yuchen.kami.entity.ShopOrder;
 import com.yuchen.kami.service.OrderService;
 import com.yuchen.kami.service.PaymentService;
+import com.yuchen.kami.service.ProductService;
+import com.yuchen.kami.service.PromotionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -25,6 +30,16 @@ public class ShopOrderController {
 
     private final OrderService orderService;
     private final PaymentService paymentService;
+    private final ProductService productService;
+    private final PromotionService promotionService;
+
+    @PostMapping("/pricing/preview")
+    public Result<PricingResult> preview(@Valid @RequestBody PricingPreviewRequest request, Authentication auth) {
+        Long userId = (Long) auth.getDetails();
+        Product product = productService.getById(request.getProductId());
+        int qty = request.getQuantity() != null ? request.getQuantity() : 1;
+        return Result.ok(promotionService.calculate(product, qty, userId, request.getCouponCode()));
+    }
 
     @PostMapping
     public Result<ShopOrder> create(@Valid @RequestBody CreateOrderRequest request, Authentication auth) {

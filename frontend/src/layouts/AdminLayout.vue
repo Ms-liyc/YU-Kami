@@ -39,6 +39,14 @@
             <el-icon><ShoppingCart /></el-icon>
             <template #title>{{ t('nav.orders') }}</template>
           </el-menu-item>
+          <el-menu-item index="/promotions">
+            <el-icon><Present /></el-icon>
+            <template #title>{{ t('nav.promotions') }}</template>
+          </el-menu-item>
+          <el-menu-item index="/coupons">
+            <el-icon><Discount /></el-icon>
+            <template #title>{{ t('nav.coupons') }}</template>
+          </el-menu-item>
           <el-divider v-if="auth.isSuperAdmin" style="margin: 8px 16px; border-color: #334155" />
           <template v-if="auth.isSuperAdmin">
             <el-menu-item index="/api-clients">
@@ -61,7 +69,7 @@
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.7.0</span>
+        <span>v1.8.0</span>
       </div>
     </el-aside>
 
@@ -142,7 +150,9 @@ const titleMap = {
   '/users': 'nav.users',
   '/audit-logs': 'nav.auditLogs',
   '/webhooks': 'nav.webhooks',
-  '/orders': 'nav.orders'
+  '/orders': 'nav.orders',
+  '/promotions': 'nav.promotions',
+  '/coupons': 'nav.coupons'
 }
 
 const currentTitle = computed(() => t(titleMap[route.path] || ''))

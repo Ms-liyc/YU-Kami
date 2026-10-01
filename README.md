@@ -114,7 +114,7 @@ psql -U yukami -d yukami -f backend/src/main/resources/db/schema.sql
 # 3. 后端编译运行
 cd backend
 ./mvnw clean package -DskipTests   # Windows: mvnw.cmd
-java -jar target/yu-kami-1.6.0.jar
+java -jar target/yu-kami-1.8.0.jar
 
 # 4. 前端编译
 cd ../frontend
@@ -156,8 +156,7 @@ REDIS_PORT=6379
 # PAYMENT_RETURN_URL=https://your-domain.com/shop/orders
 ```
 
-> 从 v1.1.0 升级至 v1.2.0，请额外执行：
-> `psql -U yukami -d yukami -f backend/src/main/resources/db/migration-v1.2.0.sql`
+> 数据库结构以 `backend/src/main/resources/db/schema.sql` 为唯一来源；旧版升级请对照该文件手动补字段/表，或重建库。
 
 ---
 
@@ -284,6 +283,13 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.8.0
+
+* 🎁 **优惠券**：发布券码、限定适用商品、发行量与每人限用
+* 🎉 **促销活动**：满减、折扣、特价/节日价，支持时间窗口与优先级
+* 💰 **智能定价**：商城自动展示促销价，下单时优惠券与活动取最优
+* 📋 数据表：活动与优惠券共用 `promotion` 表（`kind` 区分），商品范围存 `product_ids` 字段
+
 #### v1.7.0
 
 * 💚 **微信 JSAPI 支付**：微信内浏览器自动 OAuth + 调起支付（公众号 H5）
@@ -333,7 +339,7 @@ Content-Type: application/json
 * 📤 **Excel 导出**：卡密、批次、兑换记录支持 `.xlsx` 格式
 * 📥 **批量导入**：支持 TXT / CSV / Excel 批量导入外部卡密
 * 🔔 **Webhook**：兑换成功异步回调，HMAC 签名验签
-* 🗄️ **数据库升级脚本**：`migration-v1.2.0.sql`
+* 🗄️ **Webhook 数据表**：并入 `schema.sql` 统一管理
 
 #### v1.1.0
 

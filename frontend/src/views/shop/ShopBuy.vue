@@ -3,11 +3,26 @@
     <div class="buy-card" v-if="product">
       <h2>{{ product.name }}</h2>
       <p class="desc">{{ product.description }}</p>
-      <div class="price">¥{{ product.value }}</div>
+      <div class="price-row">
+        <span class="price">¥{{ pricing.finalAmount ?? displayPrice }}</span>
+        <span v-if="pricing.onSale || product.onSale" class="original">¥{{ product.value }}</span>
+      </div>
+      <p v-if="pricing.promotionName" class="promo-tip">{{ pricing.promotionName }}</p>
       <el-divider />
       <el-form label-width="100px">
+        <el-form-item :label="t('shop.coupon')">
+          <div class="coupon-row">
+            <el-input v-model="couponCode" :placeholder="t('shop.couponPlaceholder')" clearable />
+            <el-button @click="previewPrice" :loading="previewing">{{ t('shop.applyCoupon') }}</el-button>
+          </div>
+        </el-form-item>
         <el-form-item :label="t('shop.amount')">
-          <span class="total">¥{{ product.value }}</span>
+          <div>
+            <span class="total">¥{{ pricing.finalAmount ?? displayPrice }}</span>
+            <span v-if="pricing.discountAmount > 0" class="discount-tip">
+              {{ t('shop.saved') }} ¥{{ pricing.discountAmount }}
+            </span>
+          </div>
         </el-form-item>
         <el-form-item :label="t('order.paymentMethod')">
           <el-radio-group v-model="paymentMethod">
@@ -43,7 +58,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
@@ -55,9 +70,12 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const product = ref(null)
+const pricing = ref({})
+const couponCode = ref('')
 const channels = ref([])
 const paymentMethod = ref('MOCK')
 const loading = ref(false)
+const previewing = ref(false)
 const paying = ref(false)
 const successDialog = ref(false)
 const qrDialog = ref(false)
@@ -68,6 +86,8 @@ const currentOrderId = ref(null)
 const existingOrderId = ref(route.query.orderId ? Number(route.query.orderId) : null)
 const polling = ref(false)
 let pollTimer = null
+
+const displayPrice = computed(() => product.value?.onSale ? product.value.salePrice : product.value?.value)
 
 const labels = { MOCK: 'shop.mockPay', ALIPAY: 'shop.alipay', WECHAT: 'shop.wechat' }
 function channelLabel(c) { return t(labels[c] || c) }
@@ -82,6 +102,7 @@ onMounted(async () => {
     product.value = pRes.data.data
     channels.value = cRes.data || []
     if (channels.value.length) paymentMethod.value = channels.value[0].channel
+    await previewPrice()
   } finally {
     loading.value = false
   }
@@ -89,13 +110,42 @@ onMounted(async () => {
 
 onUnmounted(stopPoll)
 
+async function previewPrice() {
+  if (!product.value) return
+  previewing.value = true
+  try {
+    const res = await shopRequest.post('/shop/orders/pricing/preview', {
+      productId: product.value.id,
+      quantity: 1,
+      couponCode: couponCode.value || undefined
+    })
+    pricing.value = res.data || {}
+    if (couponCode.value && pricing.value.appliedType === 'COUPON') {
+      ElMessage.success(t('shop.couponApplied'))
+    }
+  } catch (e) {
+    pricing.value = {
+      finalAmount: displayPrice.value,
+      originalAmount: product.value.value,
+      discountAmount: 0,
+      onSale: product.value.onSale
+    }
+  } finally {
+    previewing.value = false
+  }
+}
+
 const isWechatBrowser = /MicroMessenger/i.test(navigator.userAgent)
 
 async function handlePay() {
   paying.value = true
   try {
     if (!existingOrderId.value) {
-      const orderRes = await shopRequest.post('/shop/orders', { productId: product.value.id, quantity: 1 })
+      const orderRes = await shopRequest.post('/shop/orders', {
+        productId: product.value.id,
+        quantity: 1,
+        couponCode: couponCode.value || undefined
+      })
       currentOrderId.value = orderRes.data.id
     } else {
       currentOrderId.value = existingOrderId.value
@@ -211,8 +261,14 @@ function copyKey() {
 .buy-card { width: 480px; background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
 .buy-card h2 { font-size: 24px; }
 .desc { color: #64748b; margin: 8px 0; }
-.price { font-size: 32px; font-weight: 800; color: #4f6ef7; }
+.price-row { display: flex; align-items: baseline; gap: 12px; }
+.price { font-size: 32px; font-weight: 800; color: #ef4444; }
+.original { font-size: 18px; color: #94a3b8; text-decoration: line-through; }
+.promo-tip { font-size: 13px; color: #4f6ef7; margin-top: 4px; }
+.coupon-row { display: flex; gap: 8px; width: 100%; }
+.coupon-row .el-input { flex: 1; }
 .total { font-size: 24px; font-weight: 700; color: #ef4444; }
+.discount-tip { margin-left: 12px; font-size: 14px; color: #22c55e; }
 .qr-box { text-align: center; }
 .qr-tip { color: #64748b; margin-bottom: 16px; }
 .qr-img { border: 1px solid #e2e8f0; border-radius: 8px; }
