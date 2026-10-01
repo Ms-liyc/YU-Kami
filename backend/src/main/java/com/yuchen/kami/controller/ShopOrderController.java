@@ -5,6 +5,7 @@ import com.yuchen.kami.common.Result;
 import com.yuchen.kami.dto.CreateOrderRequest;
 import com.yuchen.kami.dto.OrderVO;
 import com.yuchen.kami.dto.PayOrderRequest;
+import com.yuchen.kami.dto.PrepayResponse;
 import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.ShopOrder;
 import com.yuchen.kami.service.OrderService;
@@ -43,6 +44,16 @@ public class ShopOrderController {
     public Result<OrderVO> pay(@Valid @RequestBody PayOrderRequest request, Authentication auth) {
         OrderVO vo = paymentService.pay((Long) auth.getDetails(), request.getOrderId(), request.getPaymentMethod());
         return Result.ok(vo);
+    }
+
+    @PostMapping("/prepay")
+    public Result<PrepayResponse> prepay(@Valid @RequestBody PayOrderRequest request, Authentication auth) {
+        return Result.ok(paymentService.prepay((Long) auth.getDetails(), request.getOrderId(), request.getPaymentMethod()));
+    }
+
+    @GetMapping("/{id}/status")
+    public Result<OrderVO> status(@PathVariable Long id, Authentication auth) {
+        return Result.ok(paymentService.getOrderStatus(id, (Long) auth.getDetails()));
     }
 
     @PostMapping("/{id}/cancel")

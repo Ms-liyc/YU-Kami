@@ -13,6 +13,7 @@ public class YuKamiProperties {
     private Crypto crypto = new Crypto();
     private Redeem redeem = new Redeem();
     private Card card = new Card();
+    private Payment payment = new Payment();
 
     @Data
     public static class Jwt {
@@ -38,5 +39,11 @@ public class YuKamiProperties {
     public static class Card {
         private int defaultLength;
         private String charset;
+    }
+
+    @Data
+    public static class Payment {
+        private String baseUrl;
+        private String returnUrl;
     }
 }

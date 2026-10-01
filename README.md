@@ -278,6 +278,13 @@ Content-Type: application/json
 * 🔐 五重加密体系
 * ⚡ Redis 高并发保障
 
+#### v1.4.0
+
+* 💳 **支付宝正式 SDK**：电脑网站支付（Page Pay）+ 异步回调验签
+* 💚 **微信支付正式 SDK**：Native 扫码支付（APIv3）+ 回调解密
+* 🔄 **预支付流程**：跳转支付 / 扫码支付 / 状态轮询
+* 📖 支付配置文档：[docs/PAYMENT.md](docs/PAYMENT.md)
+
 #### v1.3.0
 
 * 🛒 **用户前台购买中心**：商品浏览、注册登录、在线购买
@@ -289,7 +296,7 @@ Content-Type: application/json
 
 ### 🚀 后续计划
 
-* [ ] 支付宝 / 微信正式 SDK 对接
+* [ ] 微信 JSAPI 支付（公众号/小程序内）
 * [ ] 用户钱包与余额支付
 * [ ] 移动端适配优化
 * [ ] Docker Hub 官方镜像

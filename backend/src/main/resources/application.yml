@@ -53,6 +53,9 @@ yukami:
   card:
     default-length: 20
     charset: ABCDEFGHJKLMNPQRSTUVWXYZ23456789
+  payment:
+    base-url: ${PAYMENT_BASE_URL:http://localhost:8080}
+    return-url: ${PAYMENT_RETURN_URL:http://localhost:5173/shop/orders}
 
 logging:
   level:

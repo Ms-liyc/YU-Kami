@@ -53,7 +53,11 @@
       <el-form :model="editForm" label-width="100px">
         <el-form-item label="App ID"><el-input v-model="editForm.appId" /></el-form-item>
         <el-form-item label="App Secret"><el-input v-model="editForm.appSecret" type="password" show-password /></el-form-item>
-        <el-form-item label="Notify URL"><el-input v-model="editForm.notifyUrl" /></el-form-item>
+        <el-form-item label="Notify URL"><el-input v-model="editForm.notifyUrl" placeholder="留空使用默认 /api/payment/{channel}/notify" /></el-form-item>
+        <el-form-item label="扩展配置 (JSON)">
+          <el-input v-model="editForm.configJson" type="textarea" :rows="8" placeholder='支付宝: {"privateKey":"...","alipayPublicKey":"...","sandbox":true}
+微信: {"mchId":"...","privateKey":"...","merchantSerialNumber":"...","apiV3Key":"..."}' />
+        </el-form-item>
         <el-form-item label="Status">
           <el-switch v-model="editForm.status" :active-value="1" :inactive-value="0" />
         </el-form-item>

@@ -46,6 +46,8 @@
     "mockPay": "模拟支付",
     "alipay": "支付宝",
     "wechat": "微信支付",
+    "scanToPay": "请使用微信扫描二维码完成支付",
+    "checkPayStatus": "检查支付状态",
     "noProducts": "暂无商品",
     "createAccount": "创建账号",
     "welcome": "欢迎回来"

@@ -60,7 +60,7 @@
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.3.0</span>
+        <span>v1.4.0</span>
       </div>
     </el-aside>
 

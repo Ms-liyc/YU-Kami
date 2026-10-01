@@ -22,7 +22,7 @@
       </el-button>
     </div>
 
-    <el-dialog v-model="successDialog" :title="t('shop.paySuccess')" width="500px">
+    <el-dialog v-model="successDialog" :title="t('shop.paySuccess')" width="500px" @close="stopPoll">
       <el-alert type="success" :closable="false" show-icon :title="t('shop.cardKey')" style="margin-bottom:16px" />
       <el-input type="textarea" :rows="4" :model-value="cardKey" readonly />
       <template #footer>
@@ -30,11 +30,20 @@
         <el-button @click="$router.push('/shop/orders')">{{ t('nav.myOrders') }}</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="qrDialog" :title="t('shop.wechat')" width="400px" @close="stopPoll">
+      <div class="qr-box">
+        <p class="qr-tip">{{ t('shop.scanToPay') }}</p>
+        <img v-if="qrCodeUrl" :src="qrCodeUrl" alt="QR" class="qr-img" />
+        <p class="qr-order">{{ orderNo }}</p>
+        <el-button type="primary" :loading="polling" @click="checkStatus">{{ t('shop.checkPayStatus') }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
@@ -50,7 +59,13 @@ const paymentMethod = ref('MOCK')
 const loading = ref(false)
 const paying = ref(false)
 const successDialog = ref(false)
+const qrDialog = ref(false)
 const cardKey = ref('')
+const qrCodeUrl = ref('')
+const orderNo = ref('')
+const currentOrderId = ref(null)
+const polling = ref(false)
+let pollTimer = null
 
 const labels = { MOCK: 'shop.mockPay', ALIPAY: 'shop.alipay', WECHAT: 'shop.wechat' }
 function channelLabel(c) { return t(labels[c] || c) }
@@ -70,24 +85,64 @@ onMounted(async () => {
   }
 })
 
+onUnmounted(stopPoll)
+
 async function handlePay() {
   paying.value = true
   try {
     const orderRes = await shopRequest.post('/shop/orders', { productId: product.value.id, quantity: 1 })
-    const payRes = await shopRequest.post('/shop/orders/pay', {
+    currentOrderId.value = orderRes.data.id
+    const prepayRes = await shopRequest.post('/shop/orders/prepay', {
       orderId: orderRes.data.id,
       paymentMethod: paymentMethod.value
     })
-    cardKey.value = payRes.data.cardKey
-    successDialog.value = true
+    const data = prepayRes.data
+    orderNo.value = data.orderNo
+
+    if (data.payType === 'INSTANT') {
+      cardKey.value = data.cardKey
+      successDialog.value = true
+    } else if (data.payType === 'REDIRECT' && data.payUrl) {
+      window.location.href = data.payUrl
+    } else if (data.payType === 'QRCODE' && data.codeUrl) {
+      qrCodeUrl.value = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(data.codeUrl)}`
+      qrDialog.value = true
+      startPoll()
+    }
   } finally {
     paying.value = false
   }
 }
 
+function startPoll() {
+  stopPoll()
+  pollTimer = setInterval(checkStatus, 3000)
+}
+
+function stopPoll() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
+}
+
+async function checkStatus() {
+  if (!currentOrderId.value) return
+  polling.value = true
+  try {
+    const res = await shopRequest.get(`/shop/orders/${currentOrderId.value}/status`)
+    if (res.data.status === 'DELIVERED') {
+      stopPoll()
+      qrDialog.value = false
+      cardKey.value = res.data.cardKey
+      successDialog.value = true
+      ElMessage.success(t('shop.paySuccess'))
+    }
+  } finally {
+    polling.value = false
+  }
+}
+
 function copyKey() {
   navigator.clipboard.writeText(cardKey.value)
-  ElMessage.success('Copied')
+  ElMessage.success('OK')
 }
 </script>
 
@@ -98,4 +153,8 @@ function copyKey() {
 .desc { color: #64748b; margin: 8px 0; }
 .price { font-size: 32px; font-weight: 800; color: #4f6ef7; }
 .total { font-size: 24px; font-weight: 700; color: #ef4444; }
+.qr-box { text-align: center; }
+.qr-tip { color: #64748b; margin-bottom: 16px; }
+.qr-img { border: 1px solid #e2e8f0; border-radius: 8px; }
+.qr-order { font-family: monospace; color: #94a3b8; font-size: 12px; margin: 12px 0; }
 </style>

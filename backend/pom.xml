@@ -13,7 +13,7 @@
 
     <groupId>com.yuchen</groupId>
     <artifactId>yu-kami</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
     <name>YU-Kami</name>
     <description>屿宸科技 - 企业级卡密系统</description>
 
@@ -22,6 +22,8 @@
         <mybatis-plus.version>3.5.6</mybatis-plus.version>
         <jjwt.version>0.12.5</jjwt.version>
         <poi.version>5.2.5</poi.version>
+        <alipay.version>4.39.218.ALL</alipay.version>
+        <wechatpay.version>0.2.15</wechatpay.version>
     </properties>
 
     <dependencies>
@@ -76,6 +78,16 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>${alipay.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-java</artifactId>
+            <version>${wechatpay.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

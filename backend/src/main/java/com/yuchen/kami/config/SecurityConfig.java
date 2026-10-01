@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/shop/auth/**").permitAll()
                         .requestMatchers("/api/shop/products/**").permitAll()
                         .requestMatchers("/api/v1/redeem").permitAll()
+                        .requestMatchers("/api/payment/**").permitAll()
                         .requestMatchers("/api/shop/**").authenticated()
                         .requestMatchers("/api/admin/**").authenticated()
                         .anyRequest().permitAll())

@@ -1,12 +1,16 @@
 package com.yuchen.kami.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wechat.pay.java.service.payments.model.Transaction;
 import com.yuchen.kami.common.BusinessException;
 import com.yuchen.kami.dto.OrderVO;
+import com.yuchen.kami.dto.PrepayResponse;
 import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.ShopOrder;
 import com.yuchen.kami.mapper.PaymentConfigMapper;
 import com.yuchen.kami.mapper.ShopOrderMapper;
+import com.yuchen.kami.payment.AlipayPaymentService;
+import com.yuchen.kami.payment.WechatPaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -15,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,42 +33,51 @@ public class PaymentService {
     private final CardKeyService cardKeyService;
     private final OrderService orderService;
     private final StringRedisTemplate redisTemplate;
+    private final AlipayPaymentService alipayPaymentService;
+    private final WechatPaymentService wechatPaymentService;
 
     public List<PaymentConfig> availableChannels() {
         return paymentConfigMapper.selectList(new LambdaQueryWrapper<PaymentConfig>()
                 .eq(PaymentConfig::getStatus, 1));
     }
 
-    @Transactional
-    public OrderVO pay(Long userId, Long orderId, String paymentMethod) {
+    public PrepayResponse prepay(Long userId, Long orderId, String paymentMethod) {
         ShopOrder order = orderService.getOrder(orderId, userId);
         if (!ShopOrder.STATUS_PENDING.equals(order.getStatus())) {
             throw new BusinessException("订单状态不允许支付");
         }
 
-        PaymentConfig config = paymentConfigMapper.selectOne(new LambdaQueryWrapper<PaymentConfig>()
-                .eq(PaymentConfig::getChannel, paymentMethod)
-                .eq(PaymentConfig::getStatus, 1));
-        if (config == null) {
-            throw new BusinessException("不支持的支付方式");
-        }
-
-        String paymentNo = processPayment(config, order);
+        PaymentConfig config = getEnabledConfig(paymentMethod);
         order.setPaymentMethod(paymentMethod);
-        order.setPaymentNo(paymentNo);
-        order.setStatus(ShopOrder.STATUS_PAID);
-        order.setPaidAt(LocalDateTime.now());
         shopOrderMapper.updateById(order);
 
-        String cardKey = cardKeyService.generateForOrder(order.getProductId(), userId, order.getOrderNo());
-        order.setStatus(ShopOrder.STATUS_DELIVERED);
-        order.setDeliveredAt(LocalDateTime.now());
-        shopOrderMapper.updateById(order);
+        return switch (paymentMethod) {
+            case "MOCK" -> prepayMock(order, userId);
+            case "ALIPAY" -> prepayAlipay(config, order);
+            case "WECHAT" -> prepayWechat(config, order);
+            default -> throw new BusinessException("不支持的支付方式");
+        };
+    }
 
-        redisTemplate.opsForValue().set("order:card:" + order.getId(), cardKey, Duration.ofHours(24));
+    /** 兼容旧接口：MOCK 即时支付 */
+    @Transactional
+    public OrderVO pay(Long userId, Long orderId, String paymentMethod) {
+        PrepayResponse prepay = prepay(userId, orderId, paymentMethod);
+        if ("INSTANT".equals(prepay.getPayType())) {
+            OrderVO vo = orderService.toVO(shopOrderMapper.selectById(orderId));
+            vo.setCardKey(prepay.getCardKey());
+            return vo;
+        }
+        throw new BusinessException("请使用预支付接口完成 " + paymentMethod + " 支付");
+    }
 
+    public OrderVO getOrderStatus(Long orderId, Long userId) {
+        ShopOrder order = orderService.getOrder(orderId, userId);
         OrderVO vo = orderService.toVO(order);
-        vo.setCardKey(cardKey);
+        if (ShopOrder.STATUS_DELIVERED.equals(order.getStatus())) {
+            String key = redisTemplate.opsForValue().get("order:card:" + orderId);
+            vo.setCardKey(key);
+        }
         return vo;
     }
 
@@ -81,31 +93,62 @@ public class PaymentService {
         return key;
     }
 
-    private String processPayment(PaymentConfig config, ShopOrder order) {
-        String paymentNo = "PAY" + UUID.randomUUID().toString().replace("-", "").substring(0, 16).toUpperCase();
-        switch (config.getChannel()) {
-            case "MOCK" -> log.info("模拟支付成功: 订单={}, 金额={}", order.getOrderNo(), order.getAmount());
-            case "ALIPAY" -> log.info("支付宝支付(对接中): 订单={}", order.getOrderNo());
-            case "WECHAT" -> log.info("微信支付(对接中): 订单={}", order.getOrderNo());
-            default -> throw new BusinessException("支付渠道未实现");
+    @Transactional
+    public boolean handleAlipayNotify(Map<String, String> params) {
+        String orderNo = params.get("out_trade_no");
+        String tradeStatus = params.get("trade_status");
+        if (!"TRADE_SUCCESS".equals(tradeStatus) && !"TRADE_FINISHED".equals(tradeStatus)) {
+            return true;
         }
-        return paymentNo;
+        PaymentConfig config = getEnabledConfig("ALIPAY");
+        if (!alipayPaymentService.verifyNotify(config, params)) {
+            log.warn("支付宝回调验签失败: {}", orderNo);
+            return false;
+        }
+        String paymentNo = params.get("trade_no");
+        return completePayment(orderNo, paymentNo);
     }
 
-    public Map<String, Object> getPaymentParams(Long orderId, String channel) {
-        ShopOrder order = shopOrderMapper.selectById(orderId);
+    @Transactional
+    public void handleWechatNotify(String body, String serial, String nonce,
+                                   String timestamp, String signature) {
+        PaymentConfig config = getEnabledConfig("WECHAT");
+        Transaction transaction = wechatPaymentService.parseNotify(config, body, serial, nonce, timestamp, signature);
+        if (transaction.getTradeState() != null
+                && "SUCCESS".equals(transaction.getTradeState().name())) {
+            completePayment(transaction.getOutTradeNo(), transaction.getTransactionId());
+        }
+    }
+
+    @Transactional
+    public boolean completePayment(String orderNo, String paymentNo) {
+        ShopOrder order = shopOrderMapper.selectOne(new LambdaQueryWrapper<ShopOrder>()
+                .eq(ShopOrder::getOrderNo, orderNo));
         if (order == null) {
-            throw new BusinessException("订单不存在");
+            log.warn("回调订单不存在: {}", orderNo);
+            return false;
         }
-        Map<String, Object> params = new HashMap<>();
-        params.put("orderNo", order.getOrderNo());
-        params.put("amount", order.getAmount());
-        params.put("channel", channel);
-        if ("ALIPAY".equals(channel) || "WECHAT".equals(channel)) {
-            params.put("message", "正式对接请配置 payment_config 中的 app_id 和 app_secret");
-            params.put("payUrl", "/shop/orders?pay=" + orderId);
+        if (ShopOrder.STATUS_DELIVERED.equals(order.getStatus())) {
+            return true;
         }
-        return params;
+        if (!ShopOrder.STATUS_PENDING.equals(order.getStatus())) {
+            log.warn("订单状态异常: {} status={}", orderNo, order.getStatus());
+            return false;
+        }
+
+        order.setPaymentNo(paymentNo);
+        order.setStatus(ShopOrder.STATUS_PAID);
+        order.setPaidAt(LocalDateTime.now());
+        shopOrderMapper.updateById(order);
+
+        String cardKey = cardKeyService.generateForOrder(order.getProductId(), order.getUserId(), order.getOrderNo());
+        order.setStatus(ShopOrder.STATUS_DELIVERED);
+        order.setDeliveredAt(LocalDateTime.now());
+        shopOrderMapper.updateById(order);
+
+        redisTemplate.opsForValue().set("order:card:" + order.getId(), cardKey, Duration.ofHours(24));
+        log.info("订单发货完成: {}", orderNo);
+        return true;
     }
 
     public void updatePaymentConfig(PaymentConfig config) {
@@ -114,5 +157,50 @@ public class PaymentService {
 
     public List<PaymentConfig> listConfigs() {
         return paymentConfigMapper.selectList(null);
+    }
+
+    private PrepayResponse prepayMock(ShopOrder order, Long userId) {
+        String paymentNo = "MOCK" + UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase();
+        completePayment(order.getOrderNo(), paymentNo);
+        String cardKey = redisTemplate.opsForValue().get("order:card:" + order.getId());
+        return PrepayResponse.builder()
+                .payType("INSTANT")
+                .orderId(order.getId())
+                .orderNo(order.getOrderNo())
+                .cardKey(cardKey)
+                .message("模拟支付成功")
+                .build();
+    }
+
+    private PrepayResponse prepayAlipay(PaymentConfig config, ShopOrder order) {
+        String payUrl = alipayPaymentService.createPagePay(config, order);
+        return PrepayResponse.builder()
+                .payType("REDIRECT")
+                .orderId(order.getId())
+                .orderNo(order.getOrderNo())
+                .payUrl(payUrl)
+                .message("请跳转支付宝完成支付")
+                .build();
+    }
+
+    private PrepayResponse prepayWechat(PaymentConfig config, ShopOrder order) {
+        String codeUrl = wechatPaymentService.createNativePay(config, order);
+        return PrepayResponse.builder()
+                .payType("QRCODE")
+                .orderId(order.getId())
+                .orderNo(order.getOrderNo())
+                .codeUrl(codeUrl)
+                .message("请使用微信扫码支付")
+                .build();
+    }
+
+    private PaymentConfig getEnabledConfig(String channel) {
+        PaymentConfig config = paymentConfigMapper.selectOne(new LambdaQueryWrapper<PaymentConfig>()
+                .eq(PaymentConfig::getChannel, channel)
+                .eq(PaymentConfig::getStatus, 1));
+        if (config == null) {
+            throw new BusinessException("支付渠道未启用: " + channel);
+        }
+        return config;
     }
 }

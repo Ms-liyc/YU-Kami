@@ -46,6 +46,8 @@
     "mockPay": "Mock Pay",
     "alipay": "Alipay",
     "wechat": "WeChat Pay",
+    "scanToPay": "Scan the QR code with WeChat to pay",
+    "checkPayStatus": "Check payment status",
     "noProducts": "No products available",
     "createAccount": "Create Account",
     "welcome": "Welcome Back"
