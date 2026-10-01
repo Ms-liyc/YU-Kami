@@ -4,24 +4,40 @@
 
 <h1 align="center">🚀 YU-Kami 企业级卡密系统</h1>
 
-<h3 align="center">屿宸科技 · 全新一代企业级卡密验证与管理解决方案</h3>
+<h3 align="center">屿宸科技 · 开源可部署的卡密生成、兑换、商城与支付一体化方案</h3>
 
 <p align="center">
+  <img src="https://img.shields.io/github/v/release/Ms-liyc/YU-Kami?style=flat-square" alt="Release">
   <img src="https://img.shields.io/badge/Java-17-orange?style=flat-square&logo=openjdk" alt="Java 17">
   <img src="https://img.shields.io/badge/Spring%20Boot-3.2-brightgreen?style=flat-square&logo=springboot" alt="Spring Boot">
   <img src="https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vue.js" alt="Vue 3">
   <img src="https://img.shields.io/badge/Vite-5-646cff?style=flat-square&logo=vite" alt="Vite">
   <img src="https://img.shields.io/badge/Element%20Plus-409eff?style=flat-square" alt="Element Plus">
+  <img src="https://img.shields.io/badge/PostgreSQL-16-336791?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Redis-7-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis">
+  <img src="https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker">
   <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
 </p>
 
 <p align="center">
-  <b>🔥 Java + Vue3 全栈架构，五重加密防护，Redis 高并发保障，开箱即用！</b>
+  <b>卡密全生命周期管理</b> · 批量生成 / 导入导出 / 兑换审计 / Webhook 回调<br>
+  <b>用户购买中心</b> · 商品下单 · 模拟支付开箱即用 · 支付宝 / 微信可选对接<br>
+  <b>企业级安全</b> · 五重加密 · Redis 限流与分布式锁 · RBAC 权限与审计日志
+</p>
+
+<p align="center">
+  <sub>首次部署默认启用 <b>MOCK 模拟支付</b>，可直接体验完整购买与发卡流程；真实收款需自行配置商户密钥与回调地址。</sub>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Ms-liyc/YU-Kami"><img src="https://img.shields.io/github/stars/Ms-liyc/YU-Kami?style=social" alt="GitHub Stars"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/Ms-liyc/YU-Kami">🌟 Star 项目</a> ·
   <a href="#-快速部署指南">📖 部署文档</a> ·
+  <a href="docs/PAYMENT.md">💳 支付配置</a> ·
+  <a href="#-开发路线图">📋 更新日志</a> ·
   <a href="https://github.com/Ms-liyc/YU-Kami/issues">🐛 反馈问题</a>
 </p>
 
