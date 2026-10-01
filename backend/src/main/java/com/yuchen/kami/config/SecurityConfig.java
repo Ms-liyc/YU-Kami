@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/shop/products/**").permitAll()
                         .requestMatchers("/api/v1/redeem").permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/shop/**").hasRole("SHOP_USER")
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .anyRequest().permitAll())

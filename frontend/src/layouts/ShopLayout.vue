@@ -62,4 +62,16 @@ function handleLogout() {
 .user-name { font-size: 14px; color: #334155; }
 .shop-main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 32px 24px; }
 .shop-footer { text-align: center; padding: 24px; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; }
+@media (max-width: 768px) {
+  .header-inner { padding: 0 16px; gap: 8px; }
+  .brand span { font-size: 16px; }
+  .nav-links { gap: 12px; }
+  .nav-links a { font-size: 13px; }
+  .admin-link { display: none; }
+  .user-name { display: none; }
+  .shop-main { padding: 20px 16px; }
+}
+@media (max-width: 480px) {
+  .nav-links { display: none; }
+}
 </style>

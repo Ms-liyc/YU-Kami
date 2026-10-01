@@ -1,6 +1,7 @@
 <template>
   <el-container class="layout">
-    <el-aside :width="collapsed ? '64px' : '240px'" class="aside">
+    <div v-if="mobileMenuOpen" class="mobile-overlay" @click="mobileMenuOpen = false" />
+    <el-aside :width="asideWidth" class="aside" :class="{ 'mobile-open': mobileMenuOpen }">
       <div class="logo" @click="collapsed = !collapsed">
         <img src="/logo.png" alt="YU-Kami" class="logo-img" />
         <transition name="fade">
@@ -60,14 +61,15 @@
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.5.0</span>
+        <span>v1.6.0</span>
       </div>
     </el-aside>
 
     <el-container class="main-container">
       <el-header class="header">
         <div class="header-left">
-          <el-breadcrumb separator="/">
+          <el-button class="menu-toggle" :icon="Menu" circle @click="mobileMenuOpen = !mobileMenuOpen" />
+          <el-breadcrumb separator="/" class="breadcrumb">
             <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>{{ currentTitle }}</el-breadcrumb-item>
           </el-breadcrumb>
@@ -109,7 +111,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { Menu } from '@element-plus/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
@@ -123,6 +126,11 @@ const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 const collapsed = ref(false)
+const mobileMenuOpen = ref(false)
+
+const asideWidth = computed(() => collapsed.value ? '64px' : '240px')
+
+watch(() => route.path, () => { mobileMenuOpen.value = false })
 
 const titleMap = {
   '/dashboard': '数据概览',
@@ -226,4 +234,30 @@ function handleLogout() {
 .page-leave-to { opacity: 0; transform: translateX(-12px); }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+.menu-toggle { display: none; margin-right: 8px; }
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: 999;
+}
+@media (max-width: 768px) {
+  .menu-toggle { display: inline-flex; }
+  .breadcrumb { display: none; }
+  .header { padding: 0 16px; }
+  .main { padding: 16px; }
+  .user-name { display: none; }
+  .aside {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .aside.mobile-open { transform: translateX(0); }
+  .mobile-overlay { display: block; }
+}
 </style>

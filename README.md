@@ -37,6 +37,7 @@
   <a href="https://github.com/Ms-liyc/YU-Kami">🌟 Star 项目</a> ·
   <a href="#-快速部署指南">📖 部署文档</a> ·
   <a href="docs/PAYMENT.md">💳 支付配置</a> ·
+  <a href="docs/API.md">📡 API 文档</a> ·
   <a href="#-开发路线图">📋 更新日志</a> ·
   <a href="https://github.com/Ms-liyc/YU-Kami/issues">🐛 反馈问题</a>
 </p>
@@ -113,7 +114,7 @@ psql -U yukami -d yukami -f backend/src/main/resources/db/schema.sql
 # 3. 后端编译运行
 cd backend
 ./mvnw clean package -DskipTests   # Windows: mvnw.cmd
-java -jar target/yu-kami-1.5.0.jar
+java -jar target/yu-kami-1.6.0.jar
 
 # 4. 前端编译
 cd ../frontend
@@ -282,6 +283,13 @@ Content-Type: application/json
 ## 🛣️ 开发路线图
 
 ### 📅 更新日志
+
+#### v1.6.0
+
+* 📡 **Swagger API 文档**：`http://localhost:8080/swagger-ui.html`，支持 JWT 在线调试
+* ⚠️ **生产安全告警**：启动时检测默认 JWT/HMAC/AES/数据库密码并输出警告
+* 📱 **移动端适配**：管理端侧栏抽屉菜单、商城头部响应式优化
+* 📖 **贡献指南**：`CONTRIBUTING.md` + `docs/API.md`
 
 #### v1.5.0
 

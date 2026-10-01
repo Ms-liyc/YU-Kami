@@ -58,6 +58,14 @@ yukami:
     base-url: ${PAYMENT_BASE_URL:http://localhost:8080}
     return-url: ${PAYMENT_RETURN_URL:http://localhost:5173/shop/orders}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+
 logging:
   level:
     com.yuchen.kami: INFO
