@@ -12,7 +12,10 @@ const routes = [
       { path: 'products', name: 'Products', component: () => import('../views/Products.vue') },
       { path: 'cards', name: 'Cards', component: () => import('../views/Cards.vue') },
       { path: 'batches', name: 'Batches', component: () => import('../views/Batches.vue') },
-      { path: 'records', name: 'Records', component: () => import('../views/Records.vue') }
+      { path: 'records', name: 'Records', component: () => import('../views/Records.vue') },
+      { path: 'api-clients', name: 'ApiClients', meta: { superAdmin: true }, component: () => import('../views/ApiClients.vue') },
+      { path: 'users', name: 'Users', meta: { superAdmin: true }, component: () => import('../views/Users.vue') },
+      { path: 'audit-logs', name: 'AuditLogs', meta: { superAdmin: true }, component: () => import('../views/AuditLogs.vue') }
     ]
   }
 ]
@@ -27,6 +30,8 @@ router.beforeEach((to, from, next) => {
   if (to.path !== '/login' && !auth.token) {
     next('/login')
   } else if (to.path === '/login' && auth.token) {
+    next('/dashboard')
+  } else if (to.meta.superAdmin && !auth.isSuperAdmin) {
     next('/dashboard')
   } else {
     next()

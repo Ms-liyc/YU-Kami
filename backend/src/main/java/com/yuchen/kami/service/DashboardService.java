@@ -37,6 +37,11 @@ public class DashboardService {
                 .eq(RedeemRecord::getResult, "SUCCESS")
                 .ge(RedeemRecord::getCreatedAt, startOfDay));
 
+        double usageRate = total > 0 ? used * 100.0 / total : 0;
+        var recentRedeems = redeemRecordMapper.selectList(new LambdaQueryWrapper<RedeemRecord>()
+                .orderByDesc(RedeemRecord::getCreatedAt)
+                .last("LIMIT 10"));
+
         return DashboardStats.builder()
                 .totalCards(total)
                 .usedCards(used)
@@ -44,6 +49,8 @@ public class DashboardService {
                 .todayRedeems(todayRedeems)
                 .totalProducts(productMapper.selectCount(new LambdaQueryWrapper<Product>()))
                 .totalBatches(cardBatchMapper.selectCount(new LambdaQueryWrapper<CardBatch>()))
+                .usageRate(usageRate)
+                .recentRedeems(recentRedeems)
                 .build();
     }
 }
