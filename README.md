@@ -7,7 +7,7 @@
 <h3 align="center">屿宸科技 · 开源可部署的卡密生成、兑换、商城与支付一体化方案</h3>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/Ms-liyc/YU-Kami?style=flat-square" alt="Release">
+  <img src="https://img.shields.io/github/v/tag/Ms-liyc/YU-Kami?style=flat-square&label=version" alt="Version">
   <img src="https://img.shields.io/badge/Java-17-orange?style=flat-square&logo=openjdk" alt="Java 17">
   <img src="https://img.shields.io/badge/Spring%20Boot-3.2-brightgreen?style=flat-square&logo=springboot" alt="Spring Boot">
   <img src="https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vue.js" alt="Vue 3">
