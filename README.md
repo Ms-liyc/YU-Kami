@@ -1,102 +1,105 @@
-# YU-Kami
+<p align="center">
+  <img src="docs/logo.png" alt="YU-Kami Logo" width="160">
+</p>
 
-屿宸科技 - 企业级卡密系统开源站台
+<h1 align="center">🚀 YU-Kami 企业级卡密系统</h1>
 
-[![GitHub](https://img.shields.io/badge/GitHub-Ms--liyc%2FYU--Kami-blue)](https://github.com/Ms-liyc/YU-Kami)
+<h3 align="center">屿宸科技 · 全新一代企业级卡密验证与管理解决方案</h3>
 
-## 技术栈
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-17-orange?style=flat-square&logo=openjdk" alt="Java 17">
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.2-brightgreen?style=flat-square&logo=springboot" alt="Spring Boot">
+  <img src="https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vue.js" alt="Vue 3">
+  <img src="https://img.shields.io/badge/Vite-5-646cff?style=flat-square&logo=vite" alt="Vite">
+  <img src="https://img.shields.io/badge/Element%20Plus-409eff?style=flat-square" alt="Element Plus">
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
+</p>
 
-| 层级 | 技术 |
-|------|------|
-| 后端 | Java 17 + Spring Boot 3.2 + MyBatis-Plus |
-| 前端 | Vue 3 + Vite + Element Plus + Pinia |
-| 数据库 | PostgreSQL 16（高并发读写、事务可靠） |
-| 缓存 | Redis 7（分布式锁、限流） |
+<p align="center">
+  <b>🔥 Java + Vue3 全栈架构，五重加密防护，Redis 高并发保障，开箱即用！</b>
+</p>
 
-## 多重加密体系
+<p align="center">
+  <a href="https://github.com/Ms-liyc/YU-Kami">🌟 Star 项目</a> ·
+  <a href="#-快速部署指南">📖 部署文档</a> ·
+  <a href="https://github.com/Ms-liyc/YU-Kami/issues">🐛 反馈问题</a>
+</p>
 
-- **HMAC-SHA256 + Pepper**：卡密哈希存储，每张卡独立胡椒盐，数据库不存明文
-- **AES-256-GCM**：卡密元数据加密
-- **BCrypt**：管理员密码加密
-- **RSA-SHA256**：开放 API 签名验签
-- **SHA-256 校验码**：卡密格式校验，防手输错误
+---
 
-## 高并发设计
+## 📦 快速部署指南
 
-- Redis 分布式锁：防止同一卡密并发重复兑换
-- 数据库乐观锁（version 字段）：兑换原子更新
-- Redis 滑动限流：防暴力破解
-- HikariCP 连接池 + PostgreSQL 索引优化
+本项目提供多种灵活的部署方式，满足不同场景需求。
 
-## 快速开始
+### 方式一：Docker Compose 一键启动（推荐 🔥）
 
-### 1. 启动基础设施
+适用于本地开发或轻量生产环境，自动拉起 PostgreSQL + Redis。
 
 ```bash
+# 1. 克隆项目
+git clone https://github.com/Ms-liyc/YU-Kami.git
+cd YU-Kami
+
+# 2. 启动数据库与缓存
 docker compose up -d
-```
 
-### 2. 启动后端
-
-```bash
+# 3. 启动后端
 cd backend
 mvn spring-boot:run
-```
 
-默认端口：`8080`
-
-### 3. 启动前端
-
-```bash
-cd frontend
+# 4. 启动前端
+cd ../frontend
 npm install
 npm run dev
 ```
 
-默认端口：`5173`
+**默认访问地址：**
 
-### 4. 默认账号
+| 服务 | 地址 |
+|------|------|
+| 管理后台 | http://localhost:5173 |
+| 后端 API | http://localhost:8080 |
+| 默认账号 | `admin` / `admin123` |
 
-- 用户名：`admin`
-- 密码：`admin123`
+---
 
-> 首次启动会自动创建管理员账号（若数据库中不存在）。
+### 方式二：手动编译部署
 
-## API 文档
+适用于开发者或需要深度定制的场景。
 
-### 管理端（需 JWT）
-
-| 接口 | 方法 | 说明 |
-|------|------|------|
-| `/api/admin/auth/login` | POST | 管理员登录 |
-| `/api/admin/dashboard` | GET | 数据概览 |
-| `/api/admin/products` | CRUD | 产品管理 |
-| `/api/admin/cards/generate` | POST | 批量生成卡密 |
-| `/api/admin/cards` | GET | 卡密列表 |
-| `/api/admin/cards/batches` | GET | 批次列表 |
-| `/api/admin/cards/{id}/revoke` | POST | 作废卡密 |
-| `/api/admin/redeem-records` | GET | 兑换记录 |
-| `/api/admin/api-clients` | CRUD | API 客户端管理 |
-| `/api/admin/users` | CRUD | 用户管理 |
-| `/api/admin/audit-logs` | GET | 审计日志 |
-| `/api/admin/export/*` | GET | CSV / Excel 导出 |
-| `/api/admin/cards/import` | POST | 批量导入卡密（TXT/CSV/Excel） |
-| `/api/admin/webhooks` | CRUD | Webhook 回调配置 |
-| `/api/admin/webhooks/logs` | GET | Webhook 推送日志 |
-
-### 开放接口
+**前提条件：** JDK 17+、Maven 3.8+、Node.js 18+、PostgreSQL 16+、Redis 7+
 
 ```bash
-POST /api/v1/redeem
-Content-Type: application/json
+# 1. 克隆代码
+git clone https://github.com/Ms-liyc/YU-Kami.git
+cd YU-Kami
 
-{
-  "cardKey": "VIP-XXXXXX-ABCDEF",
-  "redeemUser": "user_12345"
+# 2. 初始化数据库
+psql -U yukami -d yukami -f backend/src/main/resources/db/schema.sql
+
+# 3. 后端编译运行
+cd backend
+mvn clean package -DskipTests
+java -jar target/yu-kami-1.2.0.jar
+
+# 4. 前端编译
+cd ../frontend
+npm install
+npm run build
+# 构建产物位于 dist/ 目录，使用 Nginx 托管
+```
+
+**Nginx 反向代理示例：**
+
+```nginx
+location /api {
+    proxy_pass http://localhost:8080/api;
 }
 ```
 
-## 生产环境配置
+---
+
+### 方式三：生产环境变量配置
 
 通过环境变量覆盖敏感配置：
 
@@ -113,14 +116,230 @@ REDIS_HOST=localhost
 REDIS_PORT=6379
 ```
 
-## 版本历史
+> 从 v1.1.0 升级至 v1.2.0，请额外执行：
+> `psql -U yukami -d yukami -f backend/src/main/resources/db/migration-v1.2.0.sql`
 
-| 版本 | 说明 |
+---
+
+## 📊 功能模块
+
+### 🎛️ 管理员后台
+
+* 📈 **数据概览** — 实时统计面板、使用率分析、最近兑换记录
+* 📦 **产品管理** — 时长卡 / 余额卡 / 单次卡，灵活配置权益
+* 🔑 **卡密管理** — 批量生成、批量导入、作废、状态查询
+* 📁 **批次管理** — 批次追踪、使用率进度条、导入导出
+* 📋 **兑换记录** — 全链路兑换审计，成功/失败明细
+* 🔌 **API 客户端** — AppKey / AppSecret 接入管理
+* 👥 **用户管理** — 多管理员 RBAC 权限控制
+* 📝 **审计日志** — 操作行为全记录
+* 🔔 **Webhook** — 兑换成功实时回调第三方系统
+* 📤 **数据导出** — CSV / Excel 双格式导出
+
+### 🔌 开发者接口
+
+* ✅ **卡密兑换 API** — 标准化 RESTful 接口，轻松集成
+* 🛡️ **多重加密** — HMAC + AES + RSA + BCrypt + SHA-256 五重防护
+* 🔔 **WebHook 回调** — HMAC-SHA256 签名，兑换成功实时推送
+* 🔐 **JWT 认证** — 管理端安全鉴权
+* ⏱️ **限流保护** — Redis 滑动窗口，防暴力破解
+
+---
+
+## 🎯 使用场景
+
+### 💼 软件授权
+
+* 🖥️ 桌面软件激活码
+* 📱 移动应用授权
+* 🎮 游戏道具 / 会员验证
+* 🔧 插件功能解锁
+
+### 🎓 在线教育
+
+* 📚 课程访问控制
+* 🎥 视频观看权限
+* 📝 考试系统验证
+* 🏆 证书颁发管理
+
+### 💰 虚拟商品
+
+* 🎁 优惠券 / 兑换码
+* 🎪 会员权益管理
+* 🛍️ 卡密自动发货
+* 💎 VIP 服务激活
+
+---
+
+## 🔐 安全与性能
+
+| 功能特性 | 说明 |
+|---------|------|
+| 🔒 卡密存储 | HMAC-SHA256 + 独立 Pepper，数据库不存明文 |
+| 🔐 元数据加密 | AES-256-GCM 加密敏感信息 |
+| 🔑 密码安全 | BCrypt 哈希存储管理员密码 |
+| ✍️ API 签名 | RSA-SHA256 开放接口验签 |
+| ✅ 格式校验 | SHA-256 校验码防手输错误 |
+| ⚡ 分布式锁 | Redis 锁防止并发重复兑换 |
+| 🔄 乐观锁 | 数据库 version 字段原子更新 |
+| 🚦 限流保护 | Redis 滑动窗口限流 |
+| 🗄️ 数据库 | PostgreSQL 16 高并发事务 |
+| 💾 连接池 | HikariCP 最大 50 连接 |
+
+---
+
+## 📡 API 文档
+
+### 开放接口 — 卡密兑换
+
+```bash
+POST /api/v1/redeem
+Content-Type: application/json
+
+{
+  "cardKey": "VIP-XXXXXX-ABCDEF",
+  "redeemUser": "user_12345"
+}
+```
+
+### 管理端接口（需 JWT）
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/api/admin/auth/login` | POST | 管理员登录 |
+| `/api/admin/dashboard` | GET | 数据概览 |
+| `/api/admin/products` | CRUD | 产品管理 |
+| `/api/admin/cards/generate` | POST | 批量生成卡密 |
+| `/api/admin/cards/import` | POST | 批量导入卡密 |
+| `/api/admin/cards` | GET | 卡密列表 |
+| `/api/admin/cards/batches` | GET | 批次列表 |
+| `/api/admin/cards/{id}/revoke` | POST | 作废卡密 |
+| `/api/admin/redeem-records` | GET | 兑换记录 |
+| `/api/admin/api-clients` | CRUD | API 客户端 |
+| `/api/admin/users` | CRUD | 用户管理 |
+| `/api/admin/audit-logs` | GET | 审计日志 |
+| `/api/admin/webhooks` | CRUD | Webhook 配置 |
+| `/api/admin/export/*` | GET | CSV / Excel 导出 |
+
+### Webhook 回调格式
+
+```json
+{
+  "event": "REDEEM_SUCCESS",
+  "timestamp": 1727798400000,
+  "data": {
+    "cardId": 123,
+    "productCode": "VIP_MONTH",
+    "productName": "月度会员",
+    "redeemUser": "user_001"
+  }
+}
+```
+
+> 签名头：`X-YK-Signature`（HMAC-SHA256） · 事件头：`X-YK-Event`
+
+---
+
+## 🛣️ 开发路线图
+
+### 📅 更新日志
+
+#### v1.2.0
+
+* 📤 **Excel 导出**：卡密、批次、兑换记录支持 `.xlsx` 格式
+* 📥 **批量导入**：支持 TXT / CSV / Excel 批量导入外部卡密
+* 🔔 **Webhook**：兑换成功异步回调，HMAC 签名验签
+* 🗄️ **数据库升级脚本**：`migration-v1.2.0.sql`
+
+#### v1.1.0
+
+* 🔌 API 客户端管理、用户管理、审计日志
+* 📤 CSV 导出功能
+* 🎨 管理后台界面全面优化
+
+#### v1.0.0
+
+* 🎉 初始版本发布
+* 🔑 卡密生成 / 兑换 / 管理后台
+* 🔐 五重加密体系
+* ⚡ Redis 高并发保障
+
+### 🚀 后续计划
+
+* [ ] 用户前台购买中心
+* [ ] 订单管理与支付对接
+* [ ] Docker 镜像一键部署
+* [ ] 安装脚本（Linux 一键部署）
+* [ ] 移动端适配优化
+* [ ] 多语言支持
+
+---
+
+## 🏗️ 技术架构
+
+```
+┌─────────────┐     ┌─────────────┐     ┌──────────────┐
+│  Vue 3 前端  │────▶│ Spring Boot │────▶│ PostgreSQL 16│
+│ Element Plus│     │  MyBatis-Plus│     └──────────────┘
+└─────────────┘     │  Spring Sec  │     ┌──────────────┐
+                    │              │────▶│   Redis 7    │
+                    └─────────────┘     └──────────────┘
+```
+
+| 层级 | 技术 |
 |------|------|
-| v1.2.0 | Excel导出、卡密批量导入、Webhook回调通知 |
-| v1.1.0 | API客户端管理、用户管理、审计日志、CSV导出、界面全面优化 |
-| v1.0.0 | 初始版本：卡密生成/兑换/管理后台/多重加密/高并发保障 |
+| 后端 | Java 17 + Spring Boot 3.2 + MyBatis-Plus |
+| 前端 | Vue 3 + Vite + Element Plus + Pinia |
+| 数据库 | PostgreSQL 16 |
+| 缓存 | Redis 7 |
 
-## License
+---
 
-MIT
+## 🤝 参与贡献
+
+我们欢迎所有形式的贡献！
+
+1. 🍴 Fork 本仓库
+2. 🌿 创建特性分支（`git checkout -b feature/AmazingFeature`）
+3. 💾 提交更改（`git commit -m 'Add some AmazingFeature'`）
+4. 📤 推送分支（`git push origin feature/AmazingFeature`）
+5. 🔄 创建 Pull Request
+
+---
+
+## 📞 联系我们
+
+### 🌐 开源地址
+
+* 🐙 **GitHub**: [https://github.com/Ms-liyc/YU-Kami](https://github.com/Ms-liyc/YU-Kami)
+
+### 💬 问题反馈
+
+* 🐛 [提交 Issue](https://github.com/Ms-liyc/YU-Kami/issues)
+* 💡 [功能建议](https://github.com/Ms-liyc/YU-Kami/issues)
+
+---
+
+## 📄 开源协议
+
+本项目基于 [MIT License](LICENSE) 开源协议发布。
+
+---
+
+## ⭐ Star 历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Ms-liyc/YU-Kami&type=Date)](https://star-history.com/#Ms-liyc/YU-Kami&Date)
+
+---
+
+<p align="center">
+  <b>🎉 如果这个项目对您有帮助，请给我们一个 ⭐ Star！</b>
+</p>
+
+<p align="center">
+  <b>屿宸科技 · 让我们一起构建更好的卡密系统！</b> 🚀
+</p>
+
+<p align="center">
+  <i>© 2026 屿宸科技 YU-Kami. All rights reserved.</i>
+</p>
