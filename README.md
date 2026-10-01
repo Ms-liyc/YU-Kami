@@ -76,6 +76,10 @@ npm run dev
 | `/api/admin/cards/batches` | GET | 批次列表 |
 | `/api/admin/cards/{id}/revoke` | POST | 作废卡密 |
 | `/api/admin/redeem-records` | GET | 兑换记录 |
+| `/api/admin/api-clients` | CRUD | API 客户端管理 |
+| `/api/admin/users` | CRUD | 用户管理 |
+| `/api/admin/audit-logs` | GET | 审计日志 |
+| `/api/admin/export/*` | GET | CSV 导出 |
 
 ### 开放接口
 
