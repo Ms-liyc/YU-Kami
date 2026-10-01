@@ -2,7 +2,15 @@
   <div class="page-container">
     <PageHeader title="批次管理" subtitle="查看卡密批次生成与使用统计">
       <template #extra>
-        <el-button :icon="Download" @click="handleExport">导出 CSV</el-button>
+        <el-dropdown @command="handleExport">
+          <el-button :icon="Download">导出 <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="csv">导出 CSV</el-dropdown-item>
+              <el-dropdown-item command="xlsx">导出 Excel</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </template>
     </PageHeader>
 
@@ -35,7 +43,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Download } from '@element-plus/icons-vue'
+import { Download, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import request from '../api/request'
 import { downloadExport } from '../api/export'
@@ -62,8 +70,9 @@ async function loadData() {
   }
 }
 
-async function handleExport() {
-  await downloadExport('/admin/export/batches', 'batches_export.csv')
+async function handleExport(format) {
+  const ext = format === 'xlsx' ? 'xlsx' : 'csv'
+  await downloadExport('/admin/export/batches', `batches_export.${ext}`, format)
   ElMessage.success('导出成功')
 }
 

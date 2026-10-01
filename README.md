@@ -79,7 +79,10 @@ npm run dev
 | `/api/admin/api-clients` | CRUD | API 客户端管理 |
 | `/api/admin/users` | CRUD | 用户管理 |
 | `/api/admin/audit-logs` | GET | 审计日志 |
-| `/api/admin/export/*` | GET | CSV 导出 |
+| `/api/admin/export/*` | GET | CSV / Excel 导出 |
+| `/api/admin/cards/import` | POST | 批量导入卡密（TXT/CSV/Excel） |
+| `/api/admin/webhooks` | CRUD | Webhook 回调配置 |
+| `/api/admin/webhooks/logs` | GET | Webhook 推送日志 |
 
 ### 开放接口
 
@@ -114,6 +117,7 @@ REDIS_PORT=6379
 
 | 版本 | 说明 |
 |------|------|
+| v1.2.0 | Excel导出、卡密批量导入、Webhook回调通知 |
 | v1.1.0 | API客户端管理、用户管理、审计日志、CSV导出、界面全面优化 |
 | v1.0.0 | 初始版本：卡密生成/兑换/管理后台/多重加密/高并发保障 |
 

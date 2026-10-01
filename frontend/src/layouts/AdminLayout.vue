@@ -48,11 +48,15 @@
               <el-icon><Notebook /></el-icon>
               <template #title>审计日志</template>
             </el-menu-item>
+            <el-menu-item index="/webhooks">
+              <el-icon><Bell /></el-icon>
+              <template #title>Webhook</template>
+            </el-menu-item>
           </template>
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.1.0</span>
+        <span>v1.2.0</span>
       </div>
     </el-aside>
 
@@ -114,7 +118,8 @@ const titleMap = {
   '/records': '兑换记录',
   '/api-clients': 'API 客户端',
   '/users': '用户管理',
-  '/audit-logs': '审计日志'
+  '/audit-logs': '审计日志',
+  '/webhooks': 'Webhook 管理'
 }
 
 const currentTitle = computed(() => titleMap[route.path] || '')

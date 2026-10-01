@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -29,6 +30,7 @@ public class RedeemService {
     private final CryptoService cryptoService;
     private final RateLimitService rateLimitService;
     private final DistributedLockService lockService;
+    private final WebhookDispatchService webhookDispatchService;
 
     public RedeemResponse redeem(RedeemRequest request, String ip, String userAgent) {
         rateLimitService.checkRedeemLimit(ip + ":" + request.getRedeemUser());
@@ -82,6 +84,19 @@ public class RedeemService {
         Product product = productService.getById(card.getProductId());
         recordSuccess(card, product, request.getRedeemUser(), ip, userAgent);
 
+        webhookDispatchService.dispatch("REDEEM_SUCCESS", Map.of(
+                "cardId", card.getId(),
+                "batchId", card.getBatchId(),
+                "productId", product.getId(),
+                "productCode", product.getCode(),
+                "productName", product.getName(),
+                "cardType", product.getCardType(),
+                "value", product.getValue(),
+                "durationDays", product.getDurationDays() != null ? product.getDurationDays() : 0,
+                "redeemUser", request.getRedeemUser(),
+                "redeemIp", ip != null ? ip : ""
+        ));
+
         return RedeemResponse.builder()
                 .productName(product.getName())
                 .productCode(product.getCode())
@@ -93,8 +108,13 @@ public class RedeemService {
     }
 
     private CardKey findCardByPlainKey(String plainKey) {
-        // 通过 checksum 缩小范围后逐条验证（企业级可改为 Bloom Filter + 前缀索引）
-        String checksum = plainKey.substring(plainKey.length() - 6);
+        String checksum;
+        if (plainKey.contains("-")) {
+            int lastDash = plainKey.lastIndexOf('-');
+            checksum = plainKey.substring(lastDash + 1);
+        } else {
+            checksum = cryptoService.computeChecksum(plainKey);
+        }
         var candidates = cardKeyMapper.selectList(
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<CardKey>()
                         .eq(CardKey::getKeyChecksum, checksum)

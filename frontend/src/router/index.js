@@ -15,7 +15,8 @@ const routes = [
       { path: 'records', name: 'Records', component: () => import('../views/Records.vue') },
       { path: 'api-clients', name: 'ApiClients', meta: { superAdmin: true }, component: () => import('../views/ApiClients.vue') },
       { path: 'users', name: 'Users', meta: { superAdmin: true }, component: () => import('../views/Users.vue') },
-      { path: 'audit-logs', name: 'AuditLogs', meta: { superAdmin: true }, component: () => import('../views/AuditLogs.vue') }
+      { path: 'audit-logs', name: 'AuditLogs', meta: { superAdmin: true }, component: () => import('../views/AuditLogs.vue') },
+      { path: 'webhooks', name: 'Webhooks', meta: { superAdmin: true }, component: () => import('../views/Webhooks.vue') }
     ]
   }
 ]

@@ -3,7 +3,16 @@
     <PageHeader title="卡密管理" subtitle="批量生成、查询与作废卡密">
       <template #extra>
         <div class="btn-group">
-          <el-button :icon="Download" @click="handleExport">导出 CSV</el-button>
+          <el-button :icon="Upload" @click="importDialog = true">批量导入</el-button>
+          <el-dropdown @command="handleExport">
+            <el-button :icon="Download">导出 <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="csv">导出 CSV</el-dropdown-item>
+                <el-dropdown-item command="xlsx">导出 Excel</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
           <el-button type="primary" :icon="Plus" @click="genDialog = true">批量生成</el-button>
         </div>
       </template>
@@ -66,6 +75,30 @@
       </template>
     </el-dialog>
 
+    <el-dialog v-model="importDialog" title="批量导入卡密" width="520px" destroy-on-close>
+      <el-alert type="info" :closable="false" show-icon style="margin-bottom:16px"
+        title="支持 TXT / CSV / Excel 格式，每行一个卡密，首列或首行为卡密内容" />
+      <el-form label-width="90px">
+        <el-form-item label="产品">
+          <el-select v-model="importForm.productId" style="width:100%" placeholder="选择产品">
+            <el-option v-for="p in products" :key="p.id" :label="p.name" :value="p.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注"><el-input v-model="importForm.remark" placeholder="可选" /></el-form-item>
+        <el-form-item label="文件">
+          <el-upload ref="uploadRef" :auto-upload="false" :limit="1" accept=".txt,.csv,.xlsx,.xls"
+            :on-change="onFileChange" drag>
+            <el-icon :size="40"><Upload /></el-icon>
+            <div>拖拽文件到此处，或点击上传</div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="importDialog = false">取消</el-button>
+        <el-button type="primary" :loading="importing" @click="handleImport">开始导入</el-button>
+      </template>
+    </el-dialog>
+
     <el-dialog v-model="resultDialog" title="生成成功" width="640px">
       <el-alert type="warning" :closable="false" show-icon style="margin-bottom:16px"
         title="请立即保存以下卡密，系统不存储明文，关闭后无法找回！" />
@@ -80,7 +113,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Plus, Download, Refresh, CopyDocument } from '@element-plus/icons-vue'
+import { Plus, Download, Refresh, CopyDocument, Upload, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'
 import { downloadExport } from '../api/export'
@@ -105,6 +138,10 @@ const resultDialog = ref(false)
 const generating = ref(false)
 const generatedKeys = ref([])
 const genForm = ref({ productId: null, count: 100, prefix: '', remark: '' })
+const importDialog = ref(false)
+const importing = ref(false)
+const importFile = ref(null)
+const importForm = ref({ productId: null, remark: '' })
 
 async function loadData() {
   loading.value = true
@@ -148,10 +185,38 @@ async function handleRevoke(id) {
   loadData()
 }
 
-async function handleExport() {
-  let url = '/admin/export/cards?'
-  if (status.value !== null) url += `status=${status.value}`
-  await downloadExport(url, 'cards_export.csv')
+function onFileChange(file) {
+  importFile.value = file.raw
+}
+
+async function handleImport() {
+  if (!importForm.value.productId) return ElMessage.warning('请选择产品')
+  if (!importFile.value) return ElMessage.warning('请选择文件')
+  importing.value = true
+  try {
+    const formData = new FormData()
+    formData.append('file', importFile.value)
+    formData.append('productId', importForm.value.productId)
+    if (importForm.value.remark) formData.append('remark', importForm.value.remark)
+    const res = await request.post('/admin/cards/import', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    ElMessage.success(`导入完成：成功 ${res.data.success}，跳过 ${res.data.skipped}，失败 ${res.data.failed}`)
+    importDialog.value = false
+    importFile.value = null
+    loadData()
+  } finally {
+    importing.value = false
+  }
+}
+
+async function handleExport(format) {
+  let url = '/admin/export/cards'
+  const params = []
+  if (status.value !== null) params.push(`status=${status.value}`)
+  if (params.length) url += '?' + params.join('&')
+  const ext = format === 'xlsx' ? 'xlsx' : 'csv'
+  await downloadExport(url, `cards_export.${ext}`, format)
   ElMessage.success('导出成功')
 }
 
