@@ -89,6 +89,8 @@ onMounted(async () => {
 
 onUnmounted(stopPoll)
 
+const isWechatBrowser = /MicroMessenger/i.test(navigator.userAgent)
+
 async function handlePay() {
   paying.value = true
   try {
@@ -98,26 +100,78 @@ async function handlePay() {
     } else {
       currentOrderId.value = existingOrderId.value
     }
-    const prepayRes = await shopRequest.post('/shop/orders/prepay', {
-      orderId: currentOrderId.value,
-      paymentMethod: paymentMethod.value
-    })
-    const data = prepayRes.data
-    orderNo.value = data.orderNo
 
-    if (data.payType === 'INSTANT') {
-      cardKey.value = data.cardKey
-      successDialog.value = true
-    } else if (data.payType === 'REDIRECT' && data.payUrl) {
-      window.location.href = data.payUrl
-    } else if (data.payType === 'QRCODE' && data.codeUrl) {
-      qrCodeUrl.value = await QRCode.toDataURL(data.codeUrl, { width: 220, margin: 1 })
-      qrDialog.value = true
-      startPoll()
+    const useWechatJsapi = paymentMethod.value === 'WECHAT' && isWechatBrowser
+    if (useWechatJsapi) {
+      try {
+        await doPrepay(true)
+        return
+      } catch (err) {
+        if (!String(err?.message || '').includes('openid')) {
+          throw err
+        }
+        ElMessage.info(t('shop.wechatOAuth'))
+        const oauthRes = await shopRequest.get('/shop/payment/wechat/oauth-url', {
+          params: { orderId: currentOrderId.value, redirect: route.fullPath }
+        })
+        window.location.href = oauthRes.data.url
+        return
+      }
     }
+
+    await doPrepay(false)
   } finally {
     paying.value = false
   }
+}
+
+async function doPrepay(wechatJsapi) {
+  const prepayRes = await shopRequest.post('/shop/orders/prepay', {
+    orderId: currentOrderId.value,
+    paymentMethod: paymentMethod.value,
+    wechatJsapi
+  })
+  const data = prepayRes.data
+  orderNo.value = data.orderNo
+
+  if (data.payType === 'INSTANT') {
+    cardKey.value = data.cardKey
+    successDialog.value = true
+  } else if (data.payType === 'REDIRECT' && data.payUrl) {
+    window.location.href = data.payUrl
+  } else if (data.payType === 'JSAPI' && data.jsapiParams) {
+    ElMessage.info(t('shop.wechatJsapiPay'))
+    await invokeWechatPay(data.jsapiParams)
+    startPoll()
+    await checkStatus()
+  } else if (data.payType === 'QRCODE' && data.codeUrl) {
+    qrCodeUrl.value = await QRCode.toDataURL(data.codeUrl, { width: 220, margin: 1 })
+    qrDialog.value = true
+    startPoll()
+  }
+}
+
+function invokeWechatPay(params) {
+  return new Promise((resolve, reject) => {
+    const pay = () => {
+      window.WeixinJSBridge.invoke('getBrandWCPayRequest', {
+        appId: params.appId,
+        timeStamp: params.timeStamp,
+        nonceStr: params.nonceStr,
+        package: params.packageValue,
+        signType: params.signType,
+        paySign: params.paySign
+      }, (res) => {
+        if (res.err_msg === 'get_brand_wcpay_request:ok') resolve(res)
+        else reject(new Error(res.err_msg || 'pay failed'))
+      })
+    }
+    if (typeof window.WeixinJSBridge === 'undefined') {
+      document.addEventListener('WeixinJSBridgeReady', pay, false)
+    } else {
+      pay()
+    }
+  })
 }
 
 function startPoll() {

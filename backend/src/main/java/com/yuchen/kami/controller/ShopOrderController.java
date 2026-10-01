@@ -48,7 +48,9 @@ public class ShopOrderController {
 
     @PostMapping("/prepay")
     public Result<PrepayResponse> prepay(@Valid @RequestBody PayOrderRequest request, Authentication auth) {
-        return Result.ok(paymentService.prepay((Long) auth.getDetails(), request.getOrderId(), request.getPaymentMethod()));
+        Long userId = (Long) auth.getDetails();
+        return Result.ok(paymentService.prepay(userId, request.getOrderId(), request.getPaymentMethod(),
+                request.getOpenid(), request.getWechatJsapi()));
     }
 
     @GetMapping("/{id}/status")

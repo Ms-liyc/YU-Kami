@@ -11,7 +11,16 @@
     "refresh": "刷新",
     "submit": "提交",
     "back": "返回",
-    "language": "语言"
+    "language": "语言",
+    "edit": "编辑",
+    "delete": "删除",
+    "add": "新增",
+    "status": "状态",
+    "actions": "操作",
+    "home": "首页",
+    "running": "运行中",
+    "success": "操作成功",
+    "tip": "提示"
   },
   "nav": {
     "dashboard": "数据概览",
@@ -27,6 +36,31 @@
     "shop": "购买中心",
     "myOrders": "我的订单",
     "admin": "管理后台"
+  },
+  "admin": {
+    "welcome": "欢迎回来",
+    "loginSubtitle": "登录管理后台",
+    "defaultHint": "默认账号 admin / admin123",
+    "brandSubtitle": "屿宸科技 · 企业级卡密管理平台",
+    "roleSuperAdmin": "超级管理员",
+    "roleAdmin": "管理员",
+    "dashboardTitle": "数据概览",
+    "dashboardSubtitle": "卡密系统运营数据实时监控",
+    "recentRedeems": "最近兑换记录",
+    "usageRate": "使用率",
+    "cryptoTitle": "加密体系",
+    "used": "已使用",
+    "unused": "未使用",
+    "productsTitle": "产品管理",
+    "productsSubtitle": "管理卡密关联的产品与权益类型",
+    "cardsTitle": "卡密管理",
+    "cardsSubtitle": "批量生成、查询与作废卡密",
+    "batchesTitle": "批次管理",
+    "batchesSubtitle": "查看卡密批次生成与使用统计",
+    "recordsTitle": "兑换记录",
+    "recordsSubtitle": "全部卡密兑换操作审计",
+    "exportCsv": "导出 CSV",
+    "exportExcel": "导出 Excel"
   },
   "shop": {
     "title": "YU-Kami 卡密商城",
@@ -47,6 +81,8 @@
     "alipay": "支付宝",
     "wechat": "微信支付",
     "scanToPay": "请使用微信扫描二维码完成支付",
+    "wechatJsapiPay": "正在调起微信支付…",
+    "wechatOAuth": "正在跳转微信授权…",
     "checkPayStatus": "检查支付状态",
     "noProducts": "暂无商品",
     "createAccount": "创建账号",
@@ -59,7 +95,11 @@
     "user": "用户",
     "product": "产品",
     "paymentMethod": "支付方式",
-    "createdAt": "创建时间"
+    "createdAt": "创建时间",
+    "statusPending": "待支付",
+    "statusPaid": "已支付",
+    "statusDelivered": "已发货",
+    "statusCancelled": "已取消"
   },
   "setup": {
     "paymentTitle": "支付对接（可选，需自行配置）",

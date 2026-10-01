@@ -24,10 +24,10 @@
       <div class="card-body">
         <div class="filter-bar">
           <el-select v-model="status" clearable placeholder="Status" style="width:140px" @change="loadData">
-            <el-option label="待支付" value="PENDING" />
-            <el-option label="已支付" value="PAID" />
-            <el-option label="已发货" value="DELIVERED" />
-            <el-option label="已取消" value="CANCELLED" />
+            <el-option :label="t('order.statusPending')" value="PENDING" />
+            <el-option :label="t('order.statusPaid')" value="PAID" />
+            <el-option :label="t('order.statusDelivered')" value="DELIVERED" />
+            <el-option :label="t('order.statusCancelled')" value="CANCELLED" />
           </el-select>
         </div>
         <el-table :data="tableData" stripe v-loading="loading">

@@ -1,8 +1,8 @@
 <template>
   <div class="page-container">
-    <PageHeader title="产品管理" subtitle="管理卡密关联的产品与权益类型">
+    <PageHeader :title="t('admin.productsTitle')" :subtitle="t('admin.productsSubtitle')">
       <template #extra>
-        <el-button type="primary" :icon="Plus" @click="openDialog()">新增产品</el-button>
+        <el-button type="primary" :icon="Plus" @click="openDialog()">{{ t('common.add') }}</el-button>
       </template>
     </PageHeader>
 
@@ -69,6 +69,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'

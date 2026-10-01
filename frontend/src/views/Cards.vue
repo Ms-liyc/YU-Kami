@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <PageHeader title="卡密管理" subtitle="批量生成、查询与作废卡密">
+    <PageHeader :title="t('admin.cardsTitle')" :subtitle="t('admin.cardsSubtitle')">
       <template #extra>
         <div class="btn-group">
           <el-button :icon="Upload" @click="importDialog = true">批量导入</el-button>
@@ -113,6 +113,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 import { Plus, Download, Refresh, CopyDocument, Upload, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'

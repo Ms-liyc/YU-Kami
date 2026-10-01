@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <PageHeader title="兑换记录" subtitle="全部卡密兑换操作审计">
+    <PageHeader :title="t('admin.recordsTitle')" :subtitle="t('admin.recordsSubtitle')">
       <template #extra>
         <el-dropdown @command="handleExport">
           <el-button :icon="Download">导出 <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
@@ -38,6 +38,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 import { Download, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import request from '../api/request'

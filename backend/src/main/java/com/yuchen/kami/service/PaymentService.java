@@ -10,7 +10,9 @@ import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.ShopOrder;
 import com.yuchen.kami.mapper.PaymentConfigMapper;
 import com.yuchen.kami.mapper.ShopOrderMapper;
+import com.yuchen.kami.dto.JsapiPayParams;
 import com.yuchen.kami.payment.AlipayPaymentService;
+import com.yuchen.kami.payment.WechatOAuthService;
 import com.yuchen.kami.payment.WechatPaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +38,15 @@ public class PaymentService {
     private final StringRedisTemplate redisTemplate;
     private final AlipayPaymentService alipayPaymentService;
     private final WechatPaymentService wechatPaymentService;
+    private final WechatOAuthService wechatOAuthService;
 
     public List<PaymentConfig> availableChannels() {
         return paymentConfigMapper.selectList(new LambdaQueryWrapper<PaymentConfig>()
                 .eq(PaymentConfig::getStatus, 1));
     }
 
-    public PrepayResponse prepay(Long userId, Long orderId, String paymentMethod) {
+    public PrepayResponse prepay(Long userId, Long orderId, String paymentMethod,
+                                 String openid, Boolean wechatJsapi) {
         ShopOrder order = orderService.getOrder(orderId, userId);
         if (!ShopOrder.STATUS_PENDING.equals(order.getStatus())) {
             throw new BusinessException("订单状态不允许支付");
@@ -55,7 +59,7 @@ public class PaymentService {
         return switch (paymentMethod) {
             case "MOCK" -> prepayMock(order, userId);
             case "ALIPAY" -> prepayAlipay(config, order);
-            case "WECHAT" -> prepayWechat(config, order);
+            case "WECHAT" -> prepayWechat(config, order, userId, openid, wechatJsapi);
             default -> throw new BusinessException("不支持的支付方式");
         };
     }
@@ -63,7 +67,7 @@ public class PaymentService {
     /** 兼容旧接口：MOCK 即时支付 */
     @Transactional
     public OrderVO pay(Long userId, Long orderId, String paymentMethod) {
-        PrepayResponse prepay = prepay(userId, orderId, paymentMethod);
+        PrepayResponse prepay = prepay(userId, orderId, paymentMethod, null, null);
         if ("INSTANT".equals(prepay.getPayType())) {
             OrderVO vo = orderService.toVO(shopOrderMapper.selectById(orderId));
             vo.setCardKey(prepay.getCardKey());
@@ -192,7 +196,23 @@ public class PaymentService {
                 .build();
     }
 
-    private PrepayResponse prepayWechat(PaymentConfig config, ShopOrder order) {
+    private PrepayResponse prepayWechat(PaymentConfig config, ShopOrder order, Long userId,
+                                        String openid, Boolean wechatJsapi) {
+        boolean useJsapi = Boolean.TRUE.equals(wechatJsapi);
+        String resolvedOpenid = openid;
+        if (useJsapi && (resolvedOpenid == null || resolvedOpenid.isBlank())) {
+            resolvedOpenid = wechatOAuthService.getStoredOpenId(userId);
+        }
+        if (useJsapi && resolvedOpenid != null && !resolvedOpenid.isBlank()) {
+            JsapiPayParams params = wechatPaymentService.createJsapiPay(config, order, resolvedOpenid);
+            return PrepayResponse.builder()
+                    .payType("JSAPI")
+                    .orderId(order.getId())
+                    .orderNo(order.getOrderNo())
+                    .jsapiParams(params)
+                    .message("请完成微信支付")
+                    .build();
+        }
         String codeUrl = wechatPaymentService.createNativePay(config, order);
         return PrepayResponse.builder()
                 .payType("QRCODE")

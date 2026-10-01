@@ -11,7 +11,16 @@
     "refresh": "Refresh",
     "submit": "Submit",
     "back": "Back",
-    "language": "Language"
+    "language": "Language",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "status": "Status",
+    "actions": "Actions",
+    "home": "Home",
+    "running": "Running",
+    "success": "Success",
+    "tip": "Tip"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -27,6 +36,31 @@
     "shop": "Shop",
     "myOrders": "My Orders",
     "admin": "Admin"
+  },
+  "admin": {
+    "welcome": "Welcome Back",
+    "loginSubtitle": "Sign in to admin panel",
+    "defaultHint": "Default: admin / admin123",
+    "brandSubtitle": "YuChen Tech · Enterprise Card Key Platform",
+    "roleSuperAdmin": "Super Admin",
+    "roleAdmin": "Admin",
+    "dashboardTitle": "Dashboard",
+    "dashboardSubtitle": "Real-time card system metrics",
+    "recentRedeems": "Recent Redeems",
+    "usageRate": "Usage Rate",
+    "cryptoTitle": "Crypto Stack",
+    "used": "Used",
+    "unused": "Unused",
+    "productsTitle": "Products",
+    "productsSubtitle": "Manage products and entitlements",
+    "cardsTitle": "Card Keys",
+    "cardsSubtitle": "Generate, query and revoke keys",
+    "batchesTitle": "Batches",
+    "batchesSubtitle": "Batch generation and usage stats",
+    "recordsTitle": "Redeem Records",
+    "recordsSubtitle": "Full redeem audit trail",
+    "exportCsv": "Export CSV",
+    "exportExcel": "Export Excel"
   },
   "shop": {
     "title": "YU-Kami Card Shop",
@@ -47,6 +81,8 @@
     "alipay": "Alipay",
     "wechat": "WeChat Pay",
     "scanToPay": "Scan the QR code with WeChat to pay",
+    "wechatJsapiPay": "Launching WeChat Pay…",
+    "wechatOAuth": "Redirecting to WeChat authorization…",
     "checkPayStatus": "Check payment status",
     "noProducts": "No products available",
     "createAccount": "Create Account",
@@ -59,7 +95,11 @@
     "user": "User",
     "product": "Product",
     "paymentMethod": "Payment Method",
-    "createdAt": "Created At"
+    "createdAt": "Created At",
+    "statusPending": "Pending",
+    "statusPaid": "Paid",
+    "statusDelivered": "Delivered",
+    "statusCancelled": "Cancelled"
   },
   "setup": {
     "paymentTitle": "Payment Integration (Optional, Self-Service)",

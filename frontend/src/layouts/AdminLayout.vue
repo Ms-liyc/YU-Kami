@@ -17,23 +17,23 @@
         >
           <el-menu-item index="/dashboard">
             <el-icon><Odometer /></el-icon>
-            <template #title>数据概览</template>
+            <template #title>{{ t('nav.dashboard') }}</template>
           </el-menu-item>
           <el-menu-item index="/products">
             <el-icon><Goods /></el-icon>
-            <template #title>产品管理</template>
+            <template #title>{{ t('nav.products') }}</template>
           </el-menu-item>
           <el-menu-item index="/cards">
             <el-icon><Ticket /></el-icon>
-            <template #title>卡密管理</template>
+            <template #title>{{ t('nav.cards') }}</template>
           </el-menu-item>
           <el-menu-item index="/batches">
             <el-icon><Files /></el-icon>
-            <template #title>批次管理</template>
+            <template #title>{{ t('nav.batches') }}</template>
           </el-menu-item>
           <el-menu-item index="/records">
             <el-icon><Document /></el-icon>
-            <template #title>兑换记录</template>
+            <template #title>{{ t('nav.records') }}</template>
           </el-menu-item>
           <el-menu-item index="/orders">
             <el-icon><ShoppingCart /></el-icon>
@@ -43,25 +43,25 @@
           <template v-if="auth.isSuperAdmin">
             <el-menu-item index="/api-clients">
               <el-icon><Connection /></el-icon>
-              <template #title>API 客户端</template>
+              <template #title>{{ t('nav.apiClients') }}</template>
             </el-menu-item>
             <el-menu-item index="/users">
               <el-icon><User /></el-icon>
-              <template #title>用户管理</template>
+              <template #title>{{ t('nav.users') }}</template>
             </el-menu-item>
             <el-menu-item index="/audit-logs">
               <el-icon><Notebook /></el-icon>
-              <template #title>审计日志</template>
+              <template #title>{{ t('nav.auditLogs') }}</template>
             </el-menu-item>
             <el-menu-item index="/webhooks">
               <el-icon><Bell /></el-icon>
-              <template #title>Webhook</template>
+              <template #title>{{ t('nav.webhooks') }}</template>
             </el-menu-item>
           </template>
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.6.0</span>
+        <span>v1.7.0</span>
       </div>
     </el-aside>
 
@@ -70,14 +70,14 @@
         <div class="header-left">
           <el-button class="menu-toggle" :icon="Menu" circle @click="mobileMenuOpen = !mobileMenuOpen" />
           <el-breadcrumb separator="/" class="breadcrumb">
-            <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/dashboard' }">{{ t('common.home') }}</el-breadcrumb-item>
             <el-breadcrumb-item>{{ currentTitle }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
         <div class="header-right">
           <router-link to="/shop" class="shop-link">{{ t('nav.shop') }}</router-link>
           <LanguageSwitcher />
-          <el-tag size="small" effect="plain" type="success">运行中</el-tag>
+          <el-tag size="small" effect="plain" type="success">{{ t('common.running') }}</el-tag>
           <el-dropdown trigger="click">
             <div class="user-dropdown">
               <el-avatar :size="32" class="avatar">{{ (auth.nickname || auth.username || 'A')[0] }}</el-avatar>
@@ -133,20 +133,20 @@ const asideWidth = computed(() => collapsed.value ? '64px' : '240px')
 watch(() => route.path, () => { mobileMenuOpen.value = false })
 
 const titleMap = {
-  '/dashboard': '数据概览',
-  '/products': '产品管理',
-  '/cards': '卡密管理',
-  '/batches': '批次管理',
-  '/records': '兑换记录',
-  '/api-clients': 'API 客户端',
-  '/users': '用户管理',
-  '/audit-logs': '审计日志',
-  '/webhooks': 'Webhook 管理',
-  '/orders': '订单管理'
+  '/dashboard': 'nav.dashboard',
+  '/products': 'nav.products',
+  '/cards': 'nav.cards',
+  '/batches': 'nav.batches',
+  '/records': 'nav.records',
+  '/api-clients': 'nav.apiClients',
+  '/users': 'nav.users',
+  '/audit-logs': 'nav.auditLogs',
+  '/webhooks': 'nav.webhooks',
+  '/orders': 'nav.orders'
 }
 
-const currentTitle = computed(() => titleMap[route.path] || '')
-const roleLabel = computed(() => auth.role === 'SUPER_ADMIN' ? '超级管理员' : '管理员')
+const currentTitle = computed(() => t(titleMap[route.path] || ''))
+const roleLabel = computed(() => auth.role === 'SUPER_ADMIN' ? t('admin.roleSuperAdmin') : t('admin.roleAdmin'))
 
 function handleLogout() {
   auth.logout()

@@ -38,6 +38,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/auth/login").permitAll()
                         .requestMatchers("/api/shop/auth/**").permitAll()
                         .requestMatchers("/api/shop/products/**").permitAll()
+                        .requestMatchers("/api/shop/payment/wechat/oauth-callback").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/api/v1/redeem").permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

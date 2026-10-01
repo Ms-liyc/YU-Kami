@@ -6,11 +6,15 @@ import com.wechat.pay.java.core.notification.NotificationConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
 import com.wechat.pay.java.service.payments.model.Transaction;
+import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
+import com.wechat.pay.java.service.payments.jsapi.model.Payer;
+import com.wechat.pay.java.service.payments.jsapi.model.PrepayWithRequestPaymentResponse;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import com.wechat.pay.java.service.payments.nativepay.model.Amount;
 import com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest;
 import com.wechat.pay.java.service.payments.nativepay.model.PrepayResponse;
 import com.yuchen.kami.common.BusinessException;
+import com.yuchen.kami.dto.JsapiPayParams;
 import com.yuchen.kami.config.YuKamiProperties;
 import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.ShopOrder;
@@ -27,6 +31,48 @@ public class WechatPaymentService {
 
     private final PaymentChannelHelper helper;
     private final YuKamiProperties properties;
+
+    public JsapiPayParams createJsapiPay(PaymentConfig config, ShopOrder order, String openid) {
+        validateConfig(config);
+        if (openid == null || openid.isBlank()) {
+            throw new BusinessException("微信 JSAPI 支付需要 openid，请先完成微信授权");
+        }
+        try {
+            Config wxConfig = buildConfig(config);
+            JsapiServiceExtension service = new JsapiServiceExtension.Builder().config(wxConfig).build();
+
+            com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest request =
+                    new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();
+            request.setAppid(config.getAppId());
+            request.setMchid(getMchId(config));
+            request.setDescription(order.getProductName());
+            request.setOutTradeNo(order.getOrderNo());
+            request.setNotifyUrl(notifyUrl(config));
+
+            Payer payer = new Payer();
+            payer.setOpenid(openid);
+            request.setPayer(payer);
+
+            com.wechat.pay.java.service.payments.jsapi.model.Amount amount =
+                    new com.wechat.pay.java.service.payments.jsapi.model.Amount();
+            amount.setTotal(toFen(order.getAmount()));
+            amount.setCurrency("CNY");
+            request.setAmount(amount);
+
+            PrepayWithRequestPaymentResponse response = service.prepayWithRequestPayment(request);
+            return JsapiPayParams.builder()
+                    .appId(response.getAppId())
+                    .timeStamp(response.getTimeStamp())
+                    .nonceStr(response.getNonceStr())
+                    .packageValue(response.getPackageVal())
+                    .signType(response.getSignType())
+                    .paySign(response.getPaySign())
+                    .build();
+        } catch (Exception e) {
+            log.error("微信 JSAPI 下单失败", e);
+            throw new BusinessException("微信 JSAPI 下单失败: " + e.getMessage());
+        }
+    }
 
     public String createNativePay(PaymentConfig config, ShopOrder order) {
         validateConfig(config);

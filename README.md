@@ -284,6 +284,13 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.7.0
+
+* 💚 **微信 JSAPI 支付**：微信内浏览器自动 OAuth + 调起支付（公众号 H5）
+* 🧪 **单元测试**：支付发货、订单取消等核心逻辑测试
+* 🐳 **Docker 健康检查**：Actuator + 后端就绪后再启动前端
+* 🌐 **管理后台 i18n**：主导航、登录页、核心页面中英双语
+
 #### v1.6.0
 
 * 📡 **Swagger API 文档**：`http://localhost:8080/swagger-ui.html`，支持 JWT 在线调试
@@ -343,7 +350,8 @@ Content-Type: application/json
 
 ### 🚀 后续计划
 
-* [ ] 微信 JSAPI 支付（公众号/小程序内）
+* [x] 微信 JSAPI 支付（公众号 H5 内浏览器）
+* [ ] 微信小程序支付
 * [ ] 用户钱包与余额支付
 * [ ] 移动端适配优化
 * [ ] Docker Hub 官方镜像

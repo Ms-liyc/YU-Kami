@@ -52,7 +52,9 @@ Docker 部署可在 `docker-compose.yml` 的 `backend` 服务 `environment` 中�
 
 沙箱网关：`https://openapi-sandbox.dl.alipaydev.com/gateway.do`
 
-## 微信支付（Native 扫码支付）
+## 微信支付
+
+### Native 扫码支付（PC / 非微信浏览器）
 
 | 字段 | 说明 |
 |------|------|
@@ -72,6 +74,22 @@ Docker 部署可在 `docker-compose.yml` 的 `backend` 服务 `environment` 中�
 ```
 
 回调地址：`{PAYMENT_BASE_URL}/api/payment/wechat/notify`（或在 Notify URL 字段中自定义）
+
+### JSAPI 支付（微信内浏览器 / 公众号 H5）
+
+在微信内置浏览器中购买时，系统会自动走 JSAPI 调起支付（需先 OAuth 获取 openid）。
+
+额外配置：
+
+| 字段 | 说明 |
+|------|------|
+| App Secret | 填写在「App Secret」或 `configJson.appSecret`，用于 OAuth 换取 openid |
+| 公众号网页授权域名 | 在微信公众平台配置为你的域名 |
+
+流程：
+1. 用户在微信内点击支付 → 跳转 OAuth 授权
+2. 回调 `/api/shop/payment/wechat/oauth-callback` 获取 openid
+3. 预支付返回 JSAPI 参数 → 调起 `WeixinJSBridge` 完成支付
 
 ## 支付流程
 

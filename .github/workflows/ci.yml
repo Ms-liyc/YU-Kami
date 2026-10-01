@@ -16,8 +16,8 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - name: Build backend
-        run: cd backend && ./mvnw -B clean package -DskipTests
+      - name: Test and build backend
+        run: cd backend && ./mvnw -B clean verify
 
   frontend:
     runs-on: ubuntu-latest

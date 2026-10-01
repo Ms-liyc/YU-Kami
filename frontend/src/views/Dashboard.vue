@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <PageHeader title="数据概览" subtitle="卡密系统运营数据实时监控" />
+    <PageHeader :title="t('admin.dashboardTitle')" :subtitle="t('admin.dashboardSubtitle')" />
 
     <el-row :gutter="16" class="stat-row">
       <el-col :xs="12" :sm="8" :md="4" v-for="item in statCards" :key="item.label">
@@ -11,7 +11,7 @@
     <el-row :gutter="16" style="margin-top: 20px">
       <el-col :span="16">
         <div class="page-card">
-          <div class="card-header"><h3>最近兑换记录</h3></div>
+          <div class="card-header"><h3>{{ t('admin.recentRedeems') }}</h3></div>
           <div class="card-body" style="padding: 0">
             <el-table :data="stats.recentRedeems || []" stripe empty-text="暂无兑换记录">
               <el-table-column prop="redeemUser" label="用户" width="140" />
@@ -31,18 +31,18 @@
       </el-col>
       <el-col :span="8">
         <div class="page-card" style="margin-bottom: 16px">
-          <div class="card-header"><h3>使用率</h3></div>
+          <div class="card-header"><h3>{{ t('admin.usageRate') }}</h3></div>
           <div class="card-body usage-body">
             <el-progress type="dashboard" :percentage="Math.round(stats.usageRate || 0)" :width="140"
               :color="progressColors" />
             <div class="usage-detail">
-              <div><span class="dot used"></span>已使用 {{ stats.usedCards || 0 }}</div>
-              <div><span class="dot unused"></span>未使用 {{ stats.unusedCards || 0 }}</div>
+              <div><span class="dot used"></span>{{ t('admin.used') }} {{ stats.usedCards || 0 }}</div>
+              <div><span class="dot unused"></span>{{ t('admin.unused') }} {{ stats.unusedCards || 0 }}</div>
             </div>
           </div>
         </div>
         <div class="page-card">
-          <div class="card-header"><h3>加密体系</h3></div>
+          <div class="card-header"><h3>{{ t('admin.cryptoTitle') }}</h3></div>
           <div class="card-body crypto-list">
             <div class="crypto-item" v-for="c in cryptoItems" :key="c.label">
               <el-icon :style="{ color: c.color }"><component :is="c.icon" /></el-icon>
@@ -60,7 +60,10 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import request from '../api/request'
+
+const { t } = useI18n()
 import PageHeader from '../components/PageHeader.vue'
 import StatCard from '../components/StatCard.vue'
 

@@ -58,6 +58,15 @@ yukami:
     base-url: ${PAYMENT_BASE_URL:http://localhost:8080}
     return-url: ${PAYMENT_RETURN_URL:http://localhost:5173/shop/orders}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
 springdoc:
   api-docs:
     path: /v3/api-docs

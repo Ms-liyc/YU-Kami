@@ -4,7 +4,7 @@
       <div class="brand">
         <img src="/logo.png" alt="YU-Kami" class="brand-logo" />
         <h1>YU-Kami</h1>
-        <p>屿宸科技 · 企业级卡密管理平台</p>
+        <p>{{ t('admin.brandSubtitle') }}</p>
       </div>
       <div class="features">
         <div class="feature-item" v-for="f in features" :key="f.title">
@@ -18,8 +18,8 @@
     </div>
     <div class="login-right">
       <div class="login-card">
-        <h2>欢迎回来</h2>
-        <p class="subtitle">登录管理后台</p>
+        <h2>{{ t('admin.welcome') }}</h2>
+        <p class="subtitle">{{ t('admin.loginSubtitle') }}</p>
         <el-form :model="form" size="large" @submit.prevent="handleLogin">
           <el-form-item>
             <el-input v-model="form.username" placeholder="用户名" :prefix-icon="User" />
@@ -31,7 +31,7 @@
             登 录
           </el-button>
         </el-form>
-        <p class="hint">默认账号 admin / admin123</p>
+        <p class="hint">{{ t('admin.defaultHint') }}</p>
       </div>
     </div>
   </div>
@@ -44,7 +44,9 @@ import { ElMessage } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
 import request from '../api/request'
 import { useAuthStore } from '../stores/auth'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 const auth = useAuthStore()
 const loading = ref(false)

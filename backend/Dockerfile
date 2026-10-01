@@ -5,6 +5,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests -q
 
 FROM eclipse-temurin:17-jre-alpine
+RUN apk add --no-cache curl
 WORKDIR /app
 COPY --from=build /app/target/yu-kami-*.jar app.jar
 EXPOSE 8080
