@@ -8,8 +8,6 @@ services:
       POSTGRES_DB: yukami
       POSTGRES_USER: yukami
       POSTGRES_PASSWORD: yukami123
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./backend/src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
@@ -18,16 +16,58 @@ services:
       test: ["CMD-SHELL", "pg_isready -U yukami"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+    networks:
+      - yukami-net
 
   redis:
     image: redis:7-alpine
     container_name: yukami-redis
-    ports:
-      - "6379:6379"
     volumes:
       - redisdata:/data
+    networks:
+      - yukami-net
+
+  backend:
+    build: ./backend
+    container_name: yukami-backend
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: yukami
+      DB_USER: yukami
+      DB_PASSWORD: yukami123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: YuChen-Kami-Docker-JWT-Secret-Change-In-Production
+      HMAC_SECRET: YuChen-HMAC-Docker-Secret-Change-In-Production
+      AES_KEY: YuChenAES256KeyChangeInProd!!
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    networks:
+      - yukami-net
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: yukami-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - yukami-net
+    restart: unless-stopped
 
 volumes:
   pgdata:
   redisdata:
+
+networks:
+  yukami-net:
+    driver: bridge

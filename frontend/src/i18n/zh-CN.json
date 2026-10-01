@@ -1,0 +1,62 @@
+{
+  "common": {
+    "login": "登录",
+    "logout": "退出",
+    "register": "注册",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "search": "搜索",
+    "export": "导出",
+    "refresh": "刷新",
+    "submit": "提交",
+    "back": "返回",
+    "language": "语言"
+  },
+  "nav": {
+    "dashboard": "数据概览",
+    "products": "产品管理",
+    "cards": "卡密管理",
+    "batches": "批次管理",
+    "records": "兑换记录",
+    "orders": "订单管理",
+    "apiClients": "API 客户端",
+    "users": "用户管理",
+    "auditLogs": "审计日志",
+    "webhooks": "Webhook",
+    "shop": "购买中心",
+    "myOrders": "我的订单",
+    "admin": "管理后台"
+  },
+  "shop": {
+    "title": "YU-Kami 卡密商城",
+    "subtitle": "屿宸科技 · 安全便捷的卡密购买平台",
+    "buyNow": "立即购买",
+    "productList": "商品列表",
+    "orderNo": "订单号",
+    "amount": "金额",
+    "status": "状态",
+    "pay": "去支付",
+    "paySuccess": "支付成功",
+    "cardKey": "您的卡密",
+    "copyCard": "复制卡密",
+    "pending": "待支付",
+    "delivered": "已发货",
+    "cancelled": "已取消",
+    "mockPay": "模拟支付",
+    "alipay": "支付宝",
+    "wechat": "微信支付",
+    "noProducts": "暂无商品",
+    "createAccount": "创建账号",
+    "welcome": "欢迎回来"
+  },
+  "order": {
+    "title": "订单管理",
+    "subtitle": "查看和管理所有用户订单",
+    "paymentConfig": "支付配置",
+    "user": "用户",
+    "product": "产品",
+    "paymentMethod": "支付方式",
+    "createdAt": "创建时间"
+  }
+}

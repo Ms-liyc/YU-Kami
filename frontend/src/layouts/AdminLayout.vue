@@ -34,6 +34,10 @@
             <el-icon><Document /></el-icon>
             <template #title>兑换记录</template>
           </el-menu-item>
+          <el-menu-item index="/orders">
+            <el-icon><ShoppingCart /></el-icon>
+            <template #title>{{ t('nav.orders') }}</template>
+          </el-menu-item>
           <el-divider v-if="auth.isSuperAdmin" style="margin: 8px 16px; border-color: #334155" />
           <template v-if="auth.isSuperAdmin">
             <el-menu-item index="/api-clients">
@@ -56,7 +60,7 @@
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.2.0</span>
+        <span>v1.3.0</span>
       </div>
     </el-aside>
 
@@ -69,6 +73,8 @@
           </el-breadcrumb>
         </div>
         <div class="header-right">
+          <router-link to="/shop" class="shop-link">{{ t('nav.shop') }}</router-link>
+          <LanguageSwitcher />
           <el-tag size="small" effect="plain" type="success">运行中</el-tag>
           <el-dropdown trigger="click">
             <div class="user-dropdown">
@@ -103,7 +109,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -119,7 +129,8 @@ const titleMap = {
   '/api-clients': 'API 客户端',
   '/users': '用户管理',
   '/audit-logs': '审计日志',
-  '/webhooks': 'Webhook 管理'
+  '/webhooks': 'Webhook 管理',
+  '/orders': '订单管理'
 }
 
 const currentTitle = computed(() => titleMap[route.path] || '')
@@ -210,6 +221,7 @@ function handleLogout() {
 .user-dropdown:hover { background: #f1f5f9; }
 .avatar { background: linear-gradient(135deg, #4f6ef7, #7c3aed); color: #fff; font-size: 14px; }
 .user-name { font-size: 14px; color: var(--text-primary); }
+.shop-link { color: #4f6ef7; font-size: 13px; text-decoration: none; margin-right: 4px; }
 .main { padding: 24px 28px; }
 .page-enter-active, .page-leave-active { transition: all 0.25s ease; }
 .page-enter-from { opacity: 0; transform: translateX(12px); }

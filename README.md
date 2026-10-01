@@ -31,35 +31,49 @@
 
 本项目提供多种灵活的部署方式，满足不同场景需求。
 
-### 方式一：Docker Compose 一键启动（推荐 🔥）
-
-适用于本地开发或轻量生产环境，自动拉起 PostgreSQL + Redis。
+### 方式一：Docker 全栈一键部署（推荐 🔥）
 
 ```bash
-# 1. 克隆项目
 git clone https://github.com/Ms-liyc/YU-Kami.git
 cd YU-Kami
-
-# 2. 启动数据库与缓存
-docker compose up -d
-
-# 3. 启动后端
-cd backend
-mvn spring-boot:run
-
-# 4. 启动前端
-cd ../frontend
-npm install
-npm run dev
+docker compose up -d --build
 ```
 
 **默认访问地址：**
 
 | 服务 | 地址 |
 |------|------|
-| 管理后台 | http://localhost:5173 |
+| 用户购买中心 | http://localhost/shop |
+| 管理后台 | http://localhost/login |
 | 后端 API | http://localhost:8080 |
-| 默认账号 | `admin` / `admin123` |
+| 默认管理员 | `admin` / `admin123` |
+
+---
+
+### 方式一-B：Linux 一键安装脚本
+
+```bash
+curl -O https://raw.githubusercontent.com/Ms-liyc/YU-Kami/main/install.sh
+chmod +x install.sh
+sudo ./install.sh
+```
+
+自动安装 Docker、克隆代码、构建镜像并启动服务。
+
+---
+
+### 方式一-C：开发模式（仅数据库）
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+cd backend && mvn spring-boot:run
+cd frontend && npm install && npm run dev
+```
+
+| 服务 | 地址 |
+|------|------|
+| 用户前台 | http://localhost:5173/shop |
+| 管理后台 | http://localhost:5173/login |
 
 ---
 
@@ -264,14 +278,21 @@ Content-Type: application/json
 * 🔐 五重加密体系
 * ⚡ Redis 高并发保障
 
+#### v1.3.0
+
+* 🛒 **用户前台购买中心**：商品浏览、注册登录、在线购买
+* 📋 **订单管理**：管理端订单列表、取消、支付配置
+* 💳 **支付对接**：模拟支付 / 支付宝 / 微信（可配置启用）
+* 🐳 **Docker 一键部署**：`docker compose up -d` 全栈启动
+* 📜 **Linux 安装脚本**：`curl ... | sudo ./install.sh`
+* 🌐 **多语言支持**：中文 / English（vue-i18n）
+
 ### 🚀 后续计划
 
-* [ ] 用户前台购买中心
-* [ ] 订单管理与支付对接
-* [ ] Docker 镜像一键部署
-* [ ] 安装脚本（Linux 一键部署）
+* [ ] 支付宝 / 微信正式 SDK 对接
+* [ ] 用户钱包与余额支付
 * [ ] 移动端适配优化
-* [ ] 多语言支持
+* [ ] Docker Hub 官方镜像
 
 ---
 

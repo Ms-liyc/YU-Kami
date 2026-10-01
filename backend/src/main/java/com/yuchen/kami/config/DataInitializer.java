@@ -1,8 +1,10 @@
 package com.yuchen.kami.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.Product;
 import com.yuchen.kami.entity.SysUser;
+import com.yuchen.kami.mapper.PaymentConfigMapper;
 import com.yuchen.kami.mapper.ProductMapper;
 import com.yuchen.kami.mapper.SysUserMapper;
 
@@ -20,6 +22,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final SysUserMapper sysUserMapper;
     private final ProductMapper productMapper;
+    private final PaymentConfigMapper paymentConfigMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -39,6 +42,21 @@ public class DataInitializer implements CommandLineRunner {
         initProduct("月度会员", "VIP_MONTH", "DURATION", "29.90", 30);
         initProduct("年度会员", "VIP_YEAR", "DURATION", "299.00", 365);
         initProduct("通用余额卡", "BALANCE_100", "BALANCE", "100.00", null);
+        initPaymentChannel("MOCK", "模拟支付");
+        initPaymentChannel("ALIPAY", "支付宝");
+        initPaymentChannel("WECHAT", "微信支付");
+    }
+
+    private void initPaymentChannel(String channel, String desc) {
+        Long count = paymentConfigMapper.selectCount(new LambdaQueryWrapper<PaymentConfig>()
+                .eq(PaymentConfig::getChannel, channel));
+        if (count == 0) {
+            PaymentConfig config = new PaymentConfig();
+            config.setChannel(channel);
+            config.setStatus("MOCK".equals(channel) ? 1 : 0);
+            config.setConfigJson("{\"description\":\"" + desc + "\"}");
+            paymentConfigMapper.insert(config);
+        }
     }
 
     private void initProduct(String name, String code, String type, String value, Integer days) {

@@ -1,0 +1,62 @@
+{
+  "common": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "search": "Search",
+    "export": "Export",
+    "refresh": "Refresh",
+    "submit": "Submit",
+    "back": "Back",
+    "language": "Language"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "cards": "Cards",
+    "batches": "Batches",
+    "records": "Redeem Records",
+    "orders": "Orders",
+    "apiClients": "API Clients",
+    "users": "Users",
+    "auditLogs": "Audit Logs",
+    "webhooks": "Webhooks",
+    "shop": "Shop",
+    "myOrders": "My Orders",
+    "admin": "Admin"
+  },
+  "shop": {
+    "title": "YU-Kami Card Shop",
+    "subtitle": "YuChen Tech · Secure & Convenient Card Key Store",
+    "buyNow": "Buy Now",
+    "productList": "Products",
+    "orderNo": "Order No.",
+    "amount": "Amount",
+    "status": "Status",
+    "pay": "Pay Now",
+    "paySuccess": "Payment Successful",
+    "cardKey": "Your Card Key",
+    "copyCard": "Copy Key",
+    "pending": "Pending",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "mockPay": "Mock Pay",
+    "alipay": "Alipay",
+    "wechat": "WeChat Pay",
+    "noProducts": "No products available",
+    "createAccount": "Create Account",
+    "welcome": "Welcome Back"
+  },
+  "order": {
+    "title": "Order Management",
+    "subtitle": "View and manage all user orders",
+    "paymentConfig": "Payment Config",
+    "user": "User",
+    "product": "Product",
+    "paymentMethod": "Payment Method",
+    "createdAt": "Created At"
+  }
+}

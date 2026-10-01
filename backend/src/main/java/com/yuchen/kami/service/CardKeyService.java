@@ -117,4 +117,17 @@ public class CardKeyService {
         return cardKeyMapper.selectOne(new LambdaQueryWrapper<CardKey>()
                 .eq(CardKey::getKeyHash, keyHash));
     }
+
+    @Transactional
+    public String generateForOrder(Long productId, Long userId, String orderNo) {
+        GenerateBatchRequest request = new GenerateBatchRequest();
+        request.setProductId(productId);
+        request.setCount(1);
+        request.setRemark("订单发货: " + orderNo);
+        List<String> keys = generateBatch(request, userId);
+        if (keys.isEmpty()) {
+            throw new BusinessException("卡密生成失败");
+        }
+        return keys.get(0);
+    }
 }
