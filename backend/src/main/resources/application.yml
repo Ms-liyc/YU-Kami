@@ -1,0 +1,59 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: yu-kami
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:yukami}
+    username: ${DB_USER:yukami}
+    password: ${DB_PASSWORD:yukami123}
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      lettuce:
+        pool:
+          max-active: 32
+          max-idle: 16
+          min-idle: 4
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+yukami:
+  jwt:
+    secret: ${JWT_SECRET:YuChen-Kami-Enterprise-JWT-Secret-Key-Change-In-Production-2026}
+    expiration-ms: 86400000
+  crypto:
+    hmac-secret: ${HMAC_SECRET:YuChen-HMAC-Master-Secret-Change-In-Production}
+    aes-key: ${AES_KEY:YuChenAES256KeyChangeInProd!!}
+    rsa-private-key-path: ${RSA_PRIVATE_KEY:}
+    rsa-public-key-path: ${RSA_PUBLIC_KEY:}
+  redeem:
+    rate-limit-per-minute: 30
+    lock-ttl-seconds: 10
+  card:
+    default-length: 20
+    charset: ABCDEFGHJKLMNPQRSTUVWXYZ23456789
+
+logging:
+  level:
+    com.yuchen.kami: INFO
