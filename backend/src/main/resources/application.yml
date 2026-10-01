@@ -54,6 +54,7 @@ yukami:
     default-length: 20
     charset: ABCDEFGHJKLMNPQRSTUVWXYZ23456789
   payment:
+    # 支付回调/跳转地址：无固定值，部署者按实际环境通过环境变量配置（见 docs/PAYMENT.md）
     base-url: ${PAYMENT_BASE_URL:http://localhost:8080}
     return-url: ${PAYMENT_RETURN_URL:http://localhost:5173/shop/orders}
 

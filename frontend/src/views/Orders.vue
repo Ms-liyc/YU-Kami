@@ -2,9 +2,24 @@
   <div class="page-container">
     <PageHeader :title="t('order.title')" :subtitle="t('order.subtitle')">
       <template #extra>
-        <el-button @click="configDialog = true">{{ t('order.paymentConfig') }}</el-button>
+        <el-button @click="openPaymentConfig">{{ t('order.paymentConfig') }}</el-button>
       </template>
     </PageHeader>
+
+    <el-alert
+      v-if="setupStatus?.needsPaymentSetup"
+      type="warning"
+      :closable="false"
+      show-icon
+      class="setup-alert"
+      :title="t('setup.paymentTitle')"
+    >
+      <p>{{ t('setup.paymentOrderHint') }}</p>
+      <p v-if="setupStatus.paymentBaseUrl" class="env-hint">
+        {{ t('setup.paymentBaseUrl') }}: <code>{{ setupStatus.paymentBaseUrl }}</code>
+        <span class="env-note">（{{ t('setup.envConfigurable') }}）</span>
+      </p>
+    </el-alert>
     <div class="page-card">
       <div class="card-body">
         <div class="filter-bar">
@@ -32,7 +47,14 @@
       </div>
     </div>
 
-    <el-dialog v-model="configDialog" :title="t('order.paymentConfig')" width="600px">
+    <el-dialog v-model="configDialog" :title="t('order.paymentConfig')" width="680px">
+      <el-alert type="info" :closable="false" show-icon style="margin-bottom:16px">
+        <template #title>{{ t('setup.paymentConfigGuide') }}</template>
+        <p>{{ t('setup.paymentConfigSteps') }}</p>
+        <p v-if="setupStatus?.paymentBaseUrl" class="env-hint">
+          PAYMENT_BASE_URL=<code>{{ setupStatus.paymentBaseUrl }}</code>
+        </p>
+      </el-alert>
       <el-table :data="paymentConfigs" size="small">
         <el-table-column prop="channel" label="Channel" />
         <el-table-column prop="appId" label="App ID" />
@@ -72,13 +94,16 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'
 import PageHeader from '../components/PageHeader.vue'
 
 const { t } = useI18n()
+const route = useRoute()
 const tableData = ref([])
+const setupStatus = ref(null)
 const paymentConfigs = ref([])
 const loading = ref(false)
 const page = ref(1)
@@ -105,6 +130,19 @@ async function loadConfigs() {
   paymentConfigs.value = res.data
 }
 
+async function loadSetupStatus() {
+  try {
+    const res = await request.get('/admin/setup/status')
+    setupStatus.value = res.data
+  } catch {
+    setupStatus.value = null
+  }
+}
+
+function openPaymentConfig() {
+  configDialog.value = true
+}
+
 function editConfig(row) {
   editForm.value = { ...row }
   editDialog.value = true
@@ -124,5 +162,17 @@ async function handleCancel(id) {
   loadData()
 }
 
-onMounted(() => { loadData(); loadConfigs() })
+onMounted(async () => {
+  await Promise.all([loadData(), loadConfigs(), loadSetupStatus()])
+  if (route.query.openPayment === '1') {
+    configDialog.value = true
+  }
+})
 </script>
+
+<style scoped>
+.setup-alert { margin-bottom: 16px; }
+.env-hint { margin-top: 8px; font-size: 13px; }
+.env-hint code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+.env-note { color: var(--text-secondary); margin-left: 6px; }
+</style>

@@ -60,5 +60,18 @@
     "product": "产品",
     "paymentMethod": "支付方式",
     "createdAt": "创建时间"
+  },
+  "setup": {
+    "paymentTitle": "支付对接（可选，需自行配置）",
+    "paymentDesc": "本项目开源部署后默认启用模拟支付，可直接体验完整购买与发卡流程。真实支付宝/微信收款需由部署者自行申请商户资质并完成对接。",
+    "paymentMockHint": "模拟支付（MOCK）已默认开启，无需额外配置即可测试。",
+    "paymentRealHint": "接入支付宝/微信时，请在「订单管理 → 支付配置」填写密钥，并按你的实际部署环境设置回调地址。",
+    "paymentBaseUrl": "当前回调基础地址",
+    "paymentOrderHint": "支付宝/微信尚未对接。请在此页面配置密钥并启用对应渠道；回调地址请根据你的域名或内网穿透方案自行填写。",
+    "paymentConfigGuide": "支付对接说明",
+    "paymentConfigSteps": "1. 在支付宝/微信开放平台申请应用并获取密钥；2. 填写下方渠道配置并启用；3. 通过环境变量 PAYMENT_BASE_URL / PAYMENT_RETURN_URL 设置回调与跳转地址（按你的部署环境填写，非固定值）。",
+    "envConfigurable": "可通过环境变量修改",
+    "goPaymentConfig": "去配置支付",
+    "viewGuide": "查看配置文档"
   }
 }

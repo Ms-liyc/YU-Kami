@@ -60,5 +60,18 @@
     "product": "Product",
     "paymentMethod": "Payment Method",
     "createdAt": "Created At"
+  },
+  "setup": {
+    "paymentTitle": "Payment Integration (Optional, Self-Service)",
+    "paymentDesc": "After deployment, mock payment is enabled by default so you can try the full purchase flow. Real Alipay/WeChat collection requires your own merchant credentials and setup.",
+    "paymentMockHint": "Mock payment (MOCK) is enabled by default — no extra setup needed for testing.",
+    "paymentRealHint": "For Alipay/WeChat, configure keys under Orders → Payment Config and set notify URLs according to your deployment.",
+    "paymentBaseUrl": "Current notify base URL",
+    "paymentOrderHint": "Alipay/WeChat are not configured yet. Set up keys here and enable the channel; notify URLs depend on your domain or tunnel setup.",
+    "paymentConfigGuide": "Payment setup guide",
+    "paymentConfigSteps": "1. Apply for Alipay/WeChat apps and obtain keys; 2. Fill in channel config below and enable; 3. Set PAYMENT_BASE_URL / PAYMENT_RETURN_URL env vars for your environment (not hardcoded).",
+    "envConfigurable": "configurable via env vars",
+    "goPaymentConfig": "Configure payment",
+    "viewGuide": "View documentation"
   }
 }

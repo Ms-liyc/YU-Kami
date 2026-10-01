@@ -40,8 +40,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/shop/products/**").permitAll()
                         .requestMatchers("/api/v1/redeem").permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
-                        .requestMatchers("/api/shop/**").authenticated()
-                        .requestMatchers("/api/admin/**").authenticated()
+                        .requestMatchers("/api/shop/**").hasRole("SHOP_USER")
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .anyRequest().permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

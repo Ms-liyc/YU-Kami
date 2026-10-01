@@ -1,6 +1,7 @@
 package com.yuchen.kami.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.yuchen.kami.common.BusinessException;
 import com.yuchen.kami.dto.OrderVO;
@@ -100,7 +101,7 @@ public class PaymentService {
         if (!"TRADE_SUCCESS".equals(tradeStatus) && !"TRADE_FINISHED".equals(tradeStatus)) {
             return true;
         }
-        PaymentConfig config = getEnabledConfig("ALIPAY");
+        PaymentConfig config = getConfigForNotify("ALIPAY");
         if (!alipayPaymentService.verifyNotify(config, params)) {
             log.warn("支付宝回调验签失败: {}", orderNo);
             return false;
@@ -112,7 +113,7 @@ public class PaymentService {
     @Transactional
     public void handleWechatNotify(String body, String serial, String nonce,
                                    String timestamp, String signature) {
-        PaymentConfig config = getEnabledConfig("WECHAT");
+        PaymentConfig config = getConfigForNotify("WECHAT");
         Transaction transaction = wechatPaymentService.parseNotify(config, body, serial, nonce, timestamp, signature);
         if (transaction.getTradeState() != null
                 && "SUCCESS".equals(transaction.getTradeState().name())) {
@@ -136,15 +137,23 @@ public class PaymentService {
             return false;
         }
 
-        order.setPaymentNo(paymentNo);
-        order.setStatus(ShopOrder.STATUS_PAID);
-        order.setPaidAt(LocalDateTime.now());
-        shopOrderMapper.updateById(order);
+        int paidRows = shopOrderMapper.update(null, new LambdaUpdateWrapper<ShopOrder>()
+                .eq(ShopOrder::getId, order.getId())
+                .eq(ShopOrder::getStatus, ShopOrder.STATUS_PENDING)
+                .set(ShopOrder::getPaymentNo, paymentNo)
+                .set(ShopOrder::getStatus, ShopOrder.STATUS_PAID)
+                .set(ShopOrder::getPaidAt, LocalDateTime.now()));
+        if (paidRows == 0) {
+            ShopOrder latest = shopOrderMapper.selectById(order.getId());
+            return latest != null && ShopOrder.STATUS_DELIVERED.equals(latest.getStatus());
+        }
 
         String cardKey = cardKeyService.generateForOrder(order.getProductId(), order.getUserId(), order.getOrderNo());
-        order.setStatus(ShopOrder.STATUS_DELIVERED);
-        order.setDeliveredAt(LocalDateTime.now());
-        shopOrderMapper.updateById(order);
+        shopOrderMapper.update(null, new LambdaUpdateWrapper<ShopOrder>()
+                .eq(ShopOrder::getId, order.getId())
+                .eq(ShopOrder::getStatus, ShopOrder.STATUS_PAID)
+                .set(ShopOrder::getStatus, ShopOrder.STATUS_DELIVERED)
+                .set(ShopOrder::getDeliveredAt, LocalDateTime.now()));
 
         redisTemplate.opsForValue().set("order:card:" + order.getId(), cardKey, Duration.ofHours(24));
         log.info("订单发货完成: {}", orderNo);
@@ -200,6 +209,16 @@ public class PaymentService {
                 .eq(PaymentConfig::getStatus, 1));
         if (config == null) {
             throw new BusinessException("支付渠道未启用: " + channel);
+        }
+        return config;
+    }
+
+    /** 回调验签用：不要求渠道当前处于启用状态 */
+    private PaymentConfig getConfigForNotify(String channel) {
+        PaymentConfig config = paymentConfigMapper.selectOne(new LambdaQueryWrapper<PaymentConfig>()
+                .eq(PaymentConfig::getChannel, channel));
+        if (config == null) {
+            throw new BusinessException("支付渠道未配置: " + channel);
         }
         return config;
     }

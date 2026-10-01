@@ -48,6 +48,9 @@ docker compose up -d --build
 | 后端 API | http://localhost:8080 |
 | 默认管理员 | `admin` / `admin123` |
 
+> **支付说明**：首次部署默认启用**模拟支付（MOCK）**，无需配置即可体验购买与发卡。  
+> 真实支付宝/微信收款为**可选功能**，需部署者自行申请商户资质、在管理后台配置密钥，并按实际环境设置回调地址。详见 [docs/PAYMENT.md](docs/PAYMENT.md)。
+
 ---
 
 ### 方式一-B：Linux 一键安装脚本
@@ -128,6 +131,10 @@ DB_USER=yukami
 DB_PASSWORD=your-db-password
 REDIS_HOST=localhost
 REDIS_PORT=6379
+
+# 支付对接（可选，按你的部署环境填写，无固定值）
+# PAYMENT_BASE_URL=https://your-domain.com
+# PAYMENT_RETURN_URL=https://your-domain.com/shop/orders
 ```
 
 > 从 v1.1.0 升级至 v1.2.0，请额外执行：
@@ -277,6 +284,12 @@ Content-Type: application/json
 * 🔑 卡密生成 / 兑换 / 管理后台
 * 🔐 五重加密体系
 * ⚡ Redis 高并发保障
+
+#### v1.4.1
+
+* 📢 **支付对接可选引导**：首次部署提示自行配置，默认 MOCK 即可体验
+* 🔒 **安全加固**：管理端/商城端 JWT 角色隔离，支付渠道接口脱敏
+* 🐛 **支付修复**：回调并发防重复发卡、渠道禁用后仍可验签、待支付订单续付
 
 #### v1.4.0
 

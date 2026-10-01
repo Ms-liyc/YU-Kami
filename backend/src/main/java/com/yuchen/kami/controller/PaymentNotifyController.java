@@ -36,7 +36,12 @@ public class PaymentNotifyController {
             @RequestHeader(value = "Wechatpay-Timestamp", required = false) String timestamp,
             @RequestHeader(value = "Wechatpay-Signature", required = false) String signature) {
         log.info("微信支付回调");
-        paymentService.handleWechatNotify(body, serial, nonce, timestamp, signature);
-        return Map.of("code", "SUCCESS", "message", "成功");
+        try {
+            paymentService.handleWechatNotify(body, serial, nonce, timestamp, signature);
+            return Map.of("code", "SUCCESS", "message", "成功");
+        } catch (Exception e) {
+            log.error("微信支付回调处理失败", e);
+            return Map.of("code", "FAIL", "message", "失败");
+        }
     }
 }

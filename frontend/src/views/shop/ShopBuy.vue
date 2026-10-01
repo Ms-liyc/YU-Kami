@@ -64,6 +64,7 @@ const cardKey = ref('')
 const qrCodeUrl = ref('')
 const orderNo = ref('')
 const currentOrderId = ref(null)
+const existingOrderId = ref(route.query.orderId ? Number(route.query.orderId) : null)
 const polling = ref(false)
 let pollTimer = null
 
@@ -90,10 +91,14 @@ onUnmounted(stopPoll)
 async function handlePay() {
   paying.value = true
   try {
-    const orderRes = await shopRequest.post('/shop/orders', { productId: product.value.id, quantity: 1 })
-    currentOrderId.value = orderRes.data.id
+    if (!existingOrderId.value) {
+      const orderRes = await shopRequest.post('/shop/orders', { productId: product.value.id, quantity: 1 })
+      currentOrderId.value = orderRes.data.id
+    } else {
+      currentOrderId.value = existingOrderId.value
+    }
     const prepayRes = await shopRequest.post('/shop/orders/prepay', {
-      orderId: orderRes.data.id,
+      orderId: currentOrderId.value,
       paymentMethod: paymentMethod.value
     })
     const data = prepayRes.data

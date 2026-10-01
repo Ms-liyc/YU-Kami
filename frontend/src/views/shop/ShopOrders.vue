@@ -64,7 +64,7 @@ async function loadData() {
 }
 
 function goPay(row) {
-  router.push('/shop/buy/' + row.productId)
+  router.push({ path: '/shop/buy/' + row.productId, query: { orderId: row.id } })
 }
 
 async function viewCard(row) {

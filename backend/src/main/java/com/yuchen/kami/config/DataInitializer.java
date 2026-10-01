@@ -7,6 +7,7 @@ import com.yuchen.kami.entity.SysUser;
 import com.yuchen.kami.mapper.PaymentConfigMapper;
 import com.yuchen.kami.mapper.ProductMapper;
 import com.yuchen.kami.mapper.SysUserMapper;
+import com.yuchen.kami.service.SetupService;
 
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class DataInitializer implements CommandLineRunner {
     private final ProductMapper productMapper;
     private final PaymentConfigMapper paymentConfigMapper;
     private final PasswordEncoder passwordEncoder;
+    private final SetupService setupService;
 
     @Override
     public void run(String... args) {
@@ -42,19 +44,31 @@ public class DataInitializer implements CommandLineRunner {
         initProduct("月度会员", "VIP_MONTH", "DURATION", "29.90", 30);
         initProduct("年度会员", "VIP_YEAR", "DURATION", "299.00", 365);
         initProduct("通用余额卡", "BALANCE_100", "BALANCE", "100.00", null);
-        initPaymentChannel("MOCK", "模拟支付");
-        initPaymentChannel("ALIPAY", "支付宝");
-        initPaymentChannel("WECHAT", "微信支付");
+        initPaymentChannel("MOCK", "模拟支付", true);
+        initPaymentChannel("ALIPAY", "支付宝", false);
+        initPaymentChannel("WECHAT", "微信支付", false);
+        logPaymentSetupHint();
     }
 
-    private void initPaymentChannel(String channel, String desc) {
+    private void logPaymentSetupHint() {
+        if (setupService.getStatus().isNeedsPaymentSetup()) {
+            log.info("============================================================");
+            log.info("支付对接提示：当前默认仅启用模拟支付（MOCK），可直接体验购买流程。");
+            log.info("如需接入支付宝/微信，请登录管理后台 → 订单管理 → 支付配置，自行填写密钥与回调地址。");
+            log.info("配置说明见项目文档: docs/PAYMENT.md");
+            log.info("============================================================");
+        }
+    }
+
+    private void initPaymentChannel(String channel, String desc, boolean enabled) {
         Long count = paymentConfigMapper.selectCount(new LambdaQueryWrapper<PaymentConfig>()
                 .eq(PaymentConfig::getChannel, channel));
         if (count == 0) {
             PaymentConfig config = new PaymentConfig();
             config.setChannel(channel);
-            config.setStatus("MOCK".equals(channel) ? 1 : 0);
-            config.setConfigJson("{\"description\":\"" + desc + "\"}");
+            config.setStatus(enabled ? 1 : 0);
+            config.setConfigJson("{\"description\":\"" + desc + "\",\"setupRequired\":"
+                    + (!enabled) + ",\"hint\":\"请自行在管理后台配置密钥并启用\"}");
             paymentConfigMapper.insert(config);
         }
     }

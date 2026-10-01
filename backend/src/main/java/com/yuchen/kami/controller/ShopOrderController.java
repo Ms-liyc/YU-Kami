@@ -5,8 +5,8 @@ import com.yuchen.kami.common.Result;
 import com.yuchen.kami.dto.CreateOrderRequest;
 import com.yuchen.kami.dto.OrderVO;
 import com.yuchen.kami.dto.PayOrderRequest;
+import com.yuchen.kami.dto.PaymentChannelVO;
 import com.yuchen.kami.dto.PrepayResponse;
-import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.ShopOrder;
 import com.yuchen.kami.service.OrderService;
 import com.yuchen.kami.service.PaymentService;
@@ -69,7 +69,9 @@ public class ShopOrderController {
     }
 
     @GetMapping("/payment-channels")
-    public Result<List<PaymentConfig>> channels() {
-        return Result.ok(paymentService.availableChannels());
+    public Result<List<PaymentChannelVO>> channels() {
+        return Result.ok(paymentService.availableChannels().stream()
+                .map(PaymentChannelVO::from)
+                .toList());
     }
 }

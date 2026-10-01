@@ -60,7 +60,7 @@
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.4.0</span>
+        <span>v1.4.1</span>
       </div>
     </el-aside>
 
@@ -96,6 +96,7 @@
         </div>
       </el-header>
       <el-main class="main">
+        <PaymentSetupBanner />
         <router-view v-slot="{ Component }">
           <transition name="page" mode="out-in">
             <component :is="Component" />
@@ -112,6 +113,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import PaymentSetupBanner from '../components/PaymentSetupBanner.vue'
 
 const { t } = useI18n()
 
