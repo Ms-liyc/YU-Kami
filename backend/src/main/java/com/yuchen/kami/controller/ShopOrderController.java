@@ -51,8 +51,15 @@ public class ShopOrderController {
     public Result<PageResult<OrderVO>> myOrders(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String orderNo,
             Authentication auth) {
-        return Result.ok(orderService.userOrders((Long) auth.getDetails(), page, size));
+        return Result.ok(orderService.userOrders((Long) auth.getDetails(), page, size, status, orderNo));
+    }
+
+    @GetMapping("/lookup")
+    public Result<OrderVO> lookup(@RequestParam String orderNo, Authentication auth) {
+        return Result.ok(orderService.findUserOrderByNo((Long) auth.getDetails(), orderNo));
     }
 
     @PostMapping("/pay")

@@ -36,8 +36,10 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/auth/login").permitAll()
-                        .requestMatchers("/api/shop/auth/**").permitAll()
+                        .requestMatchers("/api/shop/auth/register", "/api/shop/auth/login").permitAll()
                         .requestMatchers("/api/shop/products/**").permitAll()
+                        .requestMatchers("/api/shop/stats").permitAll()
+                        .requestMatchers("/api/shop/orders/recent").permitAll()
                         .requestMatchers("/api/shop/orders/payment-channels").permitAll()
                         .requestMatchers("/api/shop/payment/wechat/oauth-callback").permitAll()
                         .requestMatchers("/actuator/health").permitAll()

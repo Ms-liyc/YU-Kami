@@ -15,34 +15,40 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import YuIcon from '../icons/YuIcon.vue'
+import shopHttp from '../../api/shopHttp'
 
-const props = defineProps({
+defineProps({
   products: { type: Array, default: () => [] },
   duration: { type: Number, default: 35 }
 })
 
-const masks = ['张**', '李**', '王**', '刘**', '陈**', '杨**', '赵**', '周**', '吴**', '徐**']
-const times = ['刚刚', '1分钟前', '2分钟前', '3分钟前', '5分钟前']
-
-const items = computed(() => {
-  if (!props.products.length) {
-    return [
-      { user: '张**', product: '月度会员卡', price: '29.00', time: '刚刚' },
-      { user: '李**', product: '年度授权码', price: '199.00', time: '1分钟前' },
-      { user: '王**', product: '体验卡', price: '9.90', time: '2分钟前' }
-    ]
-  }
-  return props.products.slice(0, 8).map((p, i) => ({
-    user: masks[i % masks.length],
-    product: p.name,
-    price: (p.onSale ? p.salePrice : p.value)?.toFixed?.(2) ?? p.value,
-    time: times[i % times.length]
-  }))
-})
+const items = ref([])
+const fallback = [
+  { user: '张**', product: '月度会员卡', price: '29.00', time: '刚刚' },
+  { user: '李**', product: '季度授权码', price: '79.00', time: '1分钟前' },
+  { user: '王**', product: '年度旗舰版', price: '199.00', time: '2分钟前' }
+]
 
 const doubled = computed(() => [...items.value, ...items.value])
+
+onMounted(async () => {
+  try {
+    const res = await shopHttp.get('/shop/orders/recent', { params: { limit: 8 } })
+    const list = res.data?.data
+    if (Array.isArray(list) && list.length) {
+      items.value = list.map(r => ({
+        user: r.user,
+        product: r.product,
+        price: Number(r.price).toFixed(2),
+        time: r.time
+      }))
+      return
+    }
+  } catch { /* fallback */ }
+  items.value = fallback
+})
 </script>
 
 <style scoped>

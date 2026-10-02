@@ -11,7 +11,9 @@ const routes = [
       { path: 'query', name: 'ShopQuery', component: () => import('../views/shop/ShopQuery.vue') },
       { path: 'login', name: 'ShopLogin', component: () => import('../views/shop/ShopLogin.vue') },
       { path: 'orders', name: 'ShopOrders', meta: { shopAuth: true }, component: () => import('../views/shop/ShopOrders.vue') },
-      { path: 'buy/:id', name: 'ShopBuy', meta: { shopAuth: true }, component: () => import('../views/shop/ShopBuy.vue') }
+      { path: 'buy/:id', name: 'ShopBuy', meta: { shopAuth: true }, component: () => import('../views/shop/ShopBuy.vue') },
+      { path: 'profile', name: 'ShopProfile', meta: { shopAuth: true }, component: () => import('../views/shop/ShopProfile.vue') },
+      { path: 'redeem', name: 'ShopRedeem', component: () => import('../views/shop/ShopRedeem.vue') }
     ]
   },
   {

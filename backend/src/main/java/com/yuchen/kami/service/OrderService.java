@@ -60,14 +60,29 @@ public class OrderService {
         return order;
     }
 
-    public PageResult<OrderVO> userOrders(Long userId, int page, int size) {
-        Page<ShopOrder> result = shopOrderMapper.selectPage(
-                new Page<>(page, size),
-                new LambdaQueryWrapper<ShopOrder>()
-                        .eq(ShopOrder::getUserId, userId)
-                        .orderByDesc(ShopOrder::getCreatedAt));
+    public PageResult<OrderVO> userOrders(Long userId, int page, int size, String status, String orderNo) {
+        LambdaQueryWrapper<ShopOrder> wrapper = new LambdaQueryWrapper<ShopOrder>()
+                .eq(ShopOrder::getUserId, userId);
+        if (status != null && !status.isBlank()) {
+            wrapper.eq(ShopOrder::getStatus, status);
+        }
+        if (orderNo != null && !orderNo.isBlank()) {
+            wrapper.like(ShopOrder::getOrderNo, orderNo.trim());
+        }
+        wrapper.orderByDesc(ShopOrder::getCreatedAt);
+        Page<ShopOrder> result = shopOrderMapper.selectPage(new Page<>(page, size), wrapper);
         return new PageResult<>(result.getRecords().stream().map(this::toVO).toList(),
                 result.getTotal(), page, size);
+    }
+
+    public OrderVO findUserOrderByNo(Long userId, String orderNo) {
+        ShopOrder order = shopOrderMapper.selectOne(new LambdaQueryWrapper<ShopOrder>()
+                .eq(ShopOrder::getUserId, userId)
+                .eq(ShopOrder::getOrderNo, orderNo.trim()));
+        if (order == null) {
+            throw new BusinessException("订单不存在");
+        }
+        return toVO(order);
     }
 
     public PageResult<OrderVO> adminOrders(int page, int size, String status) {

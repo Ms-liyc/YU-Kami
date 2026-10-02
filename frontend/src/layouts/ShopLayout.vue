@@ -19,6 +19,7 @@
           <a href="#showcase" @click.prevent="scrollTo('showcase')">功能展示</a>
           <a href="#faq" @click.prevent="scrollTo('faq')">常见问题</a>
           <router-link to="/shop/query">订单查询</router-link>
+          <router-link to="/shop/redeem">卡密兑换</router-link>
         </nav>
         <div class="header-actions">
           <el-tooltip :content="isDark ? '浅色模式' : '深色模式'">
@@ -29,7 +30,7 @@
           <LanguageSwitcher />
           <router-link to="/login" class="admin-link">{{ t('nav.admin') }}</router-link>
           <template v-if="auth.token">
-            <span class="user-name">{{ auth.nickname || auth.username }}</span>
+            <router-link to="/shop/profile" class="user-name">{{ auth.nickname || auth.username }}</router-link>
             <el-button link type="danger" @click="handleLogout">{{ t('common.logout') }}</el-button>
           </template>
           <template v-else>
@@ -57,6 +58,8 @@
           <a href="#products" @click.prevent="scrollTo('products')">商品列表</a>
           <router-link to="/shop/query">订单查询</router-link>
           <router-link to="/shop/orders">我的订单</router-link>
+          <router-link to="/shop/redeem">卡密兑换</router-link>
+          <router-link to="/shop/profile">个人中心</router-link>
         </div>
         <div class="footer-col">
           <h4>了解</h4>
@@ -89,9 +92,9 @@
       <router-link to="/shop/login" class="mobile-nav-item" v-if="!auth.token">
         <YuIcon name="user" size="md" /><small>我的</small>
       </router-link>
-      <a class="mobile-nav-item" v-else @click="handleLogout">
-        <YuIcon name="logout" size="md" /><small>退出</small>
-      </a>
+      <router-link to="/shop/profile" class="mobile-nav-item" v-else>
+        <YuIcon name="user" size="md" /><small>我的</small>
+      </router-link>
     </nav>
   </div>
 </template>
@@ -211,7 +214,8 @@ onMounted(() => {
 .nav-links a:hover, .nav-links a.router-link-active { color: var(--shop-link-hover); }
 .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .admin-link { color: #94a3b8; font-size: 13px; text-decoration: none; }
-.user-name { font-size: 14px; color: var(--shop-text-soft); }
+.user-name { font-size: 14px; color: var(--shop-text-soft); text-decoration: none; }
+.user-name:hover { color: var(--shop-link-hover); }
 
 .shop-main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 0 24px 32px; }
 .shop-main--landing { max-width: none; padding: 0 0 48px; }

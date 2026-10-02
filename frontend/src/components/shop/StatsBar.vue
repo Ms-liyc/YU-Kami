@@ -12,8 +12,9 @@
 
 <script setup>
 import { reactive, onMounted, onUnmounted } from 'vue'
+import shopHttp from '../../api/shopHttp'
 
-const targets = { orders: 12860, users: 3840, cards: 52000, uptime: 99.9 }
+const targets = reactive({ orders: 0, users: 0, cards: 0, uptime: 99.9 })
 const animated = reactive({ orders: 0, users: 0, cards: 0, uptime: 0 })
 
 const stats = [
@@ -39,15 +40,34 @@ function easeCount(key, to, duration = 2000, isFloat = false) {
   requestAnimationFrame(tick)
 }
 
-onMounted(() => {
+function startAnimation() {
+  if (started) return
+  started = true
+  easeCount('orders', targets.orders)
+  easeCount('users', targets.users)
+  easeCount('cards', targets.cards)
+  easeCount('uptime', targets.uptime, 1500, true)
+}
+
+async function loadStats() {
+  try {
+    const res = await shopHttp.get('/shop/stats')
+    if (res.data?.code === 200 && res.data.data) {
+      const d = res.data.data
+      targets.orders = d.totalOrders > 0 ? d.totalOrders : 12860
+      targets.users = d.totalUsers > 0 ? d.totalUsers : 3840
+      targets.cards = d.cardsDelivered > 0 ? d.cardsDelivered : 52000
+      targets.uptime = d.uptime || 99.9
+    }
+  } catch { /* 使用默认基数 */ }
+}
+
+onMounted(async () => {
+  await loadStats()
   const el = document.querySelector('.stats-bar')
   observer = new IntersectionObserver(([e]) => {
-    if (e.isIntersecting && !started) {
-      started = true
-      easeCount('orders', targets.orders)
-      easeCount('users', targets.users)
-      easeCount('cards', targets.cards)
-      easeCount('uptime', targets.uptime, 1500, true)
+    if (e.isIntersecting) {
+      startAnimation()
       observer.disconnect()
     }
   }, { threshold: 0.3 })

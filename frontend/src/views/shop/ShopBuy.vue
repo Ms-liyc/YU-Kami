@@ -18,6 +18,9 @@
       <p v-if="pricing.promotionName" class="promo-tip">{{ pricing.promotionName }}</p>
       <el-divider />
       <el-form label-width="100px">
+        <el-form-item :label="t('shop.quantity')">
+          <el-input-number v-model="quantity" :min="1" :max="99" @change="previewPrice" />
+        </el-form-item>
         <el-form-item :label="t('shop.coupon')">
           <div class="coupon-row">
             <el-input v-model="couponCode" :placeholder="t('shop.couponPlaceholder')" clearable />
@@ -79,6 +82,7 @@ const route = useRoute()
 const router = useRouter()
 const product = ref(null)
 const pricing = ref({})
+const quantity = ref(1)
 const couponCode = ref('')
 const channels = ref([])
 const paymentMethod = ref('MOCK')
@@ -132,7 +136,7 @@ async function previewPrice() {
   try {
     const res = await shopRequest.post('/shop/orders/pricing/preview', {
       productId: product.value.id,
-      quantity: 1,
+      quantity: quantity.value,
       couponCode: couponCode.value || undefined
     })
     pricing.value = res.data || {}
@@ -159,7 +163,7 @@ async function handlePay() {
     if (!existingOrderId.value) {
       const orderRes = await shopRequest.post('/shop/orders', {
         productId: product.value.id,
-        quantity: 1,
+        quantity: quantity.value,
         couponCode: couponCode.value || undefined
       })
       currentOrderId.value = orderRes.data.id

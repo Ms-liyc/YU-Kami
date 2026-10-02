@@ -23,6 +23,7 @@
             立即选购
           </el-button>
           <el-button size="large" round @click="$router.push('/shop/query')">订单查询</el-button>
+          <el-button size="large" round plain @click="$router.push('/shop/redeem')">卡密兑换</el-button>
           <el-button size="large" round plain @click="$router.push(auth.token ? '/shop/orders' : '/shop/login')">
             {{ auth.token ? '我的订单' : '登录 / 注册' }}
           </el-button>
