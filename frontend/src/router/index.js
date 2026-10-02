@@ -8,9 +8,22 @@ const routes = [
     component: () => import('../layouts/ShopLayout.vue'),
     children: [
       { path: '', name: 'ShopHome', component: () => import('../views/shop/ShopHome.vue') },
+      { path: 'query', name: 'ShopQuery', component: () => import('../views/shop/ShopQuery.vue') },
       { path: 'login', name: 'ShopLogin', component: () => import('../views/shop/ShopLogin.vue') },
       { path: 'orders', name: 'ShopOrders', meta: { shopAuth: true }, component: () => import('../views/shop/ShopOrders.vue') },
       { path: 'buy/:id', name: 'ShopBuy', meta: { shopAuth: true }, component: () => import('../views/shop/ShopBuy.vue') }
+    ]
+  },
+  {
+    path: '/shop/embed',
+    component: () => import('../layouts/ShopEmbedLayout.vue'),
+    meta: { preview: true },
+    children: [
+      { path: 'products', name: 'ShopEmbedProducts', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedProducts.vue') },
+      { path: 'buy/:id', name: 'ShopEmbedBuy', meta: { preview: true, embed: true }, component: () => import('../views/shop/embed/ShopEmbedBuy.vue') },
+      { path: 'success', name: 'ShopEmbedSuccess', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedSuccess.vue') },
+      { path: 'admin', name: 'ShopEmbedAdmin', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedAdmin.vue') },
+      { path: 'mobile', name: 'ShopEmbedMobile', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedMobile.vue') }
     ]
   },
   { path: '/login', name: 'Login', component: () => import('../views/Login.vue') },
@@ -43,7 +56,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.path.startsWith('/shop')) {
     const shopAuth = useShopAuthStore()
-    if (to.meta.shopAuth && !shopAuth.token) {
+    if (to.meta.shopAuth && !shopAuth.token && !to.meta.preview) {
       next({ path: '/shop/login', query: { redirect: to.fullPath } })
     } else if (to.path === '/shop/login' && shopAuth.token) {
       next('/shop')

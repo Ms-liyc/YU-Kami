@@ -87,6 +87,8 @@
     "wechatOAuth": "正在跳转微信授权…",
     "checkPayStatus": "检查支付状态",
     "noProducts": "暂无商品",
+    "productNotFound": "商品不存在或已下架",
+    "backToShop": "返回商城",
     "onSale": "促销",
     "holiday": "节日特惠",
     "coupon": "优惠券",

@@ -51,8 +51,8 @@ async function handleSubmit() {
 
 <style scoped>
 .auth-page { display: flex; justify-content: center; padding: 40px 0; }
-.auth-card { width: 400px; background: #fff; border-radius: 16px; padding: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
-.auth-card h2 { text-align: center; margin-bottom: 24px; }
+.auth-card { width: 400px; background: var(--shop-card); border-radius: 16px; padding: 40px; border: 1px solid var(--shop-border); box-shadow: var(--shop-card-shadow); }
+.auth-card h2 { text-align: center; margin-bottom: 24px; color: var(--shop-text); }
 .switch { text-align: center; margin-top: 16px; }
 .switch a { color: #4f6ef7; cursor: pointer; font-size: 14px; }
 </style>

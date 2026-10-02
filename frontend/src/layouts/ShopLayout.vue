@@ -1,5 +1,12 @@
 <template>
-  <div class="shop-layout">
+  <div class="shop-layout" :class="{ dark: isDark }">
+    <div v-if="showBanner" class="top-banner">
+      <YuIcon name="spark" size="sm" class="banner-icon" />
+      欢迎使用 YU-Kami 数字商品发卡网 · 付款即发货
+      <button class="banner-close" @click="showBanner = false" aria-label="关闭">
+        <YuIcon name="close" size="sm" />
+      </button>
+    </div>
     <header class="shop-header">
       <div class="header-inner">
         <router-link to="/shop" class="brand">
@@ -7,10 +14,18 @@
           <span>YU-Kami</span>
         </router-link>
         <nav class="nav-links">
-          <router-link to="/shop">{{ t('shop.productList') }}</router-link>
-          <router-link to="/shop/orders" v-if="auth.token">{{ t('nav.myOrders') }}</router-link>
+          <a href="#products" @click.prevent="scrollTo('products')">商品</a>
+          <a href="#flow" @click.prevent="scrollTo('flow')">购买流程</a>
+          <a href="#showcase" @click.prevent="scrollTo('showcase')">功能展示</a>
+          <a href="#faq" @click.prevent="scrollTo('faq')">常见问题</a>
+          <router-link to="/shop/query">订单查询</router-link>
         </nav>
         <div class="header-actions">
+          <el-tooltip :content="isDark ? '浅色模式' : '深色模式'">
+            <el-button circle @click="toggleDark">
+              <YuIcon :name="isDark ? 'sun' : 'moon'" size="sm" />
+            </el-button>
+          </el-tooltip>
           <LanguageSwitcher />
           <router-link to="/login" class="admin-link">{{ t('nav.admin') }}</router-link>
           <template v-if="auth.token">
@@ -18,60 +33,257 @@
             <el-button link type="danger" @click="handleLogout">{{ t('common.logout') }}</el-button>
           </template>
           <template v-else>
-            <el-button type="primary" @click="$router.push('/shop/login')">{{ t('common.login') }}</el-button>
+            <el-button type="primary" round @click="$router.push('/shop/login')">{{ t('common.login') }}</el-button>
           </template>
         </div>
       </div>
     </header>
-    <main class="shop-main">
+
+    <main class="shop-main" :class="{ 'shop-main--landing': isLanding }">
       <router-view />
     </main>
+
     <footer class="shop-footer">
-      <p>© 2026 屿宸科技 YU-Kami · {{ t('shop.subtitle') }}</p>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="/logo.png" alt="" class="footer-logo" />
+          <div>
+            <strong>YU-Kami 发卡网</strong>
+            <p>屿宸科技 · 数字商品自动发卡平台</p>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>商城</h4>
+          <a href="#products" @click.prevent="scrollTo('products')">商品列表</a>
+          <router-link to="/shop/query">订单查询</router-link>
+          <router-link to="/shop/orders">我的订单</router-link>
+        </div>
+        <div class="footer-col">
+          <h4>了解</h4>
+          <a href="#flow" @click.prevent="scrollTo('flow')">购买流程</a>
+          <a href="#security" @click.prevent="scrollTo('security')">安全保障</a>
+          <a href="#faq" @click.prevent="scrollTo('faq')">常见问题</a>
+        </div>
+        <div class="footer-col">
+          <h4>管理</h4>
+          <router-link to="/login">管理后台</router-link>
+          <a href="https://github.com/Ms-liyc/YU-Kami" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <p class="footer-copy">© 2026 屿宸科技 YU-Kami · 仅用于合法合规的数字商品销售</p>
     </footer>
+
+    <nav class="mobile-nav">
+      <router-link to="/shop" class="mobile-nav-item" exact-active-class="active">
+        <YuIcon name="home" size="md" /><small>首页</small>
+      </router-link>
+      <a class="mobile-nav-item" @click.prevent="scrollTo('products')">
+        <YuIcon name="shop" size="md" /><small>商品</small>
+      </a>
+      <router-link to="/shop/query" class="mobile-nav-item">
+        <YuIcon name="search" size="md" /><small>查单</small>
+      </router-link>
+      <router-link to="/shop/orders" class="mobile-nav-item">
+        <YuIcon name="orders" size="md" /><small>订单</small>
+      </router-link>
+      <router-link to="/shop/login" class="mobile-nav-item" v-if="!auth.token">
+        <YuIcon name="user" size="md" /><small>我的</small>
+      </router-link>
+      <a class="mobile-nav-item" v-else @click="handleLogout">
+        <YuIcon name="logout" size="md" /><small>退出</small>
+      </a>
+    </nav>
   </div>
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useShopAuthStore } from '../stores/shopAuth'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import YuIcon from '../components/icons/YuIcon.vue'
 
 const { t } = useI18n()
+const route = useRoute()
 const router = useRouter()
 const auth = useShopAuthStore()
+const showBanner = ref(true)
+const isDark = ref(localStorage.getItem('shop-theme') === 'dark')
+
+const isLanding = computed(() => route.path === '/shop' || route.path === '/shop/')
+
+function toggleDark() {
+  isDark.value = !isDark.value
+  localStorage.setItem('shop-theme', isDark.value ? 'dark' : 'light')
+}
+
+function scrollTo(id) {
+  if (route.path !== '/shop') {
+    router.push('/shop').then(() => {
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 150)
+    })
+    return
+  }
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+}
 
 function handleLogout() {
   auth.logout()
   router.push('/shop')
 }
+
+onMounted(() => {
+  if (localStorage.getItem('shop-theme') === 'dark') isDark.value = true
+})
 </script>
 
 <style scoped>
-.shop-layout { min-height: 100vh; display: flex; flex-direction: column; background: #f8fafc; }
-.shop-header { background: #fff; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100; }
-.header-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #1e293b; font-weight: 700; font-size: 18px; }
-.brand-logo { width: 36px; height: 36px; border-radius: 8px; }
-.nav-links { display: flex; gap: 24px; }
-.nav-links a { color: #64748b; text-decoration: none; font-size: 14px; }
-.nav-links a.router-link-active { color: #4f6ef7; font-weight: 600; }
-.header-actions { display: flex; align-items: center; gap: 12px; }
-.admin-link { color: #94a3b8; font-size: 13px; text-decoration: none; }
-.user-name { font-size: 14px; color: #334155; }
-.shop-main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 32px 24px; }
-.shop-footer { text-align: center; padding: 24px; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; }
-@media (max-width: 768px) {
-  .header-inner { padding: 0 16px; gap: 8px; }
-  .brand span { font-size: 16px; }
-  .nav-links { gap: 12px; }
-  .nav-links a { font-size: 13px; }
-  .admin-link { display: none; }
-  .user-name { display: none; }
-  .shop-main { padding: 20px 16px; }
+.shop-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
-@media (max-width: 480px) {
+.top-banner {
+  background: linear-gradient(90deg, #4f6ef7, #7c3aed);
+  color: #fff;
+  text-align: center;
+  font-size: 13px;
+  padding: 8px 40px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.banner-icon { color: #fff; opacity: 0.95; }
+.banner-close {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.85;
+  display: flex;
+  padding: 4px;
+}
+.banner-close:hover { opacity: 1; }
+.shop-header {
+  background: var(--shop-header-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--shop-header-border);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--shop-text);
+  font-weight: 800;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.brand-logo { width: 36px; height: 36px; border-radius: 10px; }
+.nav-links { display: flex; gap: 24px; }
+.nav-links a {
+  color: var(--shop-text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.router-link-active { color: var(--shop-link-hover); }
+.header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.admin-link { color: #94a3b8; font-size: 13px; text-decoration: none; }
+.user-name { font-size: 14px; color: var(--shop-text-soft); }
+
+.shop-main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 0 24px 32px; }
+.shop-main--landing { max-width: none; padding: 0 0 48px; }
+
+.shop-footer {
+  background: #0f172a;
+  color: #94a3b8;
+  padding: 56px 24px 24px;
+}
+.footer-grid {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 32px;
+}
+.footer-brand { display: flex; gap: 14px; }
+.footer-logo { width: 44px; height: 44px; border-radius: 10px; }
+.footer-brand strong { color: #fff; font-size: 16px; display: block; margin-bottom: 4px; }
+.footer-brand p { font-size: 13px; }
+.footer-col h4 { color: #fff; font-size: 14px; margin-bottom: 12px; }
+.footer-col a {
+  display: block;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.footer-col a:hover { color: #fff; }
+.footer-copy {
+  text-align: center;
+  font-size: 12px;
+  color: #475569;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid #1e293b;
+}
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--shop-mobile-nav-bg);
+  border-top: 1px solid var(--shop-border);
+  z-index: 200;
+  padding: 4px 0 env(safe-area-inset-bottom);
+}
+.mobile-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--shop-text-muted);
+  font-size: 10px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.mobile-nav-item .yu-icon { margin-bottom: 2px; }
+.mobile-nav-item.active, .mobile-nav-item.router-link-active { color: var(--shop-link-hover); }
+
+@media (max-width: 900px) {
   .nav-links { display: none; }
+  .admin-link, .user-name { display: none; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .header-inner { padding: 0 16px; }
+  .shop-main, .shop-main--landing { padding: 0 16px 80px; }
+  .mobile-nav { display: flex; }
+  .shop-footer { padding-bottom: 88px; }
 }
 </style>

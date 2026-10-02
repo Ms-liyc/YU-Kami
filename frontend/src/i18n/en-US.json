@@ -87,6 +87,8 @@
     "wechatOAuth": "Redirecting to WeChat authorization…",
     "checkPayStatus": "Check payment status",
     "noProducts": "No products available",
+    "productNotFound": "Product not found or unavailable",
+    "backToShop": "Back to shop",
     "onSale": "Sale",
     "holiday": "Holiday Deal",
     "coupon": "Coupon",

@@ -1,19 +1,26 @@
-# 开发环境：仅启动 PostgreSQL + Redis
+# 开发环境：仅启动 MySQL + Redis
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: yukami-postgres
+  mysql:
+    image: mysql:8.4
+    container_name: yukami-mysql
     environment:
-      POSTGRES_DB: yukami
-      POSTGRES_USER: yukami
-      POSTGRES_PASSWORD: yukami123
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: yukami
+      MYSQL_USER: yukami
+      MYSQL_PASSWORD: yukami123
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysqldata:/var/lib/mysql
       - ./backend/src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uyukami", "-pyukami123"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -22,4 +29,4 @@ services:
       - "6379:6379"
 
 volumes:
-  pgdata:
+  mysqldata:

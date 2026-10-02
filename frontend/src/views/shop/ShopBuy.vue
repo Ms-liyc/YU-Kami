@@ -1,6 +1,14 @@
 <template>
   <div class="buy-page" v-loading="loading">
-    <div class="buy-card" v-if="product">
+    <el-empty
+      v-if="!loading && !product"
+      :description="loadError || t('shop.productNotFound')"
+      class="buy-empty"
+    >
+      <el-button type="primary" @click="$router.push('/shop#products')">{{ t('shop.backToShop') }}</el-button>
+    </el-empty>
+
+    <div class="buy-card" v-else-if="product">
       <h2>{{ product.name }}</h2>
       <p class="desc">{{ product.description }}</p>
       <div class="price-row">
@@ -62,8 +70,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
-import axios from 'axios'
 import QRCode from 'qrcode'
+import shopHttp from '../../api/shopHttp'
 import shopRequest from '../../api/shopRequest'
 
 const { t } = useI18n()
@@ -75,6 +83,7 @@ const couponCode = ref('')
 const channels = ref([])
 const paymentMethod = ref('MOCK')
 const loading = ref(false)
+const loadError = ref('')
 const previewing = ref(false)
 const paying = ref(false)
 const successDialog = ref(false)
@@ -94,15 +103,22 @@ function channelLabel(c) { return t(labels[c] || c) }
 
 onMounted(async () => {
   loading.value = true
+  loadError.value = ''
   try {
     const [pRes, cRes] = await Promise.all([
-      axios.get(`/api/shop/products/${route.params.id}`),
+      shopHttp.get(`/shop/products/${route.params.id}`),
       shopRequest.get('/shop/orders/payment-channels')
     ])
+    if (pRes.data?.code !== 200 || !pRes.data?.data) {
+      loadError.value = pRes.data?.message || t('shop.productNotFound')
+      return
+    }
     product.value = pRes.data.data
     channels.value = cRes.data || []
     if (channels.value.length) paymentMethod.value = channels.value[0].channel
     await previewPrice()
+  } catch (e) {
+    loadError.value = e?.response?.data?.message || e?.message || t('shop.productNotFound')
   } finally {
     loading.value = false
   }
@@ -257,10 +273,11 @@ function copyKey() {
 </script>
 
 <style scoped>
-.buy-page { display: flex; justify-content: center; }
-.buy-card { width: 480px; background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
-.buy-card h2 { font-size: 24px; }
-.desc { color: #64748b; margin: 8px 0; }
+.buy-page { display: flex; justify-content: center; padding: 48px 0; min-height: 320px; }
+.buy-empty { padding: 48px 0; }
+.buy-card { width: 480px; background: var(--shop-card); border-radius: 16px; padding: 32px; border: 1px solid var(--shop-border); box-shadow: var(--shop-card-shadow); }
+.buy-card h2 { font-size: 24px; color: var(--shop-text); }
+.desc { color: var(--shop-text-muted); margin: 8px 0; }
 .price-row { display: flex; align-items: baseline; gap: 12px; }
 .price { font-size: 32px; font-weight: 800; color: #ef4444; }
 .original { font-size: 18px; color: #94a3b8; text-decoration: line-through; }
@@ -270,7 +287,7 @@ function copyKey() {
 .total { font-size: 24px; font-weight: 700; color: #ef4444; }
 .discount-tip { margin-left: 12px; font-size: 14px; color: #22c55e; }
 .qr-box { text-align: center; }
-.qr-tip { color: #64748b; margin-bottom: 16px; }
-.qr-img { border: 1px solid #e2e8f0; border-radius: 8px; }
+.qr-tip { color: var(--shop-text-muted); margin-bottom: 16px; }
+.qr-img { border: 1px solid var(--shop-border); border-radius: 8px; }
 .qr-order { font-family: monospace; color: #94a3b8; font-size: 12px; margin: 12px 0; }
 </style>

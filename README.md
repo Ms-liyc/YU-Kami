@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vue.js" alt="Vue 3">
   <img src="https://img.shields.io/badge/Vite-5-646cff?style=flat-square&logo=vite" alt="Vite">
   <img src="https://img.shields.io/badge/Element%20Plus-409eff?style=flat-square" alt="Element Plus">
-  <img src="https://img.shields.io/badge/PostgreSQL-16-336791?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/MySQL-8.4-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL">
   <img src="https://img.shields.io/badge/Redis-7-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis">
   <img src="https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker">
   <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
@@ -95,21 +95,24 @@ cd frontend && npm install && npm run dev
 | 用户前台 | http://localhost:5173/shop |
 | 管理后台 | http://localhost:5173/login |
 
+> 本地开发若 8080 端口被占用，可设置 `SERVER_PORT=8081`，前端 `VITE_API_PROXY=http://localhost:8081`。  
+> 更新商城 Hero 预览截图：`cd frontend && npm run capture:screenshots`（需前后端均已启动）。
+
 ---
 
 ### 方式二：手动编译部署
 
 适用于开发者或需要深度定制的场景。
 
-**前提条件：** JDK 17+、Maven 3.8+、Node.js 18+、PostgreSQL 16+、Redis 7+
+**前提条件：** JDK 17+、Maven 3.8+、Node.js 18+、MySQL 8.0+、Redis 7+
 
 ```bash
 # 1. 克隆代码
 git clone https://github.com/Ms-liyc/YU-Kami.git
 cd YU-Kami
 
-# 2. 初始化数据库
-psql -U yukami -d yukami -f backend/src/main/resources/db/schema.sql
+# 2. 初始化数据库（MySQL 8）
+mysql -u root -p yukami < backend/src/main/resources/db/schema.sql
 
 # 3. 后端编译运行
 cd backend
@@ -142,7 +145,7 @@ JWT_SECRET=your-jwt-secret
 HMAC_SECRET=your-hmac-secret
 AES_KEY=your-32-char-aes-key-here!!!!!!
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=3306
 DB_NAME=yukami
 DB_USER=yukami
 DB_PASSWORD=your-db-password
@@ -174,6 +177,15 @@ REDIS_PORT=6379
 * 📝 **审计日志** — 操作行为全记录
 * 🔔 **Webhook** — 兑换成功实时回调第三方系统
 * 📤 **数据导出** — CSV / Excel 双格式导出
+
+### 🛍️ 用户发卡网（商城前台）
+
+* 🏠 **落地页** — Hero 区、购买流程、功能展示、界面一览、FAQ
+* 📱 **双端预览** — PC 商品列表 + 手机端叠加展示，支持静态截图与嵌入页回退
+* 🌙 **深色模式** — 全站 CSS 变量主题，顶栏一键切换
+* 🛒 **商品购买** — 注册登录、优惠券、促销价、模拟/支付宝/微信支付
+* 📋 **订单查询** — 游客查单入口，登录后订单页一键复制卡密
+* 🎭 **演示数据** — 内置示例商品、促销与优惠券（`demo` / `demo123`）
 
 ### 🔌 开发者接口
 
@@ -222,7 +234,7 @@ REDIS_PORT=6379
 | ⚡ 分布式锁 | Redis 锁防止并发重复兑换 |
 | 🔄 乐观锁 | 数据库 version 字段原子更新 |
 | 🚦 限流保护 | Redis 滑动窗口限流 |
-| 🗄️ 数据库 | PostgreSQL 16 高并发事务 |
+| 数据库 | MySQL 8 高并发事务 |
 | 💾 连接池 | HikariCP 最大 50 连接 |
 
 ---
@@ -282,6 +294,15 @@ Content-Type: application/json
 ## 🛣️ 开发路线图
 
 ### 📅 更新日志
+
+#### v1.9.0
+
+* 🗄️ **数据库迁移**：PostgreSQL → MySQL 8（`schema.sql`、Docker、配置统一）
+* 🏠 **发卡网首页**：落地页重构，真实系统界面预览（PC + 手机双端）
+* 🌙 **深色模式**：商城全站主题变量，Element Plus 组件适配
+* 🖼️ **界面截图**：Playwright 自动截取嵌入页，`npm run capture:screenshots`
+* 🔢 **雪花 ID 修复**：前端大整数 JSON 解析，购买页不再空白
+* 🎨 **自定义图标**：移除 emoji，统一 SVG 图标组件
 
 #### v1.8.0
 
@@ -359,7 +380,9 @@ Content-Type: application/json
 * [x] 微信 JSAPI 支付（公众号 H5 内浏览器）
 * [ ] 微信小程序支付
 * [ ] 用户钱包与余额支付
-* [ ] 移动端适配优化
+* [x] 商城落地页与移动端预览
+* [x] 商城深色模式
+* [ ] 移动端适配优化（管理后台）
 * [ ] Docker Hub 官方镜像
 
 ---
@@ -368,7 +391,7 @@ Content-Type: application/json
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌──────────────┐
-│  Vue 3 前端  │────▶│ Spring Boot │────▶│ PostgreSQL 16│
+│  Vue 3 前端  │────▶│ Spring Boot │────▶│   MySQL 8   │
 │ Element Plus│     │  MyBatis-Plus│     └──────────────┘
 └─────────────┘     │  Spring Sec  │     ┌──────────────┐
                     │              │────▶│   Redis 7    │
@@ -379,7 +402,7 @@ Content-Type: application/json
 |------|------|
 | 后端 | Java 17 + Spring Boot 3.2 + MyBatis-Plus |
 | 前端 | Vue 3 + Vite + Element Plus + Pinia |
-| 数据库 | PostgreSQL 16 |
+| 数据库 | MySQL 8 |
 | 缓存 | Redis 7 |
 
 ---

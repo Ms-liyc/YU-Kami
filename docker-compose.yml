@@ -1,18 +1,20 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: yukami-postgres
+  mysql:
+    image: mysql:8.4
+    container_name: yukami-mysql
     environment:
-      POSTGRES_DB: yukami
-      POSTGRES_USER: yukami
-      POSTGRES_PASSWORD: yukami123
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: yukami
+      MYSQL_USER: yukami
+      MYSQL_PASSWORD: yukami123
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysqldata:/var/lib/mysql
       - ./backend/src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U yukami"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uyukami", "-pyukami123"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -36,8 +38,8 @@ services:
     build: ./backend
     container_name: yukami-backend
     environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
+      DB_HOST: mysql
+      DB_PORT: 3306
       DB_NAME: yukami
       DB_USER: yukami
       DB_PASSWORD: yukami123
@@ -46,12 +48,8 @@ services:
       JWT_SECRET: YuChen-Kami-Docker-JWT-Secret-Change-In-Production
       HMAC_SECRET: YuChen-HMAC-Docker-Secret-Change-In-Production
       AES_KEY: YuChenAES256KeyChangeInProd!!
-      # 环境变量模板见项目根目录 .env.example
-      # 支付对接（可选）：按你的公网域名自行配置，详见 docs/PAYMENT.md
-      # PAYMENT_BASE_URL: https://your-domain.com
-      # PAYMENT_RETURN_URL: https://your-domain.com/shop/orders
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -80,7 +78,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  pgdata:
+  mysqldata:
   redisdata:
 
 networks:

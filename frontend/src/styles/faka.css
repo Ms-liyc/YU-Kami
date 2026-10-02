@@ -1,0 +1,178 @@
+/* 发卡网全局动效 */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* —— 主题变量（浅色默认） —— */
+.shop-layout {
+  --shop-bg: #ffffff;
+  --shop-text: #0f172a;
+  --shop-text-muted: #64748b;
+  --shop-text-soft: #475569;
+  --shop-border: #e2e8f0;
+  --shop-card: #ffffff;
+  --shop-section-alt: #f8fafc;
+  --shop-header-bg: rgba(255, 255, 255, 0.92);
+  --shop-header-border: #e2e8f0;
+  --shop-hero-bg: linear-gradient(135deg, #eef2ff 0%, #f8fafc 40%, #fdf4ff 100%);
+  --shop-badge-bg: rgba(255, 255, 255, 0.8);
+  --shop-badge-border: rgba(79, 110, 247, 0.2);
+  --shop-tag-bg: rgba(255, 255, 255, 0.7);
+  --shop-notice-bg: #fffbeb;
+  --shop-notice-border: #fde68a;
+  --shop-notice-text: #92400e;
+  --shop-notice-item: #475569;
+  --shop-ticker-bg: linear-gradient(90deg, #fff7ed, #ffffff);
+  --shop-ticker-border: #fed7aa;
+  --shop-ticker-label: #ea580c;
+  --shop-ticker-strong: #1e293b;
+  --shop-accent-soft: #eef2ff;
+  --shop-icon-bg: #eef2ff;
+  --shop-icon-border: #e0e7ff;
+  --shop-security-badges: #f8fafc;
+  --shop-mobile-nav-bg: #ffffff;
+  --shop-mockup-bg: #ffffff;
+  --shop-mockup-bar: #f1f5f9;
+  --shop-preview-bg: #f8fafc;
+  --shop-preview-inner: #f8fafc;
+  --shop-cta-icon-bg: linear-gradient(135deg, #eef2ff, #f8fafc);
+  --shop-card-shadow: 0 8px 32px rgba(79, 110, 247, 0.08);
+  --shop-card-shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.06);
+  --shop-mockup-shadow: 0 32px 80px rgba(79, 110, 247, 0.18);
+  --shop-frame-bar: #f1f5f9;
+  --shop-m-surface: #f8fafc;
+  --shop-m-line: #e2e8f0;
+  --shop-m-banner: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  --shop-link-hover: #4f6ef7;
+  --shop-brand-accent: #93b4ff;
+  color-scheme: light;
+  background: var(--shop-bg);
+  color: var(--shop-text);
+  transition: background 0.3s, color 0.3s;
+}
+
+.shop-layout.dark {
+  --shop-bg: #0b1220;
+  --shop-text: #f1f5f9;
+  --shop-text-muted: #94a3b8;
+  --shop-text-soft: #cbd5e1;
+  --shop-border: #334155;
+  --shop-card: #1e293b;
+  --shop-section-alt: #111827;
+  --shop-header-bg: rgba(11, 18, 32, 0.92);
+  --shop-header-border: #334155;
+  --shop-hero-bg: linear-gradient(135deg, #111827 0%, #0b1220 45%, #151b2e 100%);
+  --shop-badge-bg: rgba(30, 41, 59, 0.85);
+  --shop-badge-border: rgba(79, 110, 247, 0.35);
+  --shop-tag-bg: #1e293b;
+  --shop-notice-bg: rgba(120, 53, 15, 0.25);
+  --shop-notice-border: rgba(251, 191, 36, 0.25);
+  --shop-notice-text: #fcd34d;
+  --shop-notice-item: #fde68a;
+  --shop-ticker-bg: #1e293b;
+  --shop-ticker-border: #334155;
+  --shop-ticker-label: #fb923c;
+  --shop-ticker-strong: #f1f5f9;
+  --shop-accent-soft: rgba(79, 110, 247, 0.15);
+  --shop-icon-bg: rgba(79, 110, 247, 0.15);
+  --shop-icon-border: rgba(79, 110, 247, 0.25);
+  --shop-security-badges: #1e293b;
+  --shop-mobile-nav-bg: #1e293b;
+  --shop-mockup-bg: #1e293b;
+  --shop-mockup-bar: #0f172a;
+  --shop-preview-bg: #111827;
+  --shop-preview-inner: #0f172a;
+  --shop-cta-icon-bg: rgba(79, 110, 247, 0.15);
+  --shop-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --shop-card-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.25);
+  --shop-mockup-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  --shop-frame-bar: #0f172a;
+  --shop-m-surface: #111827;
+  --shop-m-line: #334155;
+  --shop-m-banner: linear-gradient(135deg, rgba(79, 110, 247, 0.2), rgba(99, 102, 241, 0.1));
+  --shop-link-hover: #93b4ff;
+  --shop-brand-accent: #93b4ff;
+  color-scheme: dark;
+}
+
+/* Element Plus 深色适配 */
+.shop-layout.dark .el-button.is-plain,
+.shop-layout.dark .el-button.is-round:not(.el-button--primary) {
+  --el-button-bg-color: var(--shop-card);
+  --el-button-border-color: var(--shop-border);
+  --el-button-text-color: var(--shop-text);
+  --el-button-hover-bg-color: var(--shop-section-alt);
+  --el-button-hover-border-color: #4f6ef7;
+  --el-button-hover-text-color: var(--shop-brand-accent);
+}
+.shop-layout.dark .el-input__wrapper {
+  background-color: var(--shop-section-alt);
+  box-shadow: 0 0 0 1px var(--shop-border) inset;
+}
+.shop-layout.dark .el-input__inner {
+  color: var(--shop-text);
+}
+.shop-layout.dark .el-collapse {
+  --el-collapse-header-bg-color: var(--shop-card);
+  --el-collapse-content-bg-color: var(--shop-card);
+  --el-collapse-border-color: var(--shop-border);
+}
+.shop-layout.dark .el-collapse-item__header {
+  background: var(--shop-card) !important;
+  color: var(--shop-text) !important;
+  border-bottom-color: var(--shop-border) !important;
+}
+.shop-layout.dark .el-collapse-item__wrap {
+  background: var(--shop-card) !important;
+  border-bottom-color: var(--shop-border) !important;
+}
+.shop-layout.dark .el-collapse-item__content {
+  color: var(--shop-text-muted) !important;
+}
+.shop-layout.dark .el-carousel__container {
+  background: transparent;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes qr-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.98); }
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(79, 110, 247, 0.25);
+  animation: float 4s ease-in-out infinite;
+}
+.shop-layout.dark .hero-particle {
+  background: rgba(147, 180, 255, 0.2);
+}
+
