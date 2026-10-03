@@ -1,14 +1,14 @@
 <template>
   <div class="product-grid-wrap">
     <div v-if="showToolbar" class="product-toolbar">
-      <el-input v-model="search" placeholder="搜索商品..." clearable class="search-input">
+      <el-input v-model="search" :placeholder="t('shop.searchProducts')" clearable class="search-input">
         <template #prefix><el-icon><Search /></el-icon></template>
       </el-input>
       <el-radio-group v-model="filterType" size="small">
-        <el-radio-button value="">全部</el-radio-button>
-        <el-radio-button value="DURATION">时长卡</el-radio-button>
-        <el-radio-button value="SINGLE">单次卡</el-radio-button>
-        <el-radio-button value="BALANCE">余额卡</el-radio-button>
+        <el-radio-button value="">{{ t('shop.filterAll') }}</el-radio-button>
+        <el-radio-button value="DURATION">{{ t('shop.cardTypeDuration') }}</el-radio-button>
+        <el-radio-button value="SINGLE">{{ t('shop.cardTypeSingle') }}</el-radio-button>
+        <el-radio-button value="BALANCE">{{ t('shop.cardTypeBalance') }}</el-radio-button>
       </el-radio-group>
     </div>
     <el-row :gutter="compact ? 12 : 20" v-loading="loading">
@@ -26,7 +26,7 @@
             <span v-else-if="p.onSale" class="sale-badge">{{ t('shop.onSale') }}</span>
           </div>
           <h3>{{ p.name }}</h3>
-          <p class="desc">{{ p.description || '安全可靠的数字商品交付' }}</p>
+          <p class="desc">{{ p.description || t('shop.defaultDesc') }}</p>
           <div class="price-row">
             <span class="price">¥{{ displayPrice(p) }}</span>
             <span v-if="p.onSale" class="original">¥{{ p.value }}</span>
@@ -72,8 +72,12 @@ const loading = ref(false)
 const search = ref('')
 const filterType = ref('')
 
-const typeMap = { DURATION: '时长卡', BALANCE: '余额卡', SINGLE: '单次卡' }
-function typeLabel(type) { return typeMap[type] || type }
+const typeMap = computed(() => ({
+  DURATION: t('shop.cardTypeDuration'),
+  BALANCE: t('shop.cardTypeBalance'),
+  SINGLE: t('shop.cardTypeSingle')
+}))
+function typeLabel(type) { return typeMap.value[type] || type }
 function displayPrice(p) { return p.onSale ? p.salePrice : p.value }
 
 const filteredProducts = computed(() => {

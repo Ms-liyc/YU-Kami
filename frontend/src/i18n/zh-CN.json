@@ -145,7 +145,18 @@
     "redeemFail": "兑换失败",
     "redeemApiHint": "第三方系统可直接调用 POST /api/v1/redeem 完成兑换，详见项目 API 文档。",
     "darkMode": "深色模式",
-    "lightMode": "浅色模式"
+    "lightMode": "浅色模式",
+    "usernamePlaceholder": "用户名",
+    "passwordPlaceholder": "密码",
+    "emailPlaceholder": "邮箱（选填）",
+    "loginRequired": "查询订单需先登录买家账号",
+    "demoHint": "演示账号 demo / demo123",
+    "searchProducts": "搜索商品…",
+    "filterAll": "全部",
+    "cardTypeDuration": "时长卡",
+    "cardTypeSingle": "单次卡",
+    "cardTypeBalance": "余额卡",
+    "defaultDesc": "安全可靠的数字商品交付"
   },
   "order": {
     "title": "订单管理",
@@ -158,7 +169,9 @@
     "statusPending": "待支付",
     "statusPaid": "已支付",
     "statusDelivered": "已发货",
-    "statusCancelled": "已取消"
+    "statusCancelled": "已取消",
+    "cancel": "取消",
+    "allStatus": "全部状态"
   },
   "setup": {
     "paymentTitle": "支付对接（可选，需自行配置）",

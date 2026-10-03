@@ -73,3 +73,14 @@ body {
 }
 
 .btn-group { display: flex; gap: 8px; }
+
+@media (max-width: 768px) {
+  .page-card .card-body {
+    padding: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .page-card .el-table { min-width: 680px; }
+  .filter-bar { gap: 8px; }
+  .el-pagination { flex-wrap: wrap; }
+}

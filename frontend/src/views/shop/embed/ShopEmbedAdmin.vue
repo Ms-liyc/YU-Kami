@@ -13,7 +13,7 @@
         <a class="menu-item"><span class="mi-dot" />商城订单</a>
         <a class="menu-item"><span class="mi-dot" />促销活动</a>
       </nav>
-      <div class="aside-footer">v1.8.0</div>
+      <div class="aside-footer">v{{ APP_VERSION }}</div>
     </aside>
     <main class="main">
       <header class="topbar">
@@ -66,6 +66,8 @@
 </template>
 
 <script setup>
+import { APP_VERSION } from '../../../constants/version'
+
 const stats = [
   { label: '卡密总数', value: '520', abbr: '卡', color: '#4f6ef7' },
   { label: '已使用', value: '352', abbr: '用', color: '#10b981' },

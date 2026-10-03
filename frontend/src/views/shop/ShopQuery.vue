@@ -3,6 +3,9 @@
     <div class="query-card reveal">
       <h1>{{ t('shop.queryTitle') }}</h1>
       <p>{{ t('shop.queryDesc') }}</p>
+      <el-alert v-if="!auth.token" type="info" :closable="false" show-icon :title="t('shop.loginRequired')" class="login-alert">
+        <el-button type="primary" link @click="goLogin">{{ t('common.login') }}</el-button>
+      </el-alert>
       <el-form @submit.prevent="handleQuery">
         <el-form-item :label="t('shop.orderNo')">
           <el-input v-model="orderNo" :placeholder="t('shop.orderNoPlaceholder')" clearable />
@@ -68,7 +71,7 @@ async function handleQuery() {
     return
   }
   if (!auth.token) {
-    router.push({ path: '/shop/login', query: { redirect: '/shop/query' } })
+    goLogin()
     return
   }
   loading.value = true
@@ -79,6 +82,10 @@ async function handleQuery() {
   } finally {
     loading.value = false
   }
+}
+
+function goLogin() {
+  router.push({ path: '/shop/login', query: { redirect: '/shop/query' } })
 }
 
 function goPay() {
@@ -115,4 +122,5 @@ function copyKey() {
 .result-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .hint { font-size: 13px; color: var(--shop-text-muted); text-align: center; }
 .hint a { color: #4f6ef7; margin-left: 4px; }
+.login-alert { margin-bottom: 16px; }
 </style>

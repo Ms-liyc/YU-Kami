@@ -69,7 +69,7 @@
         </el-menu>
       </el-scrollbar>
       <div class="aside-footer" v-if="!collapsed">
-        <span>v1.8.0</span>
+        <span>v{{ APP_VERSION }}</span>
       </div>
     </el-aside>
 
@@ -98,7 +98,7 @@
                   <el-tag size="small">{{ roleLabel }}</el-tag>
                 </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">
-                  <el-icon><SwitchButton /></el-icon>退出登录
+                  <el-icon><SwitchButton /></el-icon>{{ t('common.logout') }}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -127,6 +127,7 @@ import { useAuthStore } from '../stores/auth'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import PaymentSetupBanner from '../components/PaymentSetupBanner.vue'
 import DefaultPasswordBanner from '../components/DefaultPasswordBanner.vue'
+import { APP_VERSION } from '../constants/version'
 
 const { t } = useI18n()
 

@@ -23,7 +23,7 @@
     <div class="page-card">
       <div class="card-body">
         <div class="filter-bar">
-          <el-select v-model="status" clearable placeholder="Status" style="width:140px" @change="loadData">
+          <el-select v-model="status" clearable :placeholder="t('order.allStatus')" style="width:140px" @change="loadData">
             <el-option :label="t('order.statusPending')" value="PENDING" />
             <el-option :label="t('order.statusPaid')" value="PAID" />
             <el-option :label="t('order.statusDelivered')" value="DELIVERED" />
@@ -40,7 +40,7 @@
           <el-table-column prop="createdAt" :label="t('order.createdAt')" width="170" />
           <el-table-column label="" width="100">
             <template #default="{ row }">
-              <el-button v-if="row.status === 'PENDING'" link type="danger" @click="handleCancel(row.id)">取消</el-button>
+              <el-button v-if="row.status === 'PENDING'" link type="danger" @click="handleCancel(row.id)">{{ t('order.cancel') }}</el-button>
             </template>
           </el-table-column>
         </el-table>

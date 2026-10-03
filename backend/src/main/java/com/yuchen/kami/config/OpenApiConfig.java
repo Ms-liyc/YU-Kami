@@ -20,7 +20,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("YU-Kami API")
                         .description("屿宸科技 · 企业级卡密系统 RESTful API 文档")
-                        .version("1.8.0")
+                        .version("1.10.2")
                         .contact(new Contact().name("YU-Kami").url("https://github.com/Ms-liyc/YU-Kami"))
                         .license(new License().name("MIT").url("https://github.com/Ms-liyc/YU-Kami/blob/main/LICENSE")))
                 .components(new Components().addSecuritySchemes(scheme, new SecurityScheme()

@@ -2,6 +2,16 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.10.2] — 2026-01
+
+### 改进
+
+- 版本号统一为 1.10.2（Maven / npm / Swagger / 管理端侧栏自动读取）
+- 商城登录页、商品列表、订单查询 i18n 补全
+- 管理后台表格移动端横向滚动适配
+- 订单管理页筛选与取消按钮 i18n
+- `.gitignore` 忽略 Redis dump 文件
+
 ## [1.10.1] — 2026-01
 
 ### 改进
@@ -54,6 +64,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.10.2]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.1...v1.10.2
 [1.10.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.8.0...v1.9.0
