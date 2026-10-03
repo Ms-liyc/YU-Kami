@@ -20,8 +20,10 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuditService auditService;
+    private final RateLimitService rateLimitService;
 
     public LoginResponse login(LoginRequest request, String ip) {
+        rateLimitService.checkLoginLimit(ip, request.getUsername());
         SysUser user = sysUserMapper.selectOne(new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getUsername, request.getUsername()));
         if (user == null || user.getStatus() != 1) {

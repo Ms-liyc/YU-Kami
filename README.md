@@ -262,7 +262,8 @@ REDIS_PORT=6379
 | ✅ 格式校验 | SHA-256 校验码防手输错误 |
 | ⚡ 分布式锁 | Redis 锁防止并发重复兑换 |
 | 🔄 乐观锁 | 数据库 version 字段原子更新 |
-| 🚦 限流保护 | Redis 滑动窗口限流 |
+| 🚦 限流保护 | Redis 滑动窗口限流（兑换 / 登录 / 注册） |
+| 🛡️ 访问控制 | 未声明 API 默认拒绝；CORS / Swagger 可按环境配置 |
 | 数据库 | MySQL 8 高并发事务 |
 | 💾 连接池 | HikariCP 最大 50 连接 |
 
@@ -270,7 +271,7 @@ REDIS_PORT=6379
 
 ## 📡 API 文档
 
-> 完整接口列表见 [docs/API.md](docs/API.md)，本地调试推荐 Swagger UI。
+> 完整接口列表见 [docs/API.md](docs/API.md)，本地调试推荐 Swagger UI。生产部署见 [docs/SECURITY.md](docs/SECURITY.md)。
 
 ### 开放接口 — 卡密兑换
 
@@ -362,6 +363,13 @@ Content-Type: application/json
 ## 🛣️ 开发路线图
 
 ### 📅 更新日志
+
+#### v1.12.1
+
+* 🔒 **安全加固**：默认密码移除、未匹配 API 拒绝访问、CORS/Swagger 可配置
+* 🛡️ **速率限制**：管理端/商城登录与注册防暴力破解（Redis）
+* 📋 **安全响应头**：后端 + Nginx 添加 X-Frame-Options 等
+* 📖 **安全文档**：新增 [docs/SECURITY.md](docs/SECURITY.md)
 
 #### v1.12.0
 

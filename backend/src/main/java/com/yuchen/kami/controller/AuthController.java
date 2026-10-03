@@ -1,5 +1,6 @@
 package com.yuchen.kami.controller;
 
+import com.yuchen.kami.common.ClientIpUtils;
 import com.yuchen.kami.common.Result;
 import com.yuchen.kami.dto.ChangePasswordRequest;
 import com.yuchen.kami.dto.LoginRequest;
@@ -23,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public Result<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
-        String ip = httpRequest.getRemoteAddr();
+        String ip = ClientIpUtils.resolve(httpRequest);
         return Result.ok(authService.login(request, ip));
     }
 

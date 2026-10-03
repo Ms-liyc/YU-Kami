@@ -22,8 +22,10 @@ public class ShopAuthService {
     private final ShopUserMapper shopUserMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RateLimitService rateLimitService;
 
-    public LoginResponse register(ShopRegisterRequest request) {
+    public LoginResponse register(ShopRegisterRequest request, String ip) {
+        rateLimitService.checkRegisterLimit(ip);
         Long count = shopUserMapper.selectCount(new LambdaQueryWrapper<ShopUser>()
                 .eq(ShopUser::getUsername, request.getUsername()));
         if (count > 0) {
@@ -40,7 +42,8 @@ public class ShopAuthService {
         return buildLoginResponse(user);
     }
 
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request, String ip) {
+        rateLimitService.checkLoginLimit(ip, request.getUsername());
         ShopUser user = shopUserMapper.selectOne(new LambdaQueryWrapper<ShopUser>()
                 .eq(ShopUser::getUsername, request.getUsername()));
         if (user == null || user.getStatus() != 1) {

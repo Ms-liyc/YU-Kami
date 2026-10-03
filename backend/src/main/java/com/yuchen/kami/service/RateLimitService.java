@@ -16,12 +16,29 @@ public class RateLimitService {
     private final YuKamiProperties properties;
 
     public void checkRedeemLimit(String identifier) {
-        String key = "rate:redeem:" + identifier;
+        checkLimit("redeem:" + identifier, properties.getRedeem().getRateLimitPerMinute(), Duration.ofMinutes(1));
+    }
+
+    public void checkLoginLimit(String ip, String username) {
+        int limit = properties.getSecurity().getLoginRateLimitPerMinute();
+        checkLimit("auth:login:ip:" + ip, limit, Duration.ofMinutes(1));
+        if (username != null && !username.isBlank()) {
+            checkLimit("auth:login:user:" + username.toLowerCase(), limit, Duration.ofMinutes(1));
+        }
+    }
+
+    public void checkRegisterLimit(String ip) {
+        int limit = properties.getSecurity().getRegisterRateLimitPerMinute();
+        checkLimit("auth:register:ip:" + ip, limit, Duration.ofMinutes(1));
+    }
+
+    private void checkLimit(String scope, int maxPerWindow, Duration window) {
+        String key = "rate:" + scope;
         Long count = redisTemplate.opsForValue().increment(key);
         if (count != null && count == 1) {
-            redisTemplate.expire(key, Duration.ofMinutes(1));
+            redisTemplate.expire(key, window);
         }
-        if (count != null && count > properties.getRedeem().getRateLimitPerMinute()) {
+        if (count != null && count > maxPerWindow) {
             throw new BusinessException(429, "请求过于频繁，请稍后重试");
         }
     }

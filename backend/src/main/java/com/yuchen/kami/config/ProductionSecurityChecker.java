@@ -28,7 +28,9 @@ public class ProductionSecurityChecker {
             "YuChenAES256KeyChangeInProd!!"
     );
     private static final Set<String> DEFAULT_DB_PASSWORDS = Set.of(
-            "yukami123"
+            "yukami123",
+            "change-me-db-password",
+            "liyuchen@123"
     );
 
     private final YuKamiProperties properties;
@@ -48,8 +50,15 @@ public class ProductionSecurityChecker {
         if (DEFAULT_AES_KEYS.contains(properties.getCrypto().getAesKey())) {
             warnings.add("AES_KEY 仍为默认值");
         }
-        if (DEFAULT_DB_PASSWORDS.contains(dbPassword)) {
-            warnings.add("DB_PASSWORD 仍为默认值 yukami123");
+        if (dbPassword == null || dbPassword.isBlank() || DEFAULT_DB_PASSWORDS.contains(dbPassword)) {
+            warnings.add("DB_PASSWORD 仍为默认值或未设置，请通过环境变量配置强密码");
+        }
+        if (properties.getSecurity().isSwaggerEnabled()) {
+            warnings.add("SWAGGER_ENABLED=true，生产环境建议设为 false");
+        }
+        String cors = properties.getSecurity().getCorsAllowedOrigins();
+        if (cors == null || cors.isBlank() || "*".equals(cors.trim())) {
+            warnings.add("CORS 允许任意来源（*），生产环境请设置 CORS_ALLOWED_ORIGINS 为实际域名");
         }
         if (warnings.isEmpty()) {
             return;
@@ -57,7 +66,7 @@ public class ProductionSecurityChecker {
         log.warn("============================================================");
         log.warn("安全警告：检测到以下配置仍使用默认值，生产环境请务必修改！");
         warnings.forEach(item -> log.warn("  - {}", item));
-        log.warn("参考项目根目录 .env.example 配置环境变量");
+        log.warn("参考 .env.example 与 docs/SECURITY.md");
         log.warn("============================================================");
     }
 }

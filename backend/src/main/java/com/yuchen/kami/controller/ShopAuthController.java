@@ -1,5 +1,6 @@
 package com.yuchen.kami.controller;
 
+import com.yuchen.kami.common.ClientIpUtils;
 import com.yuchen.kami.common.Result;
 import com.yuchen.kami.dto.ChangePasswordRequest;
 import com.yuchen.kami.dto.LoginRequest;
@@ -8,6 +9,7 @@ import com.yuchen.kami.dto.ShopProfileUpdateRequest;
 import com.yuchen.kami.dto.ShopRegisterRequest;
 import com.yuchen.kami.dto.ShopUserProfileVO;
 import com.yuchen.kami.service.ShopAuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -21,13 +23,15 @@ public class ShopAuthController {
     private final ShopAuthService shopAuthService;
 
     @PostMapping("/register")
-    public Result<LoginResponse> register(@Valid @RequestBody ShopRegisterRequest request) {
-        return Result.ok(shopAuthService.register(request));
+    public Result<LoginResponse> register(@Valid @RequestBody ShopRegisterRequest request,
+                                          HttpServletRequest httpRequest) {
+        return Result.ok(shopAuthService.register(request, ClientIpUtils.resolve(httpRequest)));
     }
 
     @PostMapping("/login")
-    public Result<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        return Result.ok(shopAuthService.login(request));
+    public Result<LoginResponse> login(@Valid @RequestBody LoginRequest request,
+                                       HttpServletRequest httpRequest) {
+        return Result.ok(shopAuthService.login(request, ClientIpUtils.resolve(httpRequest)));
     }
 
     @GetMapping("/me")

@@ -2,6 +2,19 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.12.1] — 2026-01
+
+### 安全
+
+- 移除 `application.yml` 中泄露的真实数据库默认密码
+- Spring Security 未匹配路径改为 `denyAll`，不再默认放行
+- 可配置 CORS 来源（`CORS_ALLOWED_ORIGINS`），生产环境限制域名
+- 生产环境可关闭 Swagger（`SWAGGER_ENABLED=false`）
+- 管理端/商城登录与注册增加 Redis 速率限制
+- 添加 HTTP 安全响应头（后端 + Nginx）
+- 启动自检扩展：弱密码、Swagger、CORS 警告
+- 新增 [docs/SECURITY.md](docs/SECURITY.md)
+
 ## [1.12.0] — 2026-01
 
 ### 新增
@@ -91,6 +104,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.12.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.2...v1.11.0
 [1.10.2]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.1...v1.10.2
