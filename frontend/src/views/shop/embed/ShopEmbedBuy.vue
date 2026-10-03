@@ -51,10 +51,18 @@ onMounted(async () => {
   try {
     const res = await shopHttp.get(`/shop/products/${route.params.id}`)
     if (res.data?.code === 200) product.value = res.data.data
-  } catch { /* 静默失败，由父级检测后端状态 */ }
-  finally {
-    loading.value = false
+  } catch { /* 静默失败，使用演示数据 */ }
+  if (!product.value) {
+    product.value = {
+      name: '月度会员 VIP',
+      description: '30 天会员权益，付款即发货',
+      value: 39.9,
+      salePrice: 29.9,
+      onSale: true,
+      promotionName: '春季限时特惠'
+    }
   }
+  loading.value = false
 })
 </script>
 

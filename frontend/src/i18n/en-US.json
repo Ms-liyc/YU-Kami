@@ -37,7 +37,26 @@
     "webhooks": "Webhooks",
     "shop": "Shop",
     "myOrders": "My Orders",
-    "admin": "Admin"
+    "admin": "Admin",
+    "shopProducts": "Products",
+    "flow": "How to Buy",
+    "showcase": "Features",
+    "faq": "FAQ",
+    "orderQuery": "Order Lookup",
+    "redeem": "Redeem",
+    "profile": "Profile",
+    "about": "About",
+    "manage": "Admin",
+    "security": "Security",
+    "banner": "Welcome to YU-Kami · Pay & get your key instantly",
+    "footerBrand": "YuChen Tech · Digital goods auto-delivery platform",
+    "footerShop": "Shop",
+    "productList": "Product List",
+    "mobileHome": "Home",
+    "mobileProducts": "Shop",
+    "mobileQuery": "Lookup",
+    "mobileOrders": "Orders",
+    "mobileMine": "Me"
   },
   "admin": {
     "welcome": "Welcome Back",
@@ -123,7 +142,10 @@
     "cardKeyPlaceholder": "Enter card key",
     "redeemBtn": "Redeem Now",
     "redeemSuccess": "Redeemed successfully",
-    "redeemFail": "Redeem failed"
+    "redeemFail": "Redeem failed",
+    "redeemApiHint": "Third-party systems can call POST /api/v1/redeem directly. See API docs for details.",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode"
   },
   "order": {
     "title": "Order Management",

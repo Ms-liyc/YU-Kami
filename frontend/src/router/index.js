@@ -25,7 +25,10 @@ const routes = [
       { path: 'buy/:id', name: 'ShopEmbedBuy', meta: { preview: true, embed: true }, component: () => import('../views/shop/embed/ShopEmbedBuy.vue') },
       { path: 'success', name: 'ShopEmbedSuccess', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedSuccess.vue') },
       { path: 'admin', name: 'ShopEmbedAdmin', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedAdmin.vue') },
-      { path: 'mobile', name: 'ShopEmbedMobile', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedMobile.vue') }
+      { path: 'mobile', name: 'ShopEmbedMobile', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedMobile.vue') },
+      { path: 'query', name: 'ShopEmbedQuery', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedQuery.vue') },
+      { path: 'redeem', name: 'ShopEmbedRedeem', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedRedeem.vue') },
+      { path: 'profile', name: 'ShopEmbedProfile', meta: { embed: true }, component: () => import('../views/shop/embed/ShopEmbedProfile.vue') }
     ]
   },
   { path: '/login', name: 'Login', component: () => import('../views/Login.vue') },

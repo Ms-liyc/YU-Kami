@@ -22,11 +22,14 @@ function parseJsonWithBigInt(text) {
 }
 
 async function firstProductId() {
-  const res = await fetch(`${api}/api/shop/products?page=1&size=1`)
-  const json = parseJsonWithBigInt(await res.text())
-  const id = json?.data?.records?.[0]?.id
-  if (!id) throw new Error('no products from API')
-  return String(id)
+  try {
+    const res = await fetch(`${api}/api/shop/products?page=1&size=1`)
+    const json = parseJsonWithBigInt(await res.text())
+    const id = json?.data?.records?.[0]?.id
+    if (id) return String(id)
+  } catch { /* fallback below */ }
+  console.warn('API unavailable, using fallback product id 1 for preview-buy')
+  return '1'
 }
 
 async function main() {
@@ -39,6 +42,9 @@ async function main() {
     { name: 'preview-list', url: `${base}/shop/embed/products`, viewport: { width: 1024, height: 640 } },
     { name: 'preview-buy', url: `${base}/shop/embed/buy/${productId}`, viewport: { width: 1024, height: 640 } },
     { name: 'preview-success', url: `${base}/shop/embed/success`, viewport: { width: 1024, height: 640 } },
+    { name: 'preview-query', url: `${base}/shop/embed/query`, viewport: { width: 1024, height: 640 } },
+    { name: 'preview-redeem', url: `${base}/shop/embed/redeem`, viewport: { width: 1024, height: 640 } },
+    { name: 'preview-profile', url: `${base}/shop/embed/profile`, viewport: { width: 1024, height: 640 } },
     { name: 'preview-admin', url: `${base}/shop/embed/admin`, viewport: { width: 1024, height: 640 } },
     { name: 'preview-mobile', url: `${base}/shop/embed/mobile`, viewport: { width: 390, height: 780 } }
   ]
@@ -47,20 +53,27 @@ async function main() {
     'preview-list': '.embed-products, .mini-product-card, .product-card',
     'preview-buy': '.buy-card',
     'preview-success': '.success-toast, .embed-success-page',
+    'preview-query': '.embed-query-page, .query-card',
+    'preview-redeem': '.embed-redeem-page, .redeem-card',
+    'preview-profile': '.embed-profile-page, .profile-card',
     'preview-admin': '.embed-admin',
     'preview-mobile': '.embed-mobile'
   }
 
   for (const s of shots) {
-    if (s.viewport) {
-      await page.setViewportSize(s.viewport)
+    try {
+      if (s.viewport) {
+        await page.setViewportSize(s.viewport)
+      }
+      await page.goto(s.url, { waitUntil: 'domcontentloaded', timeout: 60000 })
+      await page.waitForSelector(waitMap[s.name], { timeout: 30000 })
+      await page.waitForTimeout(2000)
+      const file = path.join(outDir, `${s.name}.png`)
+      await page.screenshot({ path: file, fullPage: false })
+      console.log('saved', file)
+    } catch (e) {
+      console.warn('skip', s.name, '-', e.message)
     }
-    await page.goto(s.url, { waitUntil: 'domcontentloaded', timeout: 60000 })
-    await page.waitForSelector(waitMap[s.name], { timeout: 30000 })
-    await page.waitForTimeout(2000)
-    const file = path.join(outDir, `${s.name}.png`)
-    await page.screenshot({ path: file, fullPage: false })
-    console.log('saved', file)
   }
 
   await browser.close()

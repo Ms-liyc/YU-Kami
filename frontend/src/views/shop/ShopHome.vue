@@ -272,7 +272,10 @@ const securityBadges = [
 const screenshots = [
   { title: '商城首页 — 真实商品与价格', view: 'list', image: '/screenshots/preview-list.png' },
   { title: '购买页 — 优惠券与支付渠道', view: 'buy', image: '/screenshots/preview-buy.png' },
-  { title: '支付成功 — 卡密一键复制', view: 'success', image: '/screenshots/preview-success.png' }
+  { title: '支付成功 — 卡密一键复制', view: 'success', image: '/screenshots/preview-success.png' },
+  { title: '订单查询 — 凭订单号查状态', view: 'query', image: '/screenshots/preview-query.png' },
+  { title: '卡密兑换 — 开放 API 前台入口', view: 'redeem', image: '/screenshots/preview-redeem.png' },
+  { title: '个人中心 — 资料与密码管理', view: 'profile', image: '/screenshots/preview-profile.png' }
 ]
 
 const faqs = [

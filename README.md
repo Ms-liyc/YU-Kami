@@ -39,7 +39,8 @@
   <a href="#-快速部署指南">📖 部署文档</a> ·
   <a href="docs/PAYMENT.md">💳 支付配置</a> ·
   <a href="docs/API.md">📡 API 文档</a> ·
-  <a href="#-开发路线图">📋 更新日志</a> ·
+  <a href="CHANGELOG.md">📝 更新日志</a> ·
+  <a href="#-开发路线图">📋 路线图</a> ·
   <a href="https://github.com/Ms-liyc/YU-Kami/issues">🐛 反馈问题</a>
 </p>
 
@@ -101,7 +102,7 @@ cd frontend && npm install && npm run dev
 | 演示买家 | `demo` / `demo123` |
 
 > 本地开发若 8080 端口被占用，可设置 `SERVER_PORT=8081`，前端 `VITE_API_PROXY=http://localhost:8081`。  
-> 更新商城 Hero 预览截图：`cd frontend && npm run capture:screenshots`（需前后端均已启动）。
+> 更新商城界面截图：`cd frontend && npm run build && npx vite preview --port 5174`，另开终端执行 `npm run capture:screenshots`（查单/兑换/个人中心等页面无需后端）。
 
 ---
 
@@ -342,6 +343,13 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.10.1
+
+* 🖼️ **界面截图**：查单、兑换、个人中心嵌入页 + 轮播图扩展
+* 🌐 **商城 i18n**：顶栏、底栏、页脚、移动端导航中英双语
+* 📝 **CHANGELOG.md**：独立更新日志文件
+* 🔧 **截图脚本**：无后端时可降级，单页失败不中断
+
 #### v1.10.0
 
 * 🔍 **订单号查询**：凭订单号查询状态，已发货订单可直接查看卡密
@@ -350,6 +358,11 @@ Content-Type: application/json
 * 🎫 **卡密兑换页**：商城前台接入 `/api/v1/redeem` 兑换入口
 * 🔢 **购买数量**：购买页支持选择数量（1–99）
 * 📊 **真实数据**：落地页统计与成交滚动条对接后端 API
+* 🖼️ **界面截图**：新增查单、兑换、个人中心预览与轮播
+* 🌐 **商城 i18n**：顶栏、底栏、页脚导航中英双语
+* 📦 **版本统一**：Maven / npm 版本号同步为 1.10.0
+
+> 详细变更见 [CHANGELOG.md](CHANGELOG.md)
 
 #### v1.9.0
 

@@ -16,6 +16,8 @@
       </el-form>
 
       <el-alert v-if="result" :type="result.success ? 'success' : 'error'" :title="result.message" show-icon class="result-alert" />
+
+      <p class="api-hint">{{ t('shop.redeemApiHint') }}</p>
     </div>
   </div>
 </template>
@@ -69,4 +71,12 @@ async function handleRedeem() {
 .redeem-card h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; color: var(--shop-text); }
 .redeem-card p { color: var(--shop-text-muted); margin-bottom: 24px; font-size: 14px; }
 .result-alert { margin-top: 20px; }
+.api-hint {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--shop-border);
+  font-size: 13px;
+  color: var(--shop-text-muted);
+  line-height: 1.6;
+}
 </style>

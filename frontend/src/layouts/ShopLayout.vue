@@ -2,8 +2,8 @@
   <div class="shop-layout" :class="{ dark: isDark }">
     <div v-if="showBanner" class="top-banner">
       <YuIcon name="spark" size="sm" class="banner-icon" />
-      欢迎使用 YU-Kami 数字商品发卡网 · 付款即发货
-      <button class="banner-close" @click="showBanner = false" aria-label="关闭">
+      {{ t('nav.banner') }}
+      <button class="banner-close" @click="showBanner = false" :aria-label="t('common.cancel')">
         <YuIcon name="close" size="sm" />
       </button>
     </div>
@@ -14,15 +14,15 @@
           <span>YU-Kami</span>
         </router-link>
         <nav class="nav-links">
-          <a href="#products" @click.prevent="scrollTo('products')">商品</a>
-          <a href="#flow" @click.prevent="scrollTo('flow')">购买流程</a>
-          <a href="#showcase" @click.prevent="scrollTo('showcase')">功能展示</a>
-          <a href="#faq" @click.prevent="scrollTo('faq')">常见问题</a>
-          <router-link to="/shop/query">订单查询</router-link>
-          <router-link to="/shop/redeem">卡密兑换</router-link>
+          <a href="#products" @click.prevent="scrollTo('products')">{{ t('nav.shopProducts') }}</a>
+          <a href="#flow" @click.prevent="scrollTo('flow')">{{ t('nav.flow') }}</a>
+          <a href="#showcase" @click.prevent="scrollTo('showcase')">{{ t('nav.showcase') }}</a>
+          <a href="#faq" @click.prevent="scrollTo('faq')">{{ t('nav.faq') }}</a>
+          <router-link to="/shop/query">{{ t('nav.orderQuery') }}</router-link>
+          <router-link to="/shop/redeem">{{ t('nav.redeem') }}</router-link>
         </nav>
         <div class="header-actions">
-          <el-tooltip :content="isDark ? '浅色模式' : '深色模式'">
+          <el-tooltip :content="isDark ? t('shop.lightMode') : t('shop.darkMode')">
             <el-button circle @click="toggleDark">
               <YuIcon :name="isDark ? 'sun' : 'moon'" size="sm" />
             </el-button>
@@ -49,27 +49,27 @@
         <div class="footer-brand">
           <img src="/logo.png" alt="" class="footer-logo" />
           <div>
-            <strong>YU-Kami 发卡网</strong>
-            <p>屿宸科技 · 数字商品自动发卡平台</p>
+            <strong>YU-Kami</strong>
+            <p>{{ t('nav.footerBrand') }}</p>
           </div>
         </div>
         <div class="footer-col">
-          <h4>商城</h4>
-          <a href="#products" @click.prevent="scrollTo('products')">商品列表</a>
-          <router-link to="/shop/query">订单查询</router-link>
-          <router-link to="/shop/orders">我的订单</router-link>
-          <router-link to="/shop/redeem">卡密兑换</router-link>
-          <router-link to="/shop/profile">个人中心</router-link>
+          <h4>{{ t('nav.footerShop') }}</h4>
+          <a href="#products" @click.prevent="scrollTo('products')">{{ t('nav.productList') }}</a>
+          <router-link to="/shop/query">{{ t('nav.orderQuery') }}</router-link>
+          <router-link to="/shop/orders">{{ t('nav.myOrders') }}</router-link>
+          <router-link to="/shop/redeem">{{ t('nav.redeem') }}</router-link>
+          <router-link to="/shop/profile">{{ t('nav.profile') }}</router-link>
         </div>
         <div class="footer-col">
-          <h4>了解</h4>
-          <a href="#flow" @click.prevent="scrollTo('flow')">购买流程</a>
-          <a href="#security" @click.prevent="scrollTo('security')">安全保障</a>
-          <a href="#faq" @click.prevent="scrollTo('faq')">常见问题</a>
+          <h4>{{ t('nav.about') }}</h4>
+          <a href="#flow" @click.prevent="scrollTo('flow')">{{ t('nav.flow') }}</a>
+          <a href="#security" @click.prevent="scrollTo('security')">{{ t('nav.security') }}</a>
+          <a href="#faq" @click.prevent="scrollTo('faq')">{{ t('nav.faq') }}</a>
         </div>
         <div class="footer-col">
-          <h4>管理</h4>
-          <router-link to="/login">管理后台</router-link>
+          <h4>{{ t('nav.manage') }}</h4>
+          <router-link to="/login">{{ t('nav.admin') }}</router-link>
           <a href="https://github.com/Ms-liyc/YU-Kami" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
@@ -78,22 +78,22 @@
 
     <nav class="mobile-nav">
       <router-link to="/shop" class="mobile-nav-item" exact-active-class="active">
-        <YuIcon name="home" size="md" /><small>首页</small>
+        <YuIcon name="home" size="md" /><small>{{ t('nav.mobileHome') }}</small>
       </router-link>
       <a class="mobile-nav-item" @click.prevent="scrollTo('products')">
-        <YuIcon name="shop" size="md" /><small>商品</small>
+        <YuIcon name="shop" size="md" /><small>{{ t('nav.mobileProducts') }}</small>
       </a>
       <router-link to="/shop/query" class="mobile-nav-item">
-        <YuIcon name="search" size="md" /><small>查单</small>
+        <YuIcon name="search" size="md" /><small>{{ t('nav.mobileQuery') }}</small>
       </router-link>
       <router-link to="/shop/orders" class="mobile-nav-item">
-        <YuIcon name="orders" size="md" /><small>订单</small>
+        <YuIcon name="orders" size="md" /><small>{{ t('nav.mobileOrders') }}</small>
       </router-link>
       <router-link to="/shop/login" class="mobile-nav-item" v-if="!auth.token">
-        <YuIcon name="user" size="md" /><small>我的</small>
+        <YuIcon name="user" size="md" /><small>{{ t('nav.mobileMine') }}</small>
       </router-link>
       <router-link to="/shop/profile" class="mobile-nav-item" v-else>
-        <YuIcon name="user" size="md" /><small>我的</small>
+        <YuIcon name="user" size="md" /><small>{{ t('nav.mobileMine') }}</small>
       </router-link>
     </nav>
   </div>
