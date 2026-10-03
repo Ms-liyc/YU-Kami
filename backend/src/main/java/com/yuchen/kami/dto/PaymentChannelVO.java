@@ -21,7 +21,15 @@ public class PaymentChannelVO {
             case "MOCK" -> "模拟支付";
             case "ALIPAY" -> "支付宝";
             case "WECHAT" -> "微信支付";
+            case "BALANCE" -> "余额支付";
             default -> channel;
         };
+    }
+
+    public static PaymentChannelVO balance() {
+        PaymentChannelVO vo = new PaymentChannelVO();
+        vo.setChannel("BALANCE");
+        vo.setLabel("余额支付");
+        return vo;
     }
 }

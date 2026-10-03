@@ -2,6 +2,20 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.11.0] — 2026-01
+
+### 新增
+
+- 用户钱包余额与交易明细（`/shop/wallet`）
+- 余额支付渠道（`BALANCE`），购买页可直接扣款发货
+- 演示账号 `demo` 自动获得 ¥200 初始余额
+- 启动时自动迁移 `shop_user.balance` 与 `wallet_transaction` 表
+
+### 改进
+
+- 个人中心展示余额并跳转钱包页
+- 支付渠道接口需登录，动态包含余额支付
+
 ## [1.10.2] — 2026-01
 
 ### 改进
@@ -64,6 +78,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.11.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.2...v1.11.0
 [1.10.2]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.1...v1.10.2
 [1.10.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.9.0...v1.10.0

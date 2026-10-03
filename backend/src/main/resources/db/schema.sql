@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS shop_user (
     email       VARCHAR(128) NULL,
     password    VARCHAR(128) NOT NULL,
     nickname    VARCHAR(64)  NULL,
+    balance     DECIMAL(12,2) NOT NULL DEFAULT 0,
     status      SMALLINT     NOT NULL DEFAULT 1,
     deleted     SMALLINT     NOT NULL DEFAULT 0,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -213,6 +214,21 @@ CREATE TABLE IF NOT EXISTS payment_config (
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uk_payment_config_channel (channel)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS wallet_transaction (
+    id          BIGINT         NOT NULL PRIMARY KEY,
+    user_id     BIGINT         NOT NULL,
+    type        VARCHAR(32)    NOT NULL,
+    amount      DECIMAL(12,2)  NOT NULL,
+    balance_after DECIMAL(12,2) NOT NULL,
+    order_id    BIGINT         NULL,
+    order_no    VARCHAR(64)    NULL,
+    remark      VARCHAR(256)   NULL,
+    created_at  TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_wallet_tx_user (user_id),
+    KEY idx_wallet_tx_created (created_at),
+    CONSTRAINT fk_wallet_tx_user FOREIGN KEY (user_id) REFERENCES shop_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

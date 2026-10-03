@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -20,6 +21,7 @@ public class ShopUser {
     private String email;
     private String password;
     private String nickname;
+    private BigDecimal balance;
     private Integer status;
     @TableLogic
     private Integer deleted;

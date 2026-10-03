@@ -93,9 +93,7 @@ public class ShopOrderController {
     }
 
     @GetMapping("/payment-channels")
-    public Result<List<PaymentChannelVO>> channels() {
-        return Result.ok(paymentService.availableChannels().stream()
-                .map(PaymentChannelVO::from)
-                .toList());
+    public Result<List<PaymentChannelVO>> channels(Authentication auth) {
+        return Result.ok(paymentService.availableChannelsForUser((Long) auth.getDetails()));
     }
 }

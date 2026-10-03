@@ -13,6 +13,7 @@ const routes = [
       { path: 'orders', name: 'ShopOrders', meta: { shopAuth: true }, component: () => import('../views/shop/ShopOrders.vue') },
       { path: 'buy/:id', name: 'ShopBuy', meta: { shopAuth: true }, component: () => import('../views/shop/ShopBuy.vue') },
       { path: 'profile', name: 'ShopProfile', meta: { shopAuth: true }, component: () => import('../views/shop/ShopProfile.vue') },
+      { path: 'wallet', name: 'ShopWallet', meta: { shopAuth: true }, component: () => import('../views/shop/ShopWallet.vue') },
       { path: 'redeem', name: 'ShopRedeem', component: () => import('../views/shop/ShopRedeem.vue') }
     ]
   },

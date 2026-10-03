@@ -60,6 +60,7 @@
           <router-link to="/shop/orders">{{ t('nav.myOrders') }}</router-link>
           <router-link to="/shop/redeem">{{ t('nav.redeem') }}</router-link>
           <router-link to="/shop/profile">{{ t('nav.profile') }}</router-link>
+          <router-link to="/shop/wallet">{{ t('nav.wallet') }}</router-link>
         </div>
         <div class="footer-col">
           <h4>{{ t('nav.about') }}</h4>

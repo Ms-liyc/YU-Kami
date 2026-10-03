@@ -41,6 +41,10 @@
               {{ channelLabel(c.channel) }}
             </el-radio>
           </el-radio-group>
+          <p v-if="walletBalance !== null" class="wallet-tip">
+            {{ t('shop.walletBalance') }}: ¥{{ walletBalance }}
+            <router-link to="/shop/wallet">{{ t('shop.walletHistory') }}</router-link>
+          </p>
         </el-form-item>
       </el-form>
       <el-button type="primary" size="large" style="width:100%" :loading="paying" @click="handlePay">
@@ -97,21 +101,23 @@ const qrCodeUrl = ref('')
 const orderNo = ref('')
 const currentOrderId = ref(null)
 const existingOrderId = ref(route.query.orderId ? Number(route.query.orderId) : null)
+const walletBalance = ref(null)
 const polling = ref(false)
 let pollTimer = null
 
 const displayPrice = computed(() => product.value?.onSale ? product.value.salePrice : product.value?.value)
 
-const labels = { MOCK: 'shop.mockPay', ALIPAY: 'shop.alipay', WECHAT: 'shop.wechat' }
+const labels = { MOCK: 'shop.mockPay', ALIPAY: 'shop.alipay', WECHAT: 'shop.wechat', BALANCE: 'shop.balancePay' }
 function channelLabel(c) { return t(labels[c] || c) }
 
 onMounted(async () => {
   loading.value = true
   loadError.value = ''
   try {
-    const [pRes, cRes] = await Promise.all([
+    const [pRes, cRes, wRes] = await Promise.all([
       shopHttp.get(`/shop/products/${route.params.id}`),
-      shopRequest.get('/shop/orders/payment-channels')
+      shopRequest.get('/shop/orders/payment-channels'),
+      shopRequest.get('/shop/wallet').catch(() => null)
     ])
     if (pRes.data?.code !== 200 || !pRes.data?.data) {
       loadError.value = pRes.data?.message || t('shop.productNotFound')
@@ -119,7 +125,12 @@ onMounted(async () => {
     }
     product.value = pRes.data.data
     channels.value = cRes.data || []
-    if (channels.value.length) paymentMethod.value = channels.value[0].channel
+    if (wRes?.data?.balance != null) {
+      walletBalance.value = Number(wRes.data.balance).toFixed(2)
+    }
+    const balanceChannel = channels.value.find(c => c.channel === 'BALANCE')
+    const mockChannel = channels.value.find(c => c.channel === 'MOCK')
+    paymentMethod.value = balanceChannel?.channel || mockChannel?.channel || channels.value[0]?.channel
     await previewPrice()
   } catch (e) {
     loadError.value = e?.response?.data?.message || e?.message || t('shop.productNotFound')
@@ -290,6 +301,8 @@ function copyKey() {
 .coupon-row .el-input { flex: 1; }
 .total { font-size: 24px; font-weight: 700; color: #ef4444; }
 .discount-tip { margin-left: 12px; font-size: 14px; color: #22c55e; }
+.wallet-tip { margin-top: 10px; font-size: 13px; color: var(--shop-text-muted); }
+.wallet-tip a { color: #4f6ef7; margin-left: 8px; text-decoration: none; }
 .qr-box { text-align: center; }
 .qr-tip { color: var(--shop-text-muted); margin-bottom: 16px; }
 .qr-img { border: 1px solid var(--shop-border); border-radius: 8px; }

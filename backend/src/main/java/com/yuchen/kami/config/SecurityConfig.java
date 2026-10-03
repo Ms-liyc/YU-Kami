@@ -40,7 +40,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/shop/products/**").permitAll()
                         .requestMatchers("/api/shop/stats").permitAll()
                         .requestMatchers("/api/shop/orders/recent").permitAll()
-                        .requestMatchers("/api/shop/orders/payment-channels").permitAll()
                         .requestMatchers("/api/shop/payment/wechat/oauth-callback").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/api/v1/redeem").permitAll()

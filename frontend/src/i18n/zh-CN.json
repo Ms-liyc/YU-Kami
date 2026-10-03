@@ -45,6 +45,7 @@
     "orderQuery": "订单查询",
     "redeem": "卡密兑换",
     "profile": "个人中心",
+    "wallet": "我的钱包",
     "about": "了解",
     "manage": "管理",
     "security": "安全保障",
@@ -156,7 +157,13 @@
     "cardTypeDuration": "时长卡",
     "cardTypeSingle": "单次卡",
     "cardTypeBalance": "余额卡",
-    "defaultDesc": "安全可靠的数字商品交付"
+    "defaultDesc": "安全可靠的数字商品交付",
+    "balancePay": "余额支付",
+    "walletBalance": "账户余额",
+    "walletHint": "余额可用于商城内商品购买，演示账号 demo 初始 ¥200",
+    "walletHistory": "交易明细",
+    "walletType": "类型",
+    "walletRemark": "备注"
   },
   "order": {
     "title": "订单管理",

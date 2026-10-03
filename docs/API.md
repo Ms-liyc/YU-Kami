@@ -96,7 +96,16 @@ Content-Type: application/json
 | `/api/shop/orders/{id}/status` | GET | 支付状态轮询 |
 | `/api/shop/orders/{id}/card` | GET | 查看卡密（已发货） |
 | `/api/shop/orders/{id}/cancel` | POST | 取消待支付订单 |
-| `/api/shop/orders/payment-channels` | GET | 可用支付渠道 |
+| `/api/shop/orders/payment-channels` | GET | 可用支付渠道（需登录，含 BALANCE） |
+
+### 钱包
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/api/shop/wallet` | GET | 当前余额 |
+| `/api/shop/wallet/transactions` | GET | 交易明细（分页） |
+
+余额支付：创建订单后调用 `POST /api/shop/orders/prepay`，`paymentMethod` 设为 `BALANCE`。
 
 ---
 

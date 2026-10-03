@@ -34,6 +34,7 @@ public class ShopAuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setNickname(request.getNickname() != null ? request.getNickname() : request.getUsername());
+        user.setBalance(java.math.BigDecimal.ZERO);
         user.setStatus(1);
         shopUserMapper.insert(user);
         return buildLoginResponse(user);
@@ -61,6 +62,7 @@ public class ShopAuthService {
                 .username(user.getUsername())
                 .nickname(user.getNickname())
                 .email(user.getEmail())
+                .balance(user.getBalance() != null ? user.getBalance() : java.math.BigDecimal.ZERO)
                 .createdAt(user.getCreatedAt())
                 .build();
     }

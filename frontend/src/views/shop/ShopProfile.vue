@@ -2,6 +2,17 @@
   <div class="profile-page" v-loading="loading">
     <div class="profile-card reveal">
       <h1>{{ t('shop.profileTitle') }}</h1>
+
+      <div class="balance-strip">
+        <div>
+          <span class="balance-label">{{ t('shop.walletBalance') }}</span>
+          <strong class="balance-num">¥{{ formatBalance(profile.balance) }}</strong>
+        </div>
+        <el-button type="primary" link @click="$router.push('/shop/wallet')">{{ t('shop.walletHistory') }}</el-button>
+      </div>
+
+      <el-divider />
+
       <el-form label-width="100px" @submit.prevent>
         <el-form-item :label="t('shop.username')">
           <el-input :model-value="profile.username" disabled />
@@ -48,6 +59,10 @@ const changingPwd = ref(false)
 const profile = ref({})
 const form = reactive({ nickname: '', email: '' })
 const pwd = reactive({ oldPassword: '', newPassword: '' })
+
+function formatBalance(val) {
+  return Number(val ?? 0).toFixed(2)
+}
 
 async function loadProfile() {
   loading.value = true
@@ -96,6 +111,18 @@ onMounted(loadProfile)
   background: var(--shop-card); border-radius: 20px; padding: 40px;
   border: 1px solid var(--shop-border); box-shadow: var(--shop-card-shadow);
 }
-.profile-card h1 { font-size: 24px; font-weight: 800; margin-bottom: 24px; color: var(--shop-text); }
+.profile-card h1 { font-size: 24px; font-weight: 800; margin-bottom: 16px; color: var(--shop-text); }
 .profile-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--shop-text); }
+.balance-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--shop-section-alt);
+  border: 1px solid var(--shop-border);
+}
+.balance-label { display: block; font-size: 13px; color: var(--shop-text-muted); margin-bottom: 4px; }
+.balance-num { font-size: 22px; color: #4f6ef7; }
 </style>

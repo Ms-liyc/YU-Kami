@@ -45,6 +45,7 @@
     "orderQuery": "Order Lookup",
     "redeem": "Redeem",
     "profile": "Profile",
+    "wallet": "Wallet",
     "about": "About",
     "manage": "Admin",
     "security": "Security",
@@ -156,7 +157,13 @@
     "cardTypeDuration": "Duration",
     "cardTypeSingle": "Single-use",
     "cardTypeBalance": "Balance",
-    "defaultDesc": "Secure digital goods delivery"
+    "defaultDesc": "Secure digital goods delivery",
+    "balancePay": "Balance",
+    "walletBalance": "Balance",
+    "walletHint": "Use balance to pay in the shop. Demo account starts with ¥200.",
+    "walletHistory": "Transactions",
+    "walletType": "Type",
+    "walletRemark": "Remark"
   },
   "order": {
     "title": "Order Management",

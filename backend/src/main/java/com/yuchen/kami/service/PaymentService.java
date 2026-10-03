@@ -11,6 +11,7 @@ import com.yuchen.kami.entity.ShopOrder;
 import com.yuchen.kami.mapper.PaymentConfigMapper;
 import com.yuchen.kami.mapper.ShopOrderMapper;
 import com.yuchen.kami.dto.JsapiPayParams;
+import com.yuchen.kami.dto.PaymentChannelVO;
 import com.yuchen.kami.payment.AlipayPaymentService;
 import com.yuchen.kami.payment.WechatOAuthService;
 import com.yuchen.kami.payment.WechatPaymentService;
@@ -40,12 +41,14 @@ public class PaymentService {
     private final WechatPaymentService wechatPaymentService;
     private final WechatOAuthService wechatOAuthService;
     private final PromotionService promotionService;
+    private final WalletService walletService;
 
     public List<PaymentConfig> availableChannels() {
         return paymentConfigMapper.selectList(new LambdaQueryWrapper<PaymentConfig>()
                 .eq(PaymentConfig::getStatus, 1));
     }
 
+    @Transactional
     public PrepayResponse prepay(Long userId, Long orderId, String paymentMethod,
                                  String openid, Boolean wechatJsapi) {
         ShopOrder order = orderService.getOrder(orderId, userId);
@@ -53,14 +56,14 @@ public class PaymentService {
             throw new BusinessException("订单状态不允许支付");
         }
 
-        PaymentConfig config = getEnabledConfig(paymentMethod);
         order.setPaymentMethod(paymentMethod);
         shopOrderMapper.updateById(order);
 
         return switch (paymentMethod) {
             case "MOCK" -> prepayMock(order, userId);
-            case "ALIPAY" -> prepayAlipay(config, order);
-            case "WECHAT" -> prepayWechat(config, order, userId, openid, wechatJsapi);
+            case "BALANCE" -> prepayBalance(order, userId);
+            case "ALIPAY" -> prepayAlipay(getEnabledConfig("ALIPAY"), order);
+            case "WECHAT" -> prepayWechat(getEnabledConfig("WECHAT"), order, userId, openid, wechatJsapi);
             default -> throw new BusinessException("不支持的支付方式");
         };
     }
@@ -187,6 +190,20 @@ public class PaymentService {
                 .build();
     }
 
+    @Transactional
+    private PrepayResponse prepayBalance(ShopOrder order, Long userId) {
+        String paymentNo = walletService.payOrder(userId, order);
+        completePayment(order.getOrderNo(), paymentNo);
+        String cardKey = redisTemplate.opsForValue().get("order:card:" + order.getId());
+        return PrepayResponse.builder()
+                .payType("INSTANT")
+                .orderId(order.getId())
+                .orderNo(order.getOrderNo())
+                .cardKey(cardKey)
+                .message("余额支付成功")
+                .build();
+    }
+
     private PrepayResponse prepayAlipay(PaymentConfig config, ShopOrder order) {
         String payUrl = alipayPaymentService.createPagePay(config, order);
         return PrepayResponse.builder()
@@ -233,6 +250,14 @@ public class PaymentService {
             throw new BusinessException("支付渠道未启用: " + channel);
         }
         return config;
+    }
+
+    public List<PaymentChannelVO> availableChannelsForUser(Long userId) {
+        List<PaymentChannelVO> channels = availableChannels().stream()
+                .map(PaymentChannelVO::from)
+                .collect(java.util.stream.Collectors.toCollection(java.util.ArrayList::new));
+        channels.add(PaymentChannelVO.balance());
+        return channels;
     }
 
     /** 回调验签用：不要求渠道当前处于启用状态 */

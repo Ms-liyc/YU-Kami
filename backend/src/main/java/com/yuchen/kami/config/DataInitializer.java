@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.Product;
 import com.yuchen.kami.entity.Promotion;
+import com.yuchen.kami.entity.WalletTransaction;
 import com.yuchen.kami.entity.ShopUser;
 import com.yuchen.kami.entity.SysUser;
 import com.yuchen.kami.mapper.PaymentConfigMapper;
@@ -12,6 +13,7 @@ import com.yuchen.kami.mapper.PromotionMapper;
 import com.yuchen.kami.mapper.ShopUserMapper;
 import com.yuchen.kami.mapper.SysUserMapper;
 import com.yuchen.kami.service.SetupService;
+import com.yuchen.kami.service.WalletService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,6 +35,7 @@ public class DataInitializer implements CommandLineRunner {
     private final PaymentConfigMapper paymentConfigMapper;
     private final PasswordEncoder passwordEncoder;
     private final SetupService setupService;
+    private final WalletService walletService;
 
     @Override
     public void run(String... args) {
@@ -57,6 +60,7 @@ public class DataInitializer implements CommandLineRunner {
         initProduct("通用余额卡", "BALANCE_100", "BALANCE", "100.00", null,
                 "充值型余额卡，可用于平台内消费抵扣");
         initDemoShopUser();
+        seedDemoWalletBalance();
         initDemoPromotions();
         initPaymentChannel("MOCK", "模拟支付", true);
         initPaymentChannel("ALIPAY", "支付宝", false);
@@ -113,10 +117,26 @@ public class DataInitializer implements CommandLineRunner {
             user.setPassword(passwordEncoder.encode("demo123"));
             user.setNickname("演示买家");
             user.setEmail("demo@yu-kami.com");
+            user.setBalance(new BigDecimal("200.00"));
             user.setStatus(1);
             shopUserMapper.insert(user);
-            log.info("已创建演示商城账号: demo / demo123");
+            log.info("已创建演示商城账号: demo / demo123（初始余额 ¥200）");
         }
+    }
+
+    private void seedDemoWalletBalance() {
+        ShopUser demo = shopUserMapper.selectOne(new LambdaQueryWrapper<ShopUser>()
+                .eq(ShopUser::getUsername, "demo"));
+        if (demo == null) {
+            return;
+        }
+        BigDecimal balance = demo.getBalance() == null ? BigDecimal.ZERO : demo.getBalance();
+        if (balance.compareTo(BigDecimal.ZERO) > 0) {
+            return;
+        }
+        walletService.credit(demo.getId(), new BigDecimal("200.00"),
+                WalletTransaction.TYPE_RECHARGE, "演示账号初始余额");
+        log.info("已为演示账号 demo 充值 ¥200 余额");
     }
 
     private void initDemoPromotions() {
