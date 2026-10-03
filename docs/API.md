@@ -118,6 +118,7 @@ Content-Type: application/json
 | 卡密 | `/api/admin/cards/**` | 生成、导入、作废、批次 |
 | 兑换记录 | `/api/admin/redeem-records` | 审计明细 |
 | 订单 | `/api/admin/orders/**` | 列表、取消、支付配置 |
+| 商城买家 | `/api/admin/shop-users/**` | 买家列表、钱包余额调整 |
 | 促销 | `/api/admin/promotions` | 满减/折扣/特价 |
 | 优惠券 | `/api/admin/coupons` | 券码管理 |
 | API 客户端 | `/api/admin/api-clients` | 开放接入 |
@@ -125,6 +126,22 @@ Content-Type: application/json
 | 审计 | `/api/admin/audit-logs` | 操作日志 |
 | Webhook | `/api/admin/webhooks` | 回调配置 |
 | 导出 | `/api/admin/export/**` | CSV / Excel |
+
+### 商城买家与钱包
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/api/admin/shop-users` | GET | 买家列表，支持 `keyword` |
+| `/api/admin/shop-users/{id}/wallet/adjust` | POST | 调整余额（正数充值，负数扣减） |
+
+**调整余额请求体：**
+
+```json
+{
+  "amount": 100.00,
+  "remark": "活动赠送"
+}
+```
 
 ---
 

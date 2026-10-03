@@ -87,6 +87,24 @@ public class WalletService {
         recordTransaction(userId, type, amount, after, null, null, remark);
     }
 
+    @Transactional
+    public BigDecimal adjustBalance(Long userId, BigDecimal delta, String remark) {
+        if (delta == null || delta.compareTo(BigDecimal.ZERO) == 0) {
+            throw new BusinessException("调整金额不能为 0");
+        }
+        ShopUser user = requireUser(userId);
+        BigDecimal after = normalizeBalance(user.getBalance()).add(delta);
+        if (after.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BusinessException("余额不足，无法扣减");
+        }
+        shopUserMapper.update(null, new LambdaUpdateWrapper<ShopUser>()
+                .eq(ShopUser::getId, userId)
+                .set(ShopUser::getBalance, after));
+        String detail = remark != null && !remark.isBlank() ? remark : "管理员调整余额";
+        recordTransaction(userId, WalletTransaction.TYPE_ADJUST, delta, after, null, null, detail);
+        return after;
+    }
+
     private void recordTransaction(Long userId, String type, BigDecimal amount, BigDecimal balanceAfter,
                                    Long orderId, String orderNo, String remark) {
         WalletTransaction tx = new WalletTransaction();

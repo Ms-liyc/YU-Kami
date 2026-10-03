@@ -9,7 +9,7 @@
     </el-row>
 
     <el-row :gutter="16" style="margin-top: 20px">
-      <el-col :span="16">
+      <el-col :xs="24" :md="16">
         <div class="page-card">
           <div class="card-header"><h3>{{ t('admin.recentRedeems') }}</h3></div>
           <div class="card-body" style="padding: 0">
@@ -29,7 +29,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="8">
+      <el-col :xs="24" :md="8">
         <div class="page-card" style="margin-bottom: 16px">
           <div class="card-header"><h3>{{ t('admin.usageRate') }}</h3></div>
           <div class="card-body usage-body">

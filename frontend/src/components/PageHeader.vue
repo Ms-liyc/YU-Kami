@@ -1,6 +1,6 @@
 <template>
   <div class="page-header">
-    <div>
+    <div class="page-header-text">
       <h2 class="title">{{ title }}</h2>
       <p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
     </div>
@@ -22,7 +22,9 @@ defineProps({
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 16px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 .title {
   font-size: 22px;
@@ -34,5 +36,24 @@ defineProps({
   font-size: 14px;
   color: var(--text-secondary);
   margin-top: 4px;
+}
+.extra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 16px;
+  }
+  .extra {
+    width: 100%;
+  }
+  .extra :deep(.el-button) {
+    flex: 1;
+  }
 }
 </style>

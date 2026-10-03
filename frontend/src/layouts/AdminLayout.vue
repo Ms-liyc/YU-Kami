@@ -39,6 +39,10 @@
             <el-icon><ShoppingCart /></el-icon>
             <template #title>{{ t('nav.orders') }}</template>
           </el-menu-item>
+          <el-menu-item index="/shop-users">
+            <el-icon><UserFilled /></el-icon>
+            <template #title>{{ t('nav.shopUsers') }}</template>
+          </el-menu-item>
           <el-menu-item index="/promotions">
             <el-icon><Present /></el-icon>
             <template #title>{{ t('nav.promotions') }}</template>
@@ -152,6 +156,7 @@ const titleMap = {
   '/audit-logs': 'nav.auditLogs',
   '/webhooks': 'nav.webhooks',
   '/orders': 'nav.orders',
+  '/shop-users': 'nav.shopUsers',
   '/promotions': 'nav.promotions',
   '/coupons': 'nav.coupons'
 }
@@ -256,9 +261,12 @@ function handleLogout() {
 @media (max-width: 768px) {
   .menu-toggle { display: inline-flex; }
   .breadcrumb { display: none; }
-  .header { padding: 0 16px; }
-  .main { padding: 16px; }
+  .header { padding: 0 12px; height: 56px; }
+  .main { padding: 12px; }
   .user-name { display: none; }
+  .shop-link { display: none; }
+  .header-right { gap: 8px; }
+  .header-right :deep(.el-tag) { display: none; }
   .aside {
     position: fixed;
     left: 0;

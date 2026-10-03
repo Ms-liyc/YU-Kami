@@ -38,6 +38,7 @@
     "shop": "Shop",
     "myOrders": "My Orders",
     "admin": "Admin",
+    "shopUsers": "Shop Buyers",
     "shopProducts": "Products",
     "flow": "How to Buy",
     "showcase": "Features",
@@ -82,7 +83,17 @@
     "recordsTitle": "Redeem Records",
     "recordsSubtitle": "Full redeem audit trail",
     "exportCsv": "Export CSV",
-    "exportExcel": "Export Excel"
+    "exportExcel": "Export Excel",
+    "shopUsersTitle": "Shop Buyers",
+    "shopUsersSubtitle": "Manage storefront users and wallet balance",
+    "shopUserSearch": "Search username/nickname/email",
+    "adjustBalance": "Adjust Balance",
+    "adjustAmount": "Amount",
+    "adjustAmountHint": "Positive to credit, negative to deduct",
+    "adjustAmountRequired": "Please enter an amount",
+    "adjustRemarkPlaceholder": "e.g. promotion bonus, manual refund",
+    "statusNormal": "Active",
+    "statusDisabled": "Disabled"
   },
   "shop": {
     "title": "YU-Kami Card Shop",

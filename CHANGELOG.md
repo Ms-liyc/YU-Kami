@@ -2,6 +2,19 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.12.0] — 2026-01
+
+### 新增
+
+- 管理端商城买家列表与钱包余额调整（`/api/admin/shop-users`）
+- Docker Hub 官方镜像与 `docker-compose.hub.yml`
+- GitHub Actions Docker Publish 工作流
+
+### 改进
+
+- 管理后台移动端：页头、筛选栏、对话框、仪表盘布局优化
+- 余额调整写入审计日志
+
 ## [1.11.0] — 2026-01
 
 ### 新增
@@ -78,6 +91,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.12.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.2...v1.11.0
 [1.10.2]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.1...v1.10.2
 [1.10.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.0...v1.10.1

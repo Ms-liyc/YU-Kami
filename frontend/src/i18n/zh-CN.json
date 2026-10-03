@@ -38,6 +38,7 @@
     "shop": "购买中心",
     "myOrders": "我的订单",
     "admin": "管理后台",
+    "shopUsers": "商城买家",
     "shopProducts": "商品",
     "flow": "购买流程",
     "showcase": "功能展示",
@@ -82,7 +83,17 @@
     "recordsTitle": "兑换记录",
     "recordsSubtitle": "全部卡密兑换操作审计",
     "exportCsv": "导出 CSV",
-    "exportExcel": "导出 Excel"
+    "exportExcel": "导出 Excel",
+    "shopUsersTitle": "商城买家",
+    "shopUsersSubtitle": "管理前台注册用户与钱包余额",
+    "shopUserSearch": "搜索用户名/昵称/邮箱",
+    "adjustBalance": "调整余额",
+    "adjustAmount": "调整金额",
+    "adjustAmountHint": "正数充值，负数扣减",
+    "adjustAmountRequired": "请输入调整金额",
+    "adjustRemarkPlaceholder": "如：活动赠送、人工补偿",
+    "statusNormal": "正常",
+    "statusDisabled": "禁用"
   },
   "shop": {
     "title": "YU-Kami 卡密商城",

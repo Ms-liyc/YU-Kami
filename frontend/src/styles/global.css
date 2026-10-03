@@ -75,12 +75,24 @@ body {
 .btn-group { display: flex; gap: 8px; }
 
 @media (max-width: 768px) {
+  .page-card .card-header {
+    padding: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
   .page-card .card-body {
     padding: 16px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
   .page-card .el-table { min-width: 680px; }
+  .table-scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .filter-bar { gap: 8px; }
-  .el-pagination { flex-wrap: wrap; }
+  .filter-bar .el-input,
+  .filter-bar .el-select { width: 100% !important; max-width: none !important; }
+  .el-pagination { flex-wrap: wrap; justify-content: center; }
+  .el-dialog { width: 92% !important; max-width: 92vw; margin: 0 auto; }
+  .stat-row .el-col { margin-bottom: 12px; }
+  .btn-group { flex-wrap: wrap; width: 100%; }
+  .btn-group .el-button { flex: 1; min-width: 120px; }
 }

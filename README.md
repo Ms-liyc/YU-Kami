@@ -38,6 +38,7 @@
   <a href="https://github.com/Ms-liyc/YU-Kami">🌟 Star 项目</a> ·
   <a href="#-快速部署指南">📖 部署文档</a> ·
   <a href="docs/PAYMENT.md">💳 支付配置</a> ·
+  <a href="docs/DOCKER.md">🐳 Docker Hub</a> ·
   <a href="docs/API.md">📡 API 文档</a> ·
   <a href="CHANGELOG.md">📝 更新日志</a> ·
   <a href="#-开发路线图">📋 路线图</a> ·
@@ -57,6 +58,14 @@ git clone https://github.com/Ms-liyc/YU-Kami.git
 cd YU-Kami
 docker compose up -d --build
 ```
+
+**Docker Hub 预构建镜像（无需编译）：**
+
+```bash
+docker compose -f docker-compose.hub.yml up -d
+```
+
+镜像：`msliyc/yu-kami-backend` · `msliyc/yu-kami-frontend`（详见 [docs/DOCKER.md](docs/DOCKER.md)）
 
 **默认访问地址：**
 
@@ -354,6 +363,12 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.12.0
+
+* 👥 **商城买家管理**：管理端查看买家列表，充值/扣减钱包余额
+* 🐳 **Docker Hub 镜像**：`msliyc/yu-kami-backend` / `frontend`，CI 自动推送
+* 📱 **管理端移动优化**：页头/表格/对话框/仪表盘响应式布局
+
 #### v1.11.0
 
 * 💰 **用户钱包**：账户余额、交易明细页（`/shop/wallet`）
@@ -479,8 +494,9 @@ Content-Type: application/json
 * [x] 订单号查询与个人中心
 * [x] 卡密兑换前台入口
 * [x] 管理后台表格移动端基础适配
-* [ ] 移动端适配优化（管理后台深度优化）
-* [ ] Docker Hub 官方镜像
+* [x] 管理端买家钱包充值/调整
+* [x] Docker Hub 官方镜像
+* [x] 管理端移动端深度优化（页头/表格/对话框/仪表盘）
 
 ---
 

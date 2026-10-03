@@ -44,6 +44,7 @@ const routes = [
       { path: 'batches', name: 'Batches', component: () => import('../views/Batches.vue') },
       { path: 'records', name: 'Records', component: () => import('../views/Records.vue') },
       { path: 'orders', name: 'Orders', component: () => import('../views/Orders.vue') },
+      { path: 'shop-users', name: 'ShopUsers', component: () => import('../views/ShopUsers.vue') },
       { path: 'promotions', name: 'Promotions', component: () => import('../views/Promotions.vue') },
       { path: 'coupons', name: 'Coupons', component: () => import('../views/Coupons.vue') },
       { path: 'api-clients', name: 'ApiClients', meta: { superAdmin: true }, component: () => import('../views/ApiClients.vue') },
