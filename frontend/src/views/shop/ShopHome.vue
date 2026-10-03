@@ -179,11 +179,14 @@
         <div class="cta-icon"><YuIcon name="search" size="xl" /></div>
         <div class="cta-text">
           <h2>已有订单？立即查询卡密</h2>
-          <p>登录后可在订单页查看卡密，支持一键复制</p>
+          <p>输入订单号即可查状态；登录后在「我的订单」筛选、搜索并一键复制卡密</p>
         </div>
-        <el-button type="primary" size="large" round class="cta-btn" @click="$router.push('/shop/query')">
-          订单查询
-        </el-button>
+        <div class="cta-actions">
+          <el-button type="primary" size="large" round class="cta-btn" @click="$router.push('/shop/query')">
+            订单查询
+          </el-button>
+          <el-button size="large" round plain @click="$router.push('/shop/redeem')">卡密兑换</el-button>
+        </div>
       </div>
     </section>
 
@@ -273,10 +276,12 @@ const screenshots = [
 ]
 
 const faqs = [
-  { q: '购买后如何获取卡密？', a: '支付成功后，在「我的订单」中查看已发货订单，点击即可复制卡密。卡密在 Redis 中缓存 24 小时。' },
-  { q: '支持哪些支付方式？', a: '默认支持模拟支付（测试用）；生产环境可在管理后台配置支付宝、微信支付。' },
-  { q: '可以使用优惠券吗？', a: '可以。在购买页输入优惠券码，系统自动计算活动价与券后最优价格。' },
-  { q: '如何对接第三方系统？', a: '支持 Webhook 兑换成功回调（HMAC 签名），以及 API 客户端管理。发卡网供货 API 可按需扩展。' },
+  { q: '购买后如何获取卡密？', a: '支付成功后，在「我的订单」中查看已发货订单，点击即可复制卡密；也可在「订单查询」页输入订单号直接查看。卡密在 Redis 中缓存 24 小时。' },
+  { q: '没有登录能查订单吗？', a: '可以。在顶部「订单查询」输入完整订单号即可查看状态；查看卡密需订单已发货且为本人账号下的订单（需登录）。' },
+  { q: '支持哪些支付方式？', a: '默认支持模拟支付（测试用）；生产环境可在管理后台配置支付宝、微信支付（含微信内 JSAPI）。' },
+  { q: '可以使用优惠券吗？', a: '可以。在购买页输入优惠券码并选择数量，系统自动计算活动价与券后最优价格。' },
+  { q: '如何兑换已有卡密？', a: '访问「卡密兑换」页面，输入卡密与用户标识即可；第三方系统也可直接调用 POST /api/v1/redeem 接口。' },
+  { q: '如何对接第三方系统？', a: '支持 Webhook 兑换成功回调（HMAC 签名）、API 客户端管理，以及标准化 REST 兑换接口。' },
   { q: '卡密会重复出售吗？', a: '不会。支付成功后在事务内生成唯一卡密，回调使用乐观锁防止重复发货。' },
   { q: '如何部署自己的发卡网？', a: 'Docker Compose 一键部署，或手动编译 Jar + Nginx 托管前端静态文件。详见项目 README。' }
 ]
@@ -498,6 +503,13 @@ function scrollTo(id) {
   border: 1px solid var(--shop-icon-border);
 }
 .cta-text { flex: 1; min-width: 0; text-align: left; }
+.cta-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
 .cta-box h2 {
   font-size: 22px;
   font-weight: 800;
@@ -523,6 +535,7 @@ function scrollTo(id) {
     padding: 28px 24px;
   }
   .cta-text { text-align: center; }
+  .cta-actions { width: 100%; flex-direction: column; }
   .cta-btn { width: 100%; }
 }
 

@@ -26,7 +26,8 @@
 </p>
 
 <p align="center">
-  <sub>首次部署默认启用 <b>MOCK 模拟支付</b>，可直接体验完整购买与发卡流程；真实收款需自行配置商户密钥与回调地址。</sub>
+  <sub>首次部署默认启用 <b>MOCK 模拟支付</b>，可直接体验完整购买与发卡流程；真实收款需自行配置商户密钥与回调地址。</sub><br>
+  <sub>演示买家 <code>demo</code> / <code>demo123</code> · 管理端 <code>admin</code> / <code>admin123</code></sub>
 </p>
 
 <p align="center">
@@ -63,7 +64,9 @@ docker compose up -d --build
 | 用户购买中心 | http://localhost/shop |
 | 管理后台 | http://localhost/login |
 | 后端 API | http://localhost:8080 |
+| Swagger 文档 | http://localhost:8080/swagger-ui.html |
 | 默认管理员 | `admin` / `admin123` |
+| 演示买家 | `demo` / `demo123` |
 
 > **支付说明**：首次部署默认启用**模拟支付（MOCK）**，无需配置即可体验购买与发卡。  
 > 真实支付宝/微信收款为**可选功能**，需部署者自行申请商户资质、在管理后台配置密钥，并按实际环境设置回调地址。详见 [docs/PAYMENT.md](docs/PAYMENT.md)。
@@ -94,6 +97,8 @@ cd frontend && npm install && npm run dev
 |------|------|
 | 用户前台 | http://localhost:5173/shop |
 | 管理后台 | http://localhost:5173/login |
+| 后端 API | http://localhost:8080（或 `SERVER_PORT=8081`） |
+| 演示买家 | `demo` / `demo123` |
 
 > 本地开发若 8080 端口被占用，可设置 `SERVER_PORT=8081`，前端 `VITE_API_PROXY=http://localhost:8081`。  
 > 更新商城 Hero 预览截图：`cd frontend && npm run capture:screenshots`（需前后端均已启动）。
@@ -117,7 +122,7 @@ mysql -u root -p yukami < backend/src/main/resources/db/schema.sql
 # 3. 后端编译运行
 cd backend
 ./mvnw clean package -DskipTests   # Windows: mvnw.cmd
-java -jar target/yu-kami-1.8.0.jar
+java -jar target/yu-kami-*.jar
 
 # 4. 前端编译
 cd ../frontend
@@ -180,15 +185,24 @@ REDIS_PORT=6379
 
 ### 🛍️ 用户发卡网（商城前台）
 
-* 🏠 **落地页** — Hero 区、购买流程、功能展示、界面一览、FAQ
+| 页面 | 路径 | 说明 |
+|------|------|------|
+| 落地页 | `/shop` | Hero、购买流程、功能展示、FAQ、热销商品 |
+| 订单查询 | `/shop/query` | 凭订单号查状态，已发货可查看卡密 |
+| 卡密兑换 | `/shop/redeem` | 输入卡密与标识，对接开放兑换 API |
+| 登录 / 注册 | `/shop/login` | 商城买家账号 |
+| 我的订单 | `/shop/orders` | 状态筛选、订单号搜索、复制卡密 |
+| 购买页 | `/shop/buy/:id` | 数量选择、优惠券、促销价、支付 |
+| 个人中心 | `/shop/profile` | 修改昵称/邮箱、修改密码 |
+
+* 🏠 **落地页** — Hero 区、实时统计、成交滚动、购买流程、界面一览、FAQ
 * 📱 **双端预览** — PC 商品列表 + 手机端叠加展示，支持静态截图与嵌入页回退
 * 🌙 **深色模式** — 全站 CSS 变量主题，顶栏一键切换
-* 🛒 **商品购买** — 注册登录、优惠券、促销价、模拟/支付宝/微信支付
-* 📋 **订单查询** — 游客查单入口，登录后订单页一键复制卡密
-* 🎭 **演示数据** — 内置示例商品、促销与优惠券（`demo` / `demo123`）
-* 🔍 **订单查询** — 订单号精确查询，支持查看卡密与继续支付
+* 🛒 **商品购买** — 注册登录、数量选择、优惠券、促销价、模拟/支付宝/微信支付
+* 🔍 **订单查询** — 订单号精确查询；登录后订单页筛选、搜索与一键复制卡密
 * 👤 **个人中心** — 资料修改、密码修改
-* 🎫 **卡密兑换** — 前台兑换入口，对接开放 API
+* 🎫 **卡密兑换** — 前台兑换入口，对接 `/api/v1/redeem`
+* 🎭 **演示数据** — 内置示例商品、促销与优惠券（`demo` / `demo123`）
 
 ### 🔌 开发者接口
 
@@ -244,6 +258,8 @@ REDIS_PORT=6379
 
 ## 📡 API 文档
 
+> 完整接口列表见 [docs/API.md](docs/API.md)，本地调试推荐 Swagger UI。
+
 ### 开放接口 — 卡密兑换
 
 ```bash
@@ -255,6 +271,34 @@ Content-Type: application/json
   "redeemUser": "user_12345"
 }
 ```
+
+### 商城接口（买家 JWT）
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/api/shop/auth/register` | POST | 注册 |
+| `/api/shop/auth/login` | POST | 登录 |
+| `/api/shop/auth/me` | GET | 当前用户资料 |
+| `/api/shop/auth/profile` | PUT | 更新昵称/邮箱 |
+| `/api/shop/auth/password` | PUT | 修改密码 |
+| `/api/shop/products` | GET | 商品列表 |
+| `/api/shop/products/{id}` | GET | 商品详情 |
+| `/api/shop/orders` | GET | 我的订单（支持 `status`、`orderNo` 筛选） |
+| `/api/shop/orders/lookup` | GET | 按订单号查询（`?orderNo=`） |
+| `/api/shop/orders` | POST | 创建订单 |
+| `/api/shop/orders/pay` | POST | 模拟支付 |
+| `/api/shop/orders/prepay` | POST | 预支付（支付宝/微信） |
+| `/api/shop/orders/{id}/card` | GET | 查看卡密 |
+| `/api/shop/orders/{id}/cancel` | POST | 取消订单 |
+| `/api/shop/orders/pricing/preview` | POST | 价格预览（促销+优惠券） |
+
+### 商城公开接口（无需 Token）
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/api/shop/stats` | GET | 落地页统计（商品数、成交数等） |
+| `/api/shop/orders/recent` | GET | 最近成交滚动（脱敏） |
+| `/api/shop/products/**` | GET | 商品浏览 |
 
 ### 管理端接口（需 JWT）
 
@@ -394,6 +438,8 @@ Content-Type: application/json
 * [ ] 用户钱包与余额支付
 * [x] 商城落地页与移动端预览
 * [x] 商城深色模式
+* [x] 订单号查询与个人中心
+* [x] 卡密兑换前台入口
 * [ ] 移动端适配优化（管理后台）
 * [ ] Docker Hub 官方镜像
 
