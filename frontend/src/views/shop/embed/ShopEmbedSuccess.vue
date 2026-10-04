@@ -12,7 +12,7 @@
         </template>
       </el-result>
     </div>
-    <div class="success-toast"><YuIcon name="check" size="sm" /> 支付成功，卡密已发放</div>
+    <div class="success-toast"><YuIcon name="check" size="sm" /> {{ t('shop.deliveredToast') }}</div>
   </div>
 </template>
 
@@ -47,23 +47,24 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px 16px 16px;
-  background: #f8fafc;
+  padding: 48px 16px 16px;
+  background: var(--shop-bg);
 }
 .buy-card {
   width: 100%;
   max-width: 420px;
-  background: #fff;
+  background: var(--shop-card);
   border-radius: 16px;
   padding: 24px 20px 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  border: 1px solid var(--shop-border);
+  box-shadow: var(--shop-card-shadow);
 }
 .success-toast {
   width: 100%;
   max-width: 420px;
   margin-top: 12px;
-  background: #f0fdf4;
-  color: #16a34a;
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  color: var(--success);
   font-size: 13px;
   padding: 10px 14px;
   border-radius: 8px;
@@ -72,5 +73,6 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  border: 1px solid color-mix(in srgb, var(--success) 25%, transparent);
 }
 </style>

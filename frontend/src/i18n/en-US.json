@@ -95,7 +95,13 @@
     "totpDisable": "Disable 2FA",
     "totpEnabledHint": "Two-factor authentication is enabled",
     "totpLoginPlaceholder": "2FA code (if enabled)",
-    "defaultPasswordWarn": "Default password detected — please change it soon"
+    "defaultPasswordWarn": "Default password detected — please change it soon",
+    "passwordChanged": "Password updated",
+    "defaultPasswordTitle": "Security: please change the default password",
+    "defaultPasswordBody": "This account still uses the initial password {password}. Change it as soon as possible.",
+    "changePasswordNow": "Change now",
+    "changePasswordTitle": "Change password",
+    "currentPassword": "Current password"
   },
   "admin": {
     "welcome": "Welcome Back",
@@ -384,6 +390,8 @@
     "cardKeyPlaceholder": "Enter card key",
     "redeemBtn": "Redeem Now",
     "redeemSuccess": "Redeemed successfully",
+    "redeemSuccessDetail": "Redeemed successfully. Benefits are active.",
+    "deliveredToast": "Payment successful. Card key delivered.",
     "redeemFail": "Redeem failed",
     "redeemApiHint": "Third-party systems can call POST /api/v1/redeem directly. See API docs for details.",
     "darkMode": "Dark mode",

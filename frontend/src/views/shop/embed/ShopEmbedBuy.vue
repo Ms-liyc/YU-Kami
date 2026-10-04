@@ -26,7 +26,7 @@
       </el-form>
       <el-button type="primary" size="large" style="width:100%">{{ t('shop.pay') }}</el-button>
     </div>
-    <el-empty v-else-if="!loading" description="暂无商品数据" />
+    <el-empty v-else-if="!loading" :description="t('shop.noProducts')" />
   </div>
 </template>
 
@@ -67,14 +67,21 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.buy-page { display: flex; justify-content: center; padding: 24px 16px; min-height: 100vh; background: #f8fafc; }
-.buy-card { width: 100%; max-width: 480px; background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
-.buy-card h2 { font-size: 24px; }
-.desc { color: #64748b; margin: 8px 0; }
+.buy-page { display: flex; justify-content: center; padding: 48px 16px 24px; min-height: 100vh; background: var(--shop-bg); }
+.buy-card {
+  width: 100%; max-width: 480px;
+  background: var(--shop-card);
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid var(--shop-border);
+  box-shadow: var(--shop-card-shadow);
+}
+.buy-card h2 { font-size: 24px; color: var(--shop-text); }
+.desc { color: var(--shop-text-muted); margin: 8px 0; }
 .price-row { display: flex; align-items: baseline; gap: 12px; }
-.price { font-size: 32px; font-weight: 800; color: #ef4444; }
-.original { font-size: 18px; color: #94a3b8; text-decoration: line-through; }
-.promo-tip { font-size: 13px; color: #4f6ef7; margin-top: 4px; }
+.price { font-size: 32px; font-weight: 800; color: var(--danger); }
+.original { font-size: 18px; color: var(--shop-text-muted); text-decoration: line-through; }
+.promo-tip { font-size: 13px; color: var(--shop-link-hover); margin-top: 4px; }
 .coupon-row { display: flex; gap: 8px; width: 100%; }
 .coupon-row .el-input { flex: 1; }
 </style>

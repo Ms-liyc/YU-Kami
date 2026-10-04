@@ -2,6 +2,15 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.21.0] — 2026-01
+
+### 改进
+
+- Embed 预览页接入全局主题切换（ThemeSwitcher + 深色变量）
+- Embed 查单 / 个人中心 / 兑换页 i18n 与共享样式
+- 默认密码安全横幅 i18n + 深色模式适配
+- 安全设置、订单配置等页面硬编码背景色改 CSS 变量
+
 ## [1.20.0] — 2026-01
 
 ### 新增
@@ -222,6 +231,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.21.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.17.0...v1.18.0

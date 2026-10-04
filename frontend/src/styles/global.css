@@ -88,6 +88,17 @@ body {
 
 .btn-group { display: flex; gap: 8px; }
 
+.time-cell { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+.inline-code {
+  background: var(--page-bg);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+}
+
 .auth-page {
   min-height: 100vh;
   display: flex;

@@ -186,5 +186,6 @@ onMounted(() => { loadProducts(); loadData() })
 </script>
 
 <style scoped>
-.time-cell { font-size: 12px; color: #64748b; line-height: 1.5; }
+.time-cell { font-size: 12px; line-height: 1.5; }
 </style>
+

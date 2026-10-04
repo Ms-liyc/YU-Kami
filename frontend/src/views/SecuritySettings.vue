@@ -74,7 +74,8 @@ onMounted(loadStatus)
 <style scoped>
 .status-alert { margin-bottom: 16px; }
 .hint { color: var(--text-secondary); margin-bottom: 16px; font-size: 14px; }
-.setup-box { margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: 12px; }
+.setup-box { margin-top: 20px; padding: 16px; background: var(--page-bg); border: 1px solid var(--border); border-radius: 12px; }
+.setup-box code { background: var(--primary-light); padding: 2px 6px; border-radius: 4px; }
 .qr { margin-top: 12px; width: 180px; height: 180px; }
 .actions { margin-top: 12px; display: flex; gap: 8px; }
 </style>

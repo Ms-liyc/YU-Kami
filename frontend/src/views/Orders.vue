@@ -222,6 +222,6 @@ onMounted(async () => {
 <style scoped>
 .setup-alert { margin-bottom: 16px; }
 .env-hint { margin-top: 8px; font-size: 13px; }
-.env-hint code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+.env-hint code { background: var(--page-bg); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; }
 .env-note { color: var(--text-secondary); margin-left: 6px; }
 </style>

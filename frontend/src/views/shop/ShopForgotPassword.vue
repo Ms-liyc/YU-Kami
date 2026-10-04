@@ -41,5 +41,5 @@ async function submit() {
 .auth-page { min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 48px 16px; }
 .auth-card { width: 100%; max-width: 400px; padding: 32px; background: var(--shop-card); border-radius: 16px; border: 1px solid var(--shop-border); }
 .auth-card h2 { margin-bottom: 20px; color: var(--shop-text); }
-.back-link { display: block; margin-top: 16px; text-align: center; color: #4f6ef7; font-size: 14px; }
+.back-link { display: block; margin-top: 16px; text-align: center; color: var(--shop-link-hover); font-size: 14px; }
 </style>
