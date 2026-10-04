@@ -2,6 +2,17 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.22.1] — 2026-01
+
+### 修复
+
+- 管理端 `logout()` 不再 `localStorage.clear()`，避免误清商城登录态、语言与主题偏好
+
+### 改进
+
+- Embed 预览与落地页 Mock 数据完整 i18n（成交滚动、统计缩写、演示商品等）
+- 默认 SEO 元信息随语言切换；清理 LanguageSwitcher / DefaultPasswordBanner 死代码
+
 ## [1.22.0] — 2026-01
 
 ### 新增
@@ -244,6 +255,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.22.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.22.0...v1.22.1
 [1.22.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.21.1...v1.22.0
 [1.21.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.21.0...v1.21.1
 [1.21.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.20.0...v1.21.0

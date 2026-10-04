@@ -7,7 +7,7 @@
           <el-input model-value="demo" disabled />
         </el-form-item>
         <el-form-item :label="t('shop.nickname')">
-          <el-input model-value="演示买家" />
+          <el-input :model-value="t('landing.embedDemo.buyerNickname')" />
         </el-form-item>
         <el-form-item :label="t('shop.email')">
           <el-input model-value="demo@yu-kami.com" />

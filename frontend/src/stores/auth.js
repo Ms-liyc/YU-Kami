@@ -31,7 +31,11 @@ export const useAuthStore = defineStore('auth', () => {
     username.value = ''
     nickname.value = ''
     role.value = ''
-    localStorage.clear()
+    localStorage.removeItem('token')
+    localStorage.removeItem('username')
+    localStorage.removeItem('nickname')
+    localStorage.removeItem('role')
+    localStorage.removeItem('warnDefaultPassword')
   }
 
   return { token, username, nickname, role, isSuperAdmin, setAuth, logout }

@@ -33,12 +33,10 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import request from '../api/request'
-import { useAuthStore } from '../stores/auth'
 
 const { t } = useI18n()
 const DISMISS_KEY = 'yukami-default-password-dismissed'
 
-const auth = useAuthStore()
 const visible = ref(false)
 const dialogVisible = ref(false)
 const saving = ref(false)

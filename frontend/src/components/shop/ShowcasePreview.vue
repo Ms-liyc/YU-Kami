@@ -6,7 +6,7 @@
       <img
         v-if="useScreenshot"
         :src="screenshot"
-        :alt="alt"
+        :alt="displayAlt"
         class="preview-shot"
         loading="lazy"
       />
@@ -14,7 +14,7 @@
         <iframe
           :src="embedUrl"
           class="preview-iframe"
-          :title="alt"
+          :title="displayAlt"
           scrolling="no"
           loading="lazy"
         />
@@ -24,7 +24,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const IFRAME_W = 1024
 const IFRAME_H = 640
@@ -35,9 +36,12 @@ const props = defineProps({
   screenshot: { type: String, required: true },
   embedUrl: { type: String, required: true },
   urlLabel: { type: String, default: 'yu-kami.com' },
-  alt: { type: String, default: '界面预览' },
+  alt: { type: String, default: '' },
   phone: { type: Boolean, default: false }
 })
+
+const { t } = useI18n()
+const displayAlt = computed(() => props.alt || t('landing.preview.defaultAlt'))
 
 const viewportRef = ref(null)
 const useScreenshot = ref(false)

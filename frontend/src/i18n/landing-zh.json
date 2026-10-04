@@ -90,7 +90,12 @@
     "label": "实时成交",
     "bought": "{user} 购买了 {product}",
     "justNow": "刚刚",
-    "minAgo": "{n}分钟前"
+    "minAgo": "{n}分钟前",
+    "samples": [
+      { "user": "张**", "product": "月度会员卡", "price": "29.00", "time": "刚刚" },
+      { "user": "李**", "product": "季度授权码", "price": "79.00", "time": "1分钟前" },
+      { "user": "王**", "product": "年度旗舰版", "price": "199.00", "time": "2分钟前" }
+    ]
   },
   "preview": {
     "checking": "正在检测服务状态…",
@@ -102,7 +107,9 @@
     "mobileLabel": "移动端",
     "viewList": "商城首页",
     "viewBuy": "购买页",
-    "viewSuccess": "发卡成功"
+    "viewSuccess": "发卡成功",
+    "successToast": "支付成功，卡密已发放",
+    "defaultAlt": "界面预览"
   },
   "showcase": {
     "tabShop": "商城前台",
@@ -121,7 +128,20 @@
     "recentRedeems": "最近兑换记录",
     "usageRate": "卡密使用率",
     "used": "已使用",
-    "unused": "未使用"
+    "unused": "未使用",
+    "statAbbr": {
+      "cards": "卡",
+      "used": "用",
+      "unused": "余",
+      "orders": "单",
+      "users": "人"
+    }
+  },
+  "embedDemo": {
+    "productName": "月度会员 VIP",
+    "productDesc": "30 天会员权益，付款即发货",
+    "promotionName": "春季限时特惠",
+    "buyerNickname": "演示买家"
   },
   "embedMobile": {
     "heroBadge": "自动发卡 · 付款即发货",

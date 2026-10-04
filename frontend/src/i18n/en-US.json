@@ -513,5 +513,9 @@
     "envConfigurable": "configurable via env vars",
     "goPaymentConfig": "Configure payment",
     "viewGuide": "View documentation"
+  },
+  "meta": {
+    "defaultTitle": "YU-Kami Digital Goods Shop",
+    "defaultDescription": "YU-Kami auto card delivery platform — pay and ship instantly"
   }
 }

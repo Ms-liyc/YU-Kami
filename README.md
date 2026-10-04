@@ -365,6 +365,11 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.22.1
+
+* 🐛 **修复退出登录**：管理端 logout 不再清空全局 localStorage
+* 🌐 **Mock i18n**：Embed 预览、成交滚动、SEO 默认文案支持英文
+
 #### v1.22.0
 
 * 🌐 **商城落地页 i18n**：Hero、品类、流程、FAQ 等全页中英双语

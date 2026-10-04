@@ -90,7 +90,12 @@
     "label": "Live sales",
     "bought": "{user} bought {product}",
     "justNow": "Just now",
-    "minAgo": "{n} min ago"
+    "minAgo": "{n} min ago",
+    "samples": [
+      { "user": "J***", "product": "Monthly VIP", "price": "29.00", "time": "Just now" },
+      { "user": "L***", "product": "Quarterly License", "price": "79.00", "time": "1 min ago" },
+      { "user": "W***", "product": "Annual Pro", "price": "199.00", "time": "2 min ago" }
+    ]
   },
   "preview": {
     "checking": "Checking services…",
@@ -102,7 +107,9 @@
     "mobileLabel": "Mobile",
     "viewList": "Shop home",
     "viewBuy": "Checkout",
-    "viewSuccess": "Key delivered"
+    "viewSuccess": "Key delivered",
+    "successToast": "Payment successful — key delivered",
+    "defaultAlt": "UI preview"
   },
   "showcase": {
     "tabShop": "Storefront",
@@ -121,7 +128,20 @@
     "recentRedeems": "Recent redeems",
     "usageRate": "Key usage rate",
     "used": "Used",
-    "unused": "Unused"
+    "unused": "Unused",
+    "statAbbr": {
+      "cards": "K",
+      "used": "U",
+      "unused": "F",
+      "orders": "O",
+      "users": "U"
+    }
+  },
+  "embedDemo": {
+    "productName": "Monthly VIP",
+    "productDesc": "30-day membership — instant delivery",
+    "promotionName": "Spring sale",
+    "buyerNickname": "Demo buyer"
   },
   "embedMobile": {
     "heroBadge": "Auto delivery · Pay and ship",

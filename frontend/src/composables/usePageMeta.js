@@ -1,7 +1,13 @@
 import { watchEffect, onUnmounted } from 'vue'
+import i18n from '../i18n'
 
-const DEFAULT_TITLE = 'YU-Kami 数字商品发卡网'
-const DEFAULT_DESCRIPTION = 'YU-Kami 数字商品自动发卡平台 · 付款即发货'
+function defaultTitle() {
+  return i18n.global.t('meta.defaultTitle')
+}
+
+function defaultDescription() {
+  return i18n.global.t('meta.defaultDescription')
+}
 
 function upsertMeta(attr, key, content, isProperty = false) {
   if (!content) return
@@ -27,11 +33,11 @@ function removeMeta(key, isProperty = false) {
 export function usePageMeta(getMeta) {
   const stop = watchEffect(() => {
     const meta = typeof getMeta === 'function' ? getMeta() : (getMeta || {})
-    document.title = meta.title || DEFAULT_TITLE
+    document.title = meta.title || defaultTitle()
 
-    upsertMeta('name', 'description', meta.description || DEFAULT_DESCRIPTION)
-    upsertMeta('property', 'og:title', meta.title || DEFAULT_TITLE, true)
-    upsertMeta('property', 'og:description', meta.description || DEFAULT_DESCRIPTION, true)
+    upsertMeta('name', 'description', meta.description || defaultDescription())
+    upsertMeta('property', 'og:title', meta.title || defaultTitle(), true)
+    upsertMeta('property', 'og:description', meta.description || defaultDescription(), true)
     upsertMeta('property', 'og:type', meta.type || 'website', true)
     upsertMeta('name', 'twitter:card', meta.twitterCard || 'summary')
 
@@ -54,8 +60,8 @@ export function usePageMeta(getMeta) {
 
   onUnmounted(() => {
     stop()
-    document.title = DEFAULT_TITLE
-    upsertMeta('name', 'description', DEFAULT_DESCRIPTION)
+    document.title = defaultTitle()
+    upsertMeta('name', 'description', defaultDescription())
     removeMeta('og:url', true)
     removeMeta('og:image', true)
     removeMeta('twitter:url')

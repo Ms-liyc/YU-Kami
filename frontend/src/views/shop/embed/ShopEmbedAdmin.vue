@@ -78,12 +78,12 @@ import { APP_VERSION } from '../../../constants/version'
 const { t } = useI18n()
 
 const stats = computed(() => [
-  { label: t('admin.totalCards'), value: '520', abbr: '卡', color: '#4f6ef7' },
-  { label: t('admin.used'), value: '352', abbr: '用', color: '#10b981' },
-  { label: t('admin.unused'), value: '168', abbr: '余', color: '#f59e0b' },
-  { label: t('nav.orders'), value: '128', abbr: '单', color: '#6366f1' },
+  { label: t('admin.totalCards'), value: '520', abbr: t('landing.embedAdmin.statAbbr.cards'), color: '#4f6ef7' },
+  { label: t('admin.used'), value: '352', abbr: t('landing.embedAdmin.statAbbr.used'), color: '#10b981' },
+  { label: t('admin.unused'), value: '168', abbr: t('landing.embedAdmin.statAbbr.unused'), color: '#f59e0b' },
+  { label: t('nav.orders'), value: '128', abbr: t('landing.embedAdmin.statAbbr.orders'), color: '#6366f1' },
   { label: t('admin.todayOrders'), value: '¥2,860', abbr: '¥', color: '#ef4444' },
-  { label: t('landing.stats.users'), value: '84', abbr: '人', color: '#8b5cf6' }
+  { label: t('landing.stats.users'), value: '84', abbr: t('landing.embedAdmin.statAbbr.users'), color: '#8b5cf6' }
 ])
 
 const redeems = [

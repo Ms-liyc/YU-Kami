@@ -11,7 +11,7 @@
       </el-form>
       <div class="embed-panel">
         <div class="embed-row"><span>{{ t('shop.orderNo') }}</span><strong>O202601011200001234</strong></div>
-        <div class="embed-row"><span>{{ t('order.product') }}</span><strong>月度会员 VIP</strong></div>
+        <div class="embed-row"><span>{{ t('order.product') }}</span><strong>{{ t('landing.embedDemo.productName') }}</strong></div>
         <div class="embed-row"><span>{{ t('order.amount') }}</span><strong>¥29.90</strong></div>
         <div class="embed-row"><span>{{ t('common.status') }}</span><el-tag type="success" size="small">{{ t('order.statusDelivered') }}</el-tag></div>
         <div class="embed-actions">

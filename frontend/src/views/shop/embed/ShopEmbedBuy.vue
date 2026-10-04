@@ -54,12 +54,12 @@ onMounted(async () => {
   } catch { /* 静默失败，使用演示数据 */ }
   if (!product.value) {
     product.value = {
-      name: '月度会员 VIP',
-      description: '30 天会员权益，付款即发货',
+      name: t('landing.embedDemo.productName'),
+      description: t('landing.embedDemo.productDesc'),
       value: 39.9,
       salePrice: 29.9,
       onSale: true,
-      promotionName: '春季限时特惠'
+      promotionName: t('landing.embedDemo.promotionName')
     }
   }
   loading.value = false

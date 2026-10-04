@@ -20,7 +20,7 @@ import { useI18n } from 'vue-i18n'
 import YuIcon from '../icons/YuIcon.vue'
 import shopHttp from '../../api/shopHttp'
 
-const { t } = useI18n()
+const { t, tm } = useI18n()
 
 defineProps({
   products: { type: Array, default: () => [] },
@@ -45,11 +45,8 @@ onMounted(async () => {
       return
     }
   } catch { /* fallback */ }
-  items.value = [
-    { user: '张**', product: '月度会员卡', price: '29.00', time: t('landing.ticker.justNow') },
-    { user: '李**', product: '季度授权码', price: '79.00', time: t('landing.ticker.minAgo', { n: 1 }) },
-    { user: '王**', product: '年度旗舰版', price: '199.00', time: t('landing.ticker.minAgo', { n: 2 }) }
-  ]
+  const samples = tm('landing.ticker.samples')
+  items.value = Array.isArray(samples) ? samples : []
 })
 </script>
 

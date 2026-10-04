@@ -513,5 +513,9 @@
     "envConfigurable": "可通过环境变量修改",
     "goPaymentConfig": "去配置支付",
     "viewGuide": "查看配置文档"
+  },
+  "meta": {
+    "defaultTitle": "YU-Kami 数字商品发卡网",
+    "defaultDescription": "YU-Kami 数字商品自动发卡平台 · 付款即发货"
   }
 }

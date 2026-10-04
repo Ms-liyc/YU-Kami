@@ -5,18 +5,21 @@
     <div class="preview-viewport">
       <img :src="src" :alt="alt" class="preview-shot" loading="lazy" />
       <div v-if="showSuccessToast" class="mockup-toast live">
-        <YuIcon name="check" size="sm" /> 支付成功，卡密已发放
+        <YuIcon name="check" size="sm" /> {{ t('landing.preview.successToast') }}
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import YuIcon from '../icons/YuIcon.vue'
+
+const { t } = useI18n()
 
 defineProps({
   src: { type: String, required: true },
-  alt: { type: String, default: '界面预览' },
+  alt: { type: String, default: '' },
   showSuccessToast: { type: Boolean, default: false }
 })
 </script>
