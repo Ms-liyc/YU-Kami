@@ -10,6 +10,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class RefundService {
@@ -19,6 +21,7 @@ public class RefundService {
     private final WalletService walletService;
     private final OrderService orderService;
     private final StringRedisTemplate redisTemplate;
+    private final WebhookDispatchService webhookDispatchService;
 
     @Transactional
     public OrderVO refund(Long orderId, String remark) {
@@ -54,6 +57,18 @@ public class RefundService {
                 .set(ShopOrder::getRemark, remark));
 
         redisTemplate.delete("order:card:" + order.getId());
+
+        order.setStatus(ShopOrder.STATUS_REFUNDED);
+        webhookDispatchService.dispatch("ORDER_REFUNDED", Map.of(
+                "orderId", order.getId(),
+                "orderNo", order.getOrderNo(),
+                "userId", order.getUserId(),
+                "productId", order.getProductId() != null ? order.getProductId() : 0L,
+                "productName", order.getProductName() != null ? order.getProductName() : "",
+                "amount", order.getAmount(),
+                "paymentMethod", order.getPaymentMethod() != null ? order.getPaymentMethod() : "",
+                "remark", remark != null ? remark : ""
+        ));
 
         ShopOrder updated = shopOrderMapper.selectById(orderId);
         return orderService.toVO(updated);

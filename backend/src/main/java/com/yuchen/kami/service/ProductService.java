@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yuchen.kami.common.BusinessException;
 import com.yuchen.kami.common.PageResult;
+import com.yuchen.kami.dto.AdminProductVO;
+import com.yuchen.kami.entity.CardKey;
 import com.yuchen.kami.entity.Product;
+import com.yuchen.kami.mapper.CardKeyMapper;
 import com.yuchen.kami.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,36 @@ import org.springframework.util.StringUtils;
 public class ProductService {
 
     private final ProductMapper productMapper;
+    private final CardKeyMapper cardKeyMapper;
+
+    public PageResult<AdminProductVO> pageWithStock(int page, int size, String keyword) {
+        PageResult<Product> pageResult = page(page, size, keyword);
+        return new PageResult<>(
+                pageResult.getRecords().stream().map(this::toAdminVO).toList(),
+                pageResult.getTotal(), page, size);
+    }
+
+    public long countUnusedStock(Long productId) {
+        return cardKeyMapper.selectCount(new LambdaQueryWrapper<CardKey>()
+                .eq(CardKey::getProductId, productId)
+                .eq(CardKey::getStatus, CardKey.STATUS_UNUSED));
+    }
+
+    private AdminProductVO toAdminVO(Product product) {
+        AdminProductVO vo = new AdminProductVO();
+        vo.setId(product.getId());
+        vo.setName(product.getName());
+        vo.setCode(product.getCode());
+        vo.setCardType(product.getCardType());
+        vo.setValue(product.getValue());
+        vo.setDurationDays(product.getDurationDays());
+        vo.setDescription(product.getDescription());
+        vo.setStatus(product.getStatus());
+        vo.setCreatedAt(product.getCreatedAt());
+        vo.setUpdatedAt(product.getUpdatedAt());
+        vo.setUnusedStock(countUnusedStock(product.getId()));
+        return vo;
+    }
 
     public PageResult<Product> page(int page, int size, String keyword) {
         LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<>();

@@ -26,6 +26,13 @@
             <template #default="{ row }">¥{{ row.value || 0 }}</template>
           </el-table-column>
           <el-table-column prop="durationDays" label="时长(天)" width="100" />
+          <el-table-column :label="t('admin.unusedStock')" width="100">
+            <template #default="{ row }">
+              <el-tag :type="row.unusedStock <= 10 ? 'danger' : 'success'" size="small">
+                {{ row.unusedStock ?? 0 }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column prop="status" label="状态" width="80">
             <template #default="{ row }">
               <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">

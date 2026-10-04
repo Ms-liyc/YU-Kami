@@ -2,6 +2,20 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.14.0] — 2026-01
+
+### 新增
+
+- 仪表盘库存告警（可配置 `STOCK_LOW_THRESHOLD`）
+- 产品管理页展示各商品可用卡密库存
+- 管理端查看买家钱包流水
+- Webhook 支持 `ORDER_DELIVERED` / `RECHARGE_SUCCESS` / `ORDER_REFUNDED`
+
+### 改进
+
+- 仪表盘新增「今日订单」统计
+- Webhook 管理页扩展可订阅事件
+
 ## [1.13.0] — 2026-01
 
 ### 新增
@@ -119,6 +133,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.14.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.11.0...v1.12.0

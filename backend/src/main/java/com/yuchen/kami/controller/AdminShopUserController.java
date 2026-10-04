@@ -5,8 +5,10 @@ import com.yuchen.kami.common.Result;
 import com.yuchen.kami.dto.AdminShopUserVO;
 import com.yuchen.kami.dto.ShopUserStatusRequest;
 import com.yuchen.kami.dto.WalletAdjustRequest;
+import com.yuchen.kami.dto.WalletTransactionVO;
 import com.yuchen.kami.service.AdminShopUserService;
 import com.yuchen.kami.service.AuditService;
+import com.yuchen.kami.service.WalletService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class AdminShopUserController {
 
     private final AdminShopUserService adminShopUserService;
     private final AuditService auditService;
+    private final WalletService walletService;
 
     @GetMapping
     public Result<PageResult<AdminShopUserVO>> page(
@@ -53,5 +56,14 @@ public class AdminShopUserController {
         auditService.log((Long) auth.getDetails(), auth.getName(), "SHOP_USER_STATUS", "shop_user",
                 action + "买家 " + vo.getUsername(), httpRequest.getRemoteAddr());
         return Result.ok(vo);
+    }
+
+    @GetMapping("/{id}/wallet/transactions")
+    public Result<PageResult<WalletTransactionVO>> walletTransactions(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        adminShopUserService.requireUser(id);
+        return Result.ok(walletService.listTransactions(id, page, size));
     }
 }

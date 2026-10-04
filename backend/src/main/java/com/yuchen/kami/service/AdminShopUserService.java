@@ -40,16 +40,21 @@ public class AdminShopUserService {
     }
 
     public AdminShopUserVO updateStatus(Long userId, Integer status) {
-        ShopUser user = shopUserMapper.selectById(userId);
-        if (user == null) {
-            throw new BusinessException("用户不存在");
-        }
+        ShopUser user = requireUser(userId);
         if (status == null || (status != 0 && status != 1)) {
             throw new BusinessException("状态值无效");
         }
         user.setStatus(status);
         shopUserMapper.updateById(user);
         return toVO(user);
+    }
+
+    public ShopUser requireUser(Long userId) {
+        ShopUser user = shopUserMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        return user;
     }
 
     private AdminShopUserVO toVO(ShopUser user) {

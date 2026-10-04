@@ -34,6 +34,7 @@ class PaymentServiceTest {
     @Mock private WechatOAuthService wechatOAuthService;
     @Mock private PromotionService promotionService;
     @Mock private WalletService walletService;
+    @Mock private WebhookDispatchService webhookDispatchService;
     @Mock private ValueOperations<String, String> valueOperations;
 
     @InjectMocks private PaymentService paymentService;

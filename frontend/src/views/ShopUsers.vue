@@ -33,9 +33,10 @@
             </template>
           </el-table-column>
           <el-table-column prop="createdAt" :label="t('order.createdAt')" width="170" />
-          <el-table-column :label="t('common.actions')" width="200" fixed="right">
+          <el-table-column :label="t('common.actions')" width="260" fixed="right">
             <template #default="{ row }">
               <el-button link type="primary" @click="openAdjust(row)">{{ t('admin.adjustBalance') }}</el-button>
+              <el-button link @click="openTransactions(row)">{{ t('admin.walletTransactions') }}</el-button>
               <el-button
                 v-if="row.status === 1"
                 link
@@ -77,6 +78,23 @@
         <el-button type="primary" :loading="adjusting" @click="submitAdjust">{{ t('common.confirm') }}</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="txDialog" :title="t('admin.walletTransactions')" width="720px" destroy-on-close>
+      <p class="adjust-user">{{ txTarget?.username }} · {{ t('shop.walletBalance') }} ¥{{ formatMoney(txTarget?.balance) }}</p>
+      <el-table :data="txData" stripe v-loading="txLoading" size="small">
+        <el-table-column prop="createdAt" :label="t('order.createdAt')" width="170" />
+        <el-table-column prop="typeLabel" :label="t('shop.walletType')" width="110" />
+        <el-table-column :label="t('shop.amount')" width="100">
+          <template #default="{ row }">
+            <span :class="row.amount >= 0 ? 'amount-plus' : 'amount-minus'">
+              {{ row.amount >= 0 ? '+' : '' }}{{ row.amount }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="orderNo" :label="t('shop.orderNo')" min-width="150" />
+        <el-table-column prop="remark" :label="t('shop.walletRemark')" min-width="120" />
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -98,6 +116,10 @@ const adjustDialog = ref(false)
 const adjusting = ref(false)
 const adjustTarget = ref(null)
 const adjustForm = ref({ amount: 0, remark: '' })
+const txDialog = ref(false)
+const txLoading = ref(false)
+const txTarget = ref(null)
+const txData = ref([])
 
 function formatMoney(val) {
   return Number(val ?? 0).toFixed(2)
@@ -148,6 +170,18 @@ async function toggleStatus(row, status) {
   if (idx >= 0) tableData.value[idx] = res.data
 }
 
+async function openTransactions(row) {
+  txTarget.value = row
+  txDialog.value = true
+  txLoading.value = true
+  try {
+    const res = await request.get(`/admin/shop-users/${row.id}/wallet/transactions`, { params: { page: 1, size: 50 } })
+    txData.value = res.data?.records || []
+  } finally {
+    txLoading.value = false
+  }
+}
+
 onMounted(loadData)
 </script>
 
@@ -156,4 +190,6 @@ onMounted(loadData)
 .balance-cell { font-weight: 700; color: #4f6ef7; }
 .adjust-user { margin-bottom: 16px; color: var(--text-secondary); font-size: 14px; }
 .field-hint { margin-top: 6px; font-size: 12px; color: var(--text-secondary); }
+.amount-plus { color: #16a34a; font-weight: 600; }
+.amount-minus { color: #ef4444; font-weight: 600; }
 </style>

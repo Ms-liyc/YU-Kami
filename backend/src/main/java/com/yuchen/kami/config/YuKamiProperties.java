@@ -13,6 +13,7 @@ public class YuKamiProperties {
     private Crypto crypto = new Crypto();
     private Redeem redeem = new Redeem();
     private Card card = new Card();
+    private Stock stock = new Stock();
     private Payment payment = new Payment();
     private Security security = new Security();
 
@@ -55,5 +56,11 @@ public class YuKamiProperties {
         private boolean swaggerEnabled = true;
         private int loginRateLimitPerMinute = 20;
         private int registerRateLimitPerMinute = 5;
+    }
+
+    @Data
+    public static class Stock {
+        /** 未使用卡密低于此值时在仪表盘告警 */
+        private int lowThreshold = 10;
     }
 }

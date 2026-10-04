@@ -2,6 +2,21 @@
   <div class="page-container">
     <PageHeader :title="t('admin.dashboardTitle')" :subtitle="t('admin.dashboardSubtitle')" />
 
+    <el-alert
+      v-if="stats.lowStockProducts?.length"
+      type="warning"
+      :closable="false"
+      show-icon
+      class="stock-alert"
+      :title="t('admin.lowStockTitle')"
+    >
+      <ul class="stock-list">
+        <li v-for="item in stats.lowStockProducts" :key="item.productId">
+          {{ item.productName }} ({{ item.productCode }}) — {{ t('admin.unused') }} {{ item.unusedCount }}
+        </li>
+      </ul>
+    </el-alert>
+
     <el-row :gutter="16" class="stat-row">
       <el-col :xs="12" :sm="8" :md="4" v-for="item in statCards" :key="item.label">
         <StatCard :label="item.label" :value="item.value" :icon="item.icon" :color="item.color" />
@@ -79,6 +94,7 @@ const statCards = computed(() => [
   { label: '已使用', value: stats.value.usedCards || 0, icon: 'CircleCheck', color: '#10b981' },
   { label: '未使用', value: stats.value.unusedCards || 0, icon: 'Clock', color: '#f59e0b' },
   { label: '今日兑换', value: stats.value.todayRedeems || 0, icon: 'TrendCharts', color: '#6366f1' },
+  { label: t('admin.todayOrders'), value: stats.value.todayOrders || 0, icon: 'ShoppingCart', color: '#0ea5e9' },
   { label: '产品数', value: stats.value.totalProducts || 0, icon: 'Goods', color: '#ec4899' },
   { label: '批次数', value: stats.value.totalBatches || 0, icon: 'Files', color: '#14b8a6' }
 ])
@@ -99,6 +115,9 @@ onMounted(async () => {
 
 <style scoped>
 .stat-row .el-col { margin-bottom: 16px; }
+.stock-alert { margin-bottom: 16px; }
+.stock-list { margin: 8px 0 0; padding-left: 18px; font-size: 13px; }
+.stock-list li { margin: 4px 0; }
 .usage-body { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px !important; }
 .usage-detail { display: flex; gap: 24px; font-size: 13px; color: var(--text-secondary); }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }

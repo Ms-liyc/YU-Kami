@@ -2,6 +2,7 @@ package com.yuchen.kami.controller;
 
 import com.yuchen.kami.common.PageResult;
 import com.yuchen.kami.common.Result;
+import com.yuchen.kami.dto.AdminProductVO;
 import com.yuchen.kami.entity.Product;
 import com.yuchen.kami.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,11 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public Result<PageResult<Product>> page(
+    public Result<PageResult<AdminProductVO>> page(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String keyword) {
-        return Result.ok(productService.page(page, size, keyword));
+        return Result.ok(productService.pageWithStock(page, size, keyword));
     }
 
     @GetMapping("/{id}")

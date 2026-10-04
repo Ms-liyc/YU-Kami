@@ -356,13 +356,21 @@ Content-Type: application/json
 }
 ```
 
-> 签名头：`X-YK-Signature`（HMAC-SHA256） · 事件头：`X-YK-Event`
+> 签名头：`X-YK-Signature`（HMAC-SHA256） · 事件头：`X-YK-Event`  
+> 支持事件：`REDEEM_SUCCESS` · `ORDER_DELIVERED` · `RECHARGE_SUCCESS` · `ORDER_REFUNDED`
 
 ---
 
 ## 🛣️ 开发路线图
 
 ### 📅 更新日志
+
+#### v1.14.0
+
+* 📦 **库存告警**：仪表盘低库存提醒，产品页显示可用卡密数
+* 🔔 **订单 Webhook**：发货/充值/退款事件回调
+* 💳 **买家流水**：管理端查看商城买家钱包交易明细
+* 📊 **今日订单**：仪表盘新增订单统计
 
 #### v1.13.0
 
@@ -513,6 +521,8 @@ Content-Type: application/json
 * [x] 买家账号启用/禁用
 * [x] 买家钱包自助充值
 * [x] 管理端订单退款
+* [x] 库存告警与产品可用库存
+* [x] 订单/充值 Webhook 事件
 * [x] Docker Hub 官方镜像
 * [x] 管理端移动端深度优化（页头/表格/对话框/仪表盘）
 

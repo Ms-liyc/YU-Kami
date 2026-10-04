@@ -145,6 +145,7 @@ Content-Type: application/json
 | `/api/admin/shop-users` | GET | 买家列表，支持 `keyword` |
 | `/api/admin/shop-users/{id}/wallet/adjust` | POST | 调整余额（正数充值，负数扣减） |
 | `/api/admin/shop-users/{id}/status` | POST | 启用/禁用买家（`status`: 1 启用，0 禁用） |
+| `/api/admin/shop-users/{id}/wallet/transactions` | GET | 买家钱包流水（分页） |
 
 **调整余额请求体：**
 

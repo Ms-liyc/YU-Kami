@@ -97,7 +97,11 @@
     "enableUser": "Enable",
     "disableUser": "Disable",
     "confirmEnableUser": "Enable this buyer account?",
-    "confirmDisableUser": "Disable this buyer? They will not be able to log in."
+    "confirmDisableUser": "Disable this buyer? They will not be able to log in.",
+    "lowStockTitle": "Low stock: unused card keys below threshold",
+    "todayOrders": "Today's orders",
+    "unusedStock": "Stock",
+    "walletTransactions": "Wallet history"
   },
   "shop": {
     "title": "YU-Kami Card Shop",

@@ -63,7 +63,7 @@
               <el-descriptions-item label="请求方式">POST JSON</el-descriptions-item>
               <el-descriptions-item label="签名头">X-YK-Signature (HMAC-SHA256)</el-descriptions-item>
               <el-descriptions-item label="事件头">X-YK-Event</el-descriptions-item>
-              <el-descriptions-item label="支持事件">REDEEM_SUCCESS</el-descriptions-item>
+              <el-descriptions-item label="支持事件">REDEEM_SUCCESS, ORDER_DELIVERED, RECHARGE_SUCCESS, ORDER_REFUNDED</el-descriptions-item>
             </el-descriptions>
           </div>
         </div>
@@ -80,6 +80,9 @@
         <el-form-item label="订阅事件">
           <el-checkbox-group v-model="eventList">
             <el-checkbox label="REDEEM_SUCCESS">兑换成功</el-checkbox>
+            <el-checkbox label="ORDER_DELIVERED">订单发货</el-checkbox>
+            <el-checkbox label="RECHARGE_SUCCESS">余额充值</el-checkbox>
+            <el-checkbox label="ORDER_REFUNDED">订单退款</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>

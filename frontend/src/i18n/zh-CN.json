@@ -97,7 +97,11 @@
     "enableUser": "启用",
     "disableUser": "禁用",
     "confirmEnableUser": "确定启用该买家账号？",
-    "confirmDisableUser": "确定禁用该买家账号？禁用后将无法登录"
+    "confirmDisableUser": "确定禁用该买家账号？禁用后将无法登录",
+    "lowStockTitle": "库存告警：以下产品未使用卡密不足",
+    "todayOrders": "今日订单",
+    "unusedStock": "可用库存",
+    "walletTransactions": "钱包流水"
   },
   "shop": {
     "title": "YU-Kami 卡密商城",

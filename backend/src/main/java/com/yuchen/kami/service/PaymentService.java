@@ -44,6 +44,7 @@ public class PaymentService {
     private final WechatOAuthService wechatOAuthService;
     private final PromotionService promotionService;
     private final WalletService walletService;
+    private final WebhookDispatchService webhookDispatchService;
 
     public List<PaymentConfig> availableChannels() {
         return paymentConfigMapper.selectList(new LambdaQueryWrapper<PaymentConfig>()
@@ -179,6 +180,7 @@ public class PaymentService {
                     .set(ShopOrder::getStatus, ShopOrder.STATUS_DELIVERED)
                     .set(ShopOrder::getDeliveredAt, LocalDateTime.now()));
             log.info("余额充值完成: {}", orderNo);
+            dispatchOrderWebhook(order);
             return true;
         }
 
@@ -193,6 +195,7 @@ public class PaymentService {
         redisTemplate.opsForValue().set("order:card:" + order.getId(), delivery.getPlainKey(), Duration.ofHours(24));
         promotionService.confirmByOrder(order);
         log.info("订单发货完成: {}", orderNo);
+        dispatchOrderWebhook(order);
         return true;
     }
 
@@ -309,5 +312,26 @@ public class PaymentService {
             throw new BusinessException("支付渠道未配置: " + channel);
         }
         return config;
+    }
+
+    private void dispatchOrderWebhook(ShopOrder order) {
+        String event = ShopOrder.TYPE_RECHARGE.equals(order.getOrderType())
+                ? "RECHARGE_SUCCESS" : "ORDER_DELIVERED";
+        webhookDispatchService.dispatch(event, orderWebhookPayload(order));
+    }
+
+    private Map<String, Object> orderWebhookPayload(ShopOrder order) {
+        return Map.of(
+                "orderId", order.getId(),
+                "orderNo", order.getOrderNo(),
+                "orderType", order.getOrderType() != null ? order.getOrderType() : ShopOrder.TYPE_PRODUCT,
+                "userId", order.getUserId(),
+                "productId", order.getProductId() != null ? order.getProductId() : 0L,
+                "productName", order.getProductName() != null ? order.getProductName() : "",
+                "amount", order.getAmount(),
+                "quantity", order.getQuantity() != null ? order.getQuantity() : 1,
+                "paymentMethod", order.getPaymentMethod() != null ? order.getPaymentMethod() : "",
+                "status", order.getStatus() != null ? order.getStatus() : ""
+        );
     }
 }
