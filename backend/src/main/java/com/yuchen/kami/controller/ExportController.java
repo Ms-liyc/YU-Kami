@@ -48,4 +48,10 @@ public class ExportController {
             exportService.exportBatches(response);
         }
     }
+
+    @GetMapping("/orders")
+    public void exportOrders(HttpServletResponse response,
+                             @RequestParam(required = false) String status) throws Exception {
+        exportService.exportOrders(response, status);
+    }
 }

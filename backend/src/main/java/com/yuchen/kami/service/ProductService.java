@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -21,7 +23,7 @@ public class ProductService {
     private final CardKeyMapper cardKeyMapper;
 
     public PageResult<AdminProductVO> pageWithStock(int page, int size, String keyword) {
-        PageResult<Product> pageResult = page(page, size, keyword);
+        PageResult<Product> pageResult = page(page, size, keyword, null);
         return new PageResult<>(
                 pageResult.getRecords().stream().map(this::toAdminVO).toList(),
                 pageResult.getTotal(), page, size);
@@ -38,6 +40,7 @@ public class ProductService {
         vo.setId(product.getId());
         vo.setName(product.getName());
         vo.setCode(product.getCode());
+        vo.setCategory(product.getCategory());
         vo.setCardType(product.getCardType());
         vo.setValue(product.getValue());
         vo.setDurationDays(product.getDurationDays());
@@ -49,14 +52,29 @@ public class ProductService {
         return vo;
     }
 
-    public PageResult<Product> page(int page, int size, String keyword) {
+    public PageResult<Product> page(int page, int size, String keyword, String category) {
         LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(keyword)) {
             wrapper.and(w -> w.like(Product::getName, keyword).or().like(Product::getCode, keyword));
         }
+        if (StringUtils.hasText(category)) {
+            wrapper.eq(Product::getCategory, category);
+        }
         wrapper.orderByDesc(Product::getCreatedAt);
         Page<Product> result = productMapper.selectPage(new Page<>(page, size), wrapper);
         return new PageResult<>(result.getRecords(), result.getTotal(), page, size);
+    }
+
+    public List<String> listCategories() {
+        return productMapper.selectList(new LambdaQueryWrapper<Product>()
+                        .eq(Product::getStatus, 1)
+                        .isNotNull(Product::getCategory)
+                        .ne(Product::getCategory, ""))
+                .stream()
+                .map(Product::getCategory)
+                .distinct()
+                .sorted()
+                .toList();
     }
 
     public Product getById(Long id) {

@@ -38,8 +38,7 @@ public class AdminOrderController {
 
     @PostMapping("/{id}/refund")
     public Result<OrderVO> refund(@PathVariable Long id, @RequestBody(required = false) OrderRefundRequest request) {
-        String remark = request != null ? request.getRemark() : null;
-        return Result.ok(refundService.refund(id, remark));
+        return Result.ok(refundService.refund(id, request));
     }
 
     @GetMapping("/payment-config")

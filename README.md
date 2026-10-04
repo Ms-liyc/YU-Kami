@@ -357,13 +357,33 @@ Content-Type: application/json
 ```
 
 > 签名头：`X-YK-Signature`（HMAC-SHA256） · 事件头：`X-YK-Event`  
-> 支持事件：`REDEEM_SUCCESS` · `ORDER_DELIVERED` · `RECHARGE_SUCCESS` · `ORDER_REFUNDED`
+> 支持事件：`REDEEM_SUCCESS` · `ORDER_DELIVERED` · `RECHARGE_SUCCESS` · `ORDER_REFUNDED` · `LOW_STOCK`
 
 ---
 
 ## 🛣️ 开发路线图
 
 ### 📅 更新日志
+
+#### v1.16.0
+
+* 📂 **商城分类筛选**：商品列表按 category 标签过滤
+* ✉️ **邮箱验证**：个人中心展示验证状态，支持重发验证邮件
+* 📧 **库存邮件告警**：`STOCK_ALERT_EMAIL` 低库存邮件通知
+* 🐛 **修复**：密码重置链接、邮箱验证跳转页
+* 🌐 **i18n**：登录页与仪表盘统计卡片中英双语
+
+#### v1.15.0
+
+* 🔐 **登录验证码**：管理端/商城登录图形验证码，防暴力破解
+* 📧 **找回密码**：邮件重置链接（需配置 SMTP）
+* 🛡️ **2FA**：管理端 TOTP 双因素认证
+* ↩️ **原路退款**：订单/充值支持退至余额或支付宝/微信原路退款
+* 📂 **产品分类**：产品管理增加 category 字段
+* 📈 **趋势图表**：仪表盘近 7 日订单与充值柱状图
+* 🔔 **库存 Webhook**：定时检测低库存并推送 `LOW_STOCK`
+* 📤 **订单导出**：管理端 CSV 导出
+* 🔒 **HTTPS 部署**：`docker-compose.https.yml` + [docs/HTTPS.md](docs/HTTPS.md)
 
 #### v1.14.0
 
@@ -525,6 +545,11 @@ Content-Type: application/json
 * [x] 订单/充值 Webhook 事件
 * [x] Docker Hub 官方镜像
 * [x] 管理端移动端深度优化（页头/表格/对话框/仪表盘）
+* [x] 登录验证码 / 找回密码 / 2FA
+* [x] 原路退款 / 充值退款 / 订单导出
+* [x] 产品分类 / 趋势图表 / 库存 Webhook
+* [x] HTTPS Docker 部署示例
+* [x] 商城分类筛选 / 邮箱验证 / 库存邮件告警
 
 ---
 

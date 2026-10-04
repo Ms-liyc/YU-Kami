@@ -19,6 +19,7 @@ public class ShopUser {
     private Long id;
     private String username;
     private String email;
+    private Integer emailVerified;
     private String password;
     private String nickname;
     private BigDecimal balance;

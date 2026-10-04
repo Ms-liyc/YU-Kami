@@ -15,6 +15,7 @@
               <el-tag effect="plain" size="small">{{ row.code }}</el-tag>
             </template>
           </el-table-column>
+          <el-table-column prop="category" :label="t('admin.category')" width="100" />
           <el-table-column prop="cardType" label="类型" width="100">
             <template #default="{ row }">
               <el-tag :type="typeMap[row.cardType]?.type" size="small" effect="light">
@@ -55,6 +56,7 @@
       <el-form :model="form" label-width="90px">
         <el-form-item label="名称"><el-input v-model="form.name" /></el-form-item>
         <el-form-item label="编码"><el-input v-model="form.code" /></el-form-item>
+        <el-form-item :label="t('admin.category')"><el-input v-model="form.category" :placeholder="t('admin.categoryPlaceholder')" /></el-form-item>
         <el-form-item label="类型">
           <el-select v-model="form.cardType" style="width:100%">
             <el-option label="时长卡" value="DURATION" />
@@ -110,7 +112,7 @@ async function loadData() {
 }
 
 function openDialog(row) {
-  form.value = row ? { ...row } : { name: '', code: '', cardType: 'DURATION', value: 0, durationDays: 30, status: 1 }
+  form.value = row ? { ...row } : { name: '', code: '', category: '', cardType: 'DURATION', value: 0, durationDays: 30, status: 1 }
   dialogVisible.value = true
 }
 

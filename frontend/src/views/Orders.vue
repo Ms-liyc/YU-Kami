@@ -2,6 +2,7 @@
   <div class="page-container">
     <PageHeader :title="t('order.title')" :subtitle="t('order.subtitle')">
       <template #extra>
+        <el-button @click="exportOrders">{{ t('order.export') }}</el-button>
         <el-button @click="openPaymentConfig">{{ t('order.paymentConfig') }}</el-button>
       </template>
     </PageHeader>
@@ -97,6 +98,24 @@
         <el-button type="primary" @click="saveConfig">{{ t('common.save') }}</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="refundDialog" :title="t('order.refund')" width="420px">
+      <el-form label-width="100px">
+        <el-form-item :label="t('order.refundMode')">
+          <el-radio-group v-model="refundForm.refundMode">
+            <el-radio value="BALANCE">{{ t('order.refundBalance') }}</el-radio>
+            <el-radio value="ORIGINAL">{{ t('order.refundOriginal') }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item :label="t('shop.walletRemark')">
+          <el-input v-model="refundForm.remark" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="refundDialog = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="submitRefund">{{ t('common.confirm') }}</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -106,6 +125,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'
+import { downloadExport } from '../api/export'
 import PageHeader from '../components/PageHeader.vue'
 
 const { t } = useI18n()
@@ -121,6 +141,9 @@ const status = ref(null)
 const configDialog = ref(false)
 const editDialog = ref(false)
 const editForm = ref({})
+const refundDialog = ref(false)
+const refundTargetId = ref(null)
+const refundForm = ref({ refundMode: 'BALANCE', remark: '' })
 
 async function loadData() {
   loading.value = true
@@ -171,10 +194,22 @@ async function handleCancel(id) {
 }
 
 async function handleRefund(id) {
-  await ElMessageBox.confirm(t('order.confirmRefund'), t('common.confirm'))
-  await request.post(`/admin/orders/${id}/refund`, {})
+  refundTargetId.value = id
+  refundForm.value = { refundMode: 'BALANCE', remark: '' }
+  refundDialog.value = true
+}
+
+async function submitRefund() {
+  await request.post(`/admin/orders/${refundTargetId.value}/refund`, refundForm.value)
   ElMessage.success(t('order.refundSuccess'))
+  refundDialog.value = false
   loadData()
+}
+
+async function exportOrders() {
+  let url = '/admin/export/orders'
+  if (status.value) url += `?status=${status.value}`
+  await downloadExport(url, 'orders_export.csv', 'csv')
 }
 
 onMounted(async () => {

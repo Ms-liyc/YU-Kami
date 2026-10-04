@@ -46,8 +46,14 @@ public class SecurityConfig {
                                 "geolocation=(), microphone=(), camera=()")))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/admin/auth/login").permitAll()
-                            .requestMatchers("/api/shop/auth/register", "/api/shop/auth/login").permitAll()
+                    auth.requestMatchers("/api/captcha").permitAll()
+                            .requestMatchers("/api/admin/auth/login",
+                                    "/api/admin/auth/forgot-password",
+                                    "/api/admin/auth/reset-password").permitAll()
+                            .requestMatchers("/api/shop/auth/register", "/api/shop/auth/login",
+                                    "/api/shop/auth/forgot-password",
+                                    "/api/shop/auth/reset-password",
+                                    "/api/shop/auth/verify-email").permitAll()
                             .requestMatchers("/api/shop/products/**").permitAll()
                             .requestMatchers("/api/shop/stats").permitAll()
                             .requestMatchers("/api/shop/orders/recent").permitAll()

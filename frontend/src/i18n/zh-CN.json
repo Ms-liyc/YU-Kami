@@ -50,6 +50,7 @@
     "about": "了解",
     "manage": "管理",
     "security": "安全保障",
+    "securitySettings": "安全设置",
     "banner": "欢迎使用 YU-Kami 数字商品发卡网 · 付款即发货",
     "footerBrand": "屿宸科技 · 数字商品自动发卡平台",
     "footerShop": "商城",
@@ -59,6 +60,30 @@
     "mobileQuery": "查单",
     "mobileOrders": "订单",
     "mobileMine": "我的"
+  },
+  "auth": {
+    "forgotPassword": "忘记密码",
+    "resetPassword": "重置密码",
+    "sendResetLink": "发送重置链接",
+    "resetEmailSent": "如账号存在，重置链接已发送（请检查邮箱或服务器日志）",
+    "backLogin": "返回登录",
+    "newPassword": "新密码",
+    "confirmPassword": "确认密码",
+    "passwordMismatch": "两次密码不一致",
+    "resetSuccess": "密码已重置",
+    "captcha": "验证码",
+    "securityTitle": "安全设置",
+    "securitySubtitle": "双因素认证与账号安全",
+    "totpTitle": "TOTP 双因素认证",
+    "totpHint": "使用 Google Authenticator 等应用扫描二维码后启用",
+    "totpSetup": "生成密钥",
+    "totpSecret": "密钥",
+    "totpCode": "6 位验证码",
+    "totpEnable": "启用 2FA",
+    "totpDisable": "禁用 2FA",
+    "totpEnabledHint": "双因素认证已启用",
+    "totpLoginPlaceholder": "2FA 验证码（如已启用）",
+    "defaultPasswordWarn": "检测到默认密码，请尽快在后台修改"
   },
   "admin": {
     "welcome": "欢迎回来",
@@ -100,8 +125,15 @@
     "confirmDisableUser": "确定禁用该买家账号？禁用后将无法登录",
     "lowStockTitle": "库存告警：以下产品未使用卡密不足",
     "todayOrders": "今日订单",
+    "todayRedeems": "今日兑换",
+    "totalCards": "卡密总数",
+    "totalProducts": "产品数",
+    "totalBatches": "批次数",
     "unusedStock": "可用库存",
-    "walletTransactions": "钱包流水"
+    "walletTransactions": "钱包流水",
+    "trendTitle": "近 7 日趋势",
+    "category": "分类",
+    "categoryPlaceholder": "如：会员 / 游戏 / 工具"
   },
   "shop": {
     "title": "YU-Kami 卡密商城",
@@ -187,7 +219,13 @@
     "rechargeAmount": "充值金额",
     "rechargeHint": "支持模拟支付/支付宝/微信，充值成功后即时到账",
     "rechargeSuccess": "充值成功",
-    "rechargeMin": "最低 ¥1，最高 ¥10000"
+    "rechargeMin": "最低 ¥1，最高 ¥10000",
+    "filterAllCategory": "全部分类",
+    "emailVerified": "已验证",
+    "emailUnverified": "未验证",
+    "resendVerify": "重发验证邮件",
+    "verifyEmailSent": "验证邮件已发送",
+    "verifyInvalid": "验证链接无效或已过期"
   },
   "order": {
     "title": "订单管理",
@@ -206,6 +244,10 @@
     "refund": "退款",
     "confirmRefund": "确定退款？金额将退回买家余额，已发卡密将作废",
     "refundSuccess": "退款成功",
+    "export": "导出订单",
+    "refundMode": "退款方式",
+    "refundBalance": "退至余额",
+    "refundOriginal": "原路退款",
     "allStatus": "全部状态"
   },
   "setup": {

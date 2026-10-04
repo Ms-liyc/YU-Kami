@@ -24,6 +24,11 @@ Thumbs.db
 .env.local
 *.log
 
+# TLS certificates (place your own in certs/)
+certs/*.pem
+certs/*.key
+!certs/.gitkeep
+
 # Redis dump
 *.rdb
 dump.rdb

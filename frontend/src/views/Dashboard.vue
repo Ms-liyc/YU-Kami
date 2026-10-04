@@ -25,6 +25,18 @@
 
     <el-row :gutter="16" style="margin-top: 20px">
       <el-col :xs="24" :md="16">
+        <div class="page-card" style="margin-bottom:16px">
+          <div class="card-header"><h3>{{ t('admin.trendTitle') }}</h3></div>
+          <div class="card-body trend-chart">
+            <div v-for="d in trends" :key="d.date" class="trend-bar-group">
+              <div class="bars">
+                <div class="bar orders" :style="{ height: barHeight(d.orderCount, maxOrders) }" :title="`${t('admin.todayOrders')}: ${d.orderCount}`" />
+                <div class="bar redeems" :style="{ height: barHeight(d.redeemCount, maxRedeems) }" :title="`${t('admin.todayRedeems')}: ${d.redeemCount}`" />
+              </div>
+              <span class="trend-label">{{ d.date.slice(5) }}</span>
+            </div>
+          </div>
+        </div>
         <div class="page-card">
           <div class="card-header"><h3>{{ t('admin.recentRedeems') }}</h3></div>
           <div class="card-body" style="padding: 0">
@@ -83,6 +95,10 @@ import PageHeader from '../components/PageHeader.vue'
 import StatCard from '../components/StatCard.vue'
 
 const stats = ref({})
+const trends = ref([])
+const maxOrders = computed(() => Math.max(1, ...trends.value.map(d => d.orderCount)))
+const maxRedeems = computed(() => Math.max(1, ...trends.value.map(d => d.redeemCount)))
+function barHeight(val, max) { return `${Math.max(4, (val / max) * 100)}px` }
 const progressColors = [
   { color: '#4f6ef7', percentage: 30 },
   { color: '#7c3aed', percentage: 70 },
@@ -90,13 +106,13 @@ const progressColors = [
 ]
 
 const statCards = computed(() => [
-  { label: '卡密总数', value: stats.value.totalCards || 0, icon: 'Ticket', color: '#4f6ef7' },
-  { label: '已使用', value: stats.value.usedCards || 0, icon: 'CircleCheck', color: '#10b981' },
-  { label: '未使用', value: stats.value.unusedCards || 0, icon: 'Clock', color: '#f59e0b' },
-  { label: '今日兑换', value: stats.value.todayRedeems || 0, icon: 'TrendCharts', color: '#6366f1' },
+  { label: t('admin.totalCards'), value: stats.value.totalCards || 0, icon: 'Ticket', color: '#4f6ef7' },
+  { label: t('admin.used'), value: stats.value.usedCards || 0, icon: 'CircleCheck', color: '#10b981' },
+  { label: t('admin.unused'), value: stats.value.unusedCards || 0, icon: 'Clock', color: '#f59e0b' },
+  { label: t('admin.todayRedeems'), value: stats.value.todayRedeems || 0, icon: 'TrendCharts', color: '#6366f1' },
   { label: t('admin.todayOrders'), value: stats.value.todayOrders || 0, icon: 'ShoppingCart', color: '#0ea5e9' },
-  { label: '产品数', value: stats.value.totalProducts || 0, icon: 'Goods', color: '#ec4899' },
-  { label: '批次数', value: stats.value.totalBatches || 0, icon: 'Files', color: '#14b8a6' }
+  { label: t('admin.totalProducts'), value: stats.value.totalProducts || 0, icon: 'Goods', color: '#ec4899' },
+  { label: t('admin.totalBatches'), value: stats.value.totalBatches || 0, icon: 'Files', color: '#14b8a6' }
 ])
 
 const cryptoItems = [
@@ -108,8 +124,12 @@ const cryptoItems = [
 ]
 
 onMounted(async () => {
-  const res = await request.get('/admin/dashboard')
-  stats.value = res.data
+  const [statsRes, trendsRes] = await Promise.all([
+    request.get('/admin/dashboard'),
+    request.get('/admin/dashboard/trends')
+  ])
+  stats.value = statsRes.data
+  trends.value = trendsRes.data?.days || []
 })
 </script>
 
@@ -127,4 +147,11 @@ onMounted(async () => {
 .crypto-item { display: flex; align-items: center; gap: 12px; }
 .crypto-label { font-size: 13px; font-weight: 600; }
 .crypto-value { font-size: 12px; color: var(--text-secondary); }
+.trend-chart { display: flex; align-items: flex-end; gap: 12px; min-height: 120px; padding-top: 8px; }
+.trend-bar-group { flex: 1; text-align: center; }
+.bars { display: flex; gap: 4px; justify-content: center; align-items: flex-end; height: 100px; }
+.bar { width: 14px; border-radius: 4px 4px 0 0; min-height: 4px; }
+.bar.orders { background: #4f6ef7; }
+.bar.redeems { background: #10b981; }
+.trend-label { font-size: 11px; color: var(--text-secondary); margin-top: 6px; display: block; }
 </style>

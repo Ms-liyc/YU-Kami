@@ -21,9 +21,12 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuditService auditService;
     private final RateLimitService rateLimitService;
+    private final CaptchaService captchaService;
+    private final TotpService totpService;
 
     public LoginResponse login(LoginRequest request, String ip) {
         rateLimitService.checkLoginLimit(ip, request.getUsername());
+        captchaService.validate(request.getCaptchaId(), request.getCaptchaCode());
         SysUser user = sysUserMapper.selectOne(new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getUsername, request.getUsername()));
         if (user == null || user.getStatus() != 1) {
@@ -32,6 +35,7 @@ public class AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new org.springframework.security.authentication.BadCredentialsException("认证失败");
         }
+        totpService.verifyLogin(user, request.getTotpCode());
         String token = jwtTokenProvider.generateToken(user.getId(), user.getUsername(), user.getRole());
         auditService.log(user.getId(), user.getUsername(), "LOGIN", "sys_user", "管理员登录", ip);
         boolean warnDefault = isDefaultPassword(user.getPassword());

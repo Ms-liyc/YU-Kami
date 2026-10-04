@@ -9,6 +9,8 @@ import com.yuchen.kami.service.PromotionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/shop/products")
 @RequiredArgsConstructor
@@ -20,13 +22,19 @@ public class ShopProductController {
     @GetMapping
     public Result<PageResult<ShopProductVO>> list(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        PageResult<Product> products = productService.page(page, size, null);
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String category) {
+        PageResult<Product> products = productService.page(page, size, null, category);
         var vos = products.getRecords().stream()
                 .filter(p -> p.getStatus() == 1)
                 .map(promotionService::toShopVO)
                 .toList();
         return Result.ok(new PageResult<>(vos, products.getTotal(), page, size));
+    }
+
+    @GetMapping("/categories")
+    public Result<List<String>> categories() {
+        return Result.ok(productService.listCategories());
     }
 
     @GetMapping("/{id}")

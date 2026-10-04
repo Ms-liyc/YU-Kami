@@ -22,35 +22,51 @@
         <p class="subtitle">{{ t('admin.loginSubtitle') }}</p>
         <el-form :model="form" size="large" @submit.prevent="handleLogin">
           <el-form-item>
-            <el-input v-model="form.username" placeholder="用户名" :prefix-icon="User" />
+            <el-input v-model="form.username" :placeholder="t('shop.usernamePlaceholder')" :prefix-icon="User" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="form.password" type="password" placeholder="密码" :prefix-icon="Lock" show-password />
+            <el-input v-model="form.password" type="password" :placeholder="t('shop.passwordPlaceholder')" :prefix-icon="Lock" show-password />
+          </el-form-item>
+          <el-form-item v-if="captchaImage">
+            <div class="captcha-row">
+              <el-input v-model="captchaCode" :placeholder="t('auth.captcha')" />
+              <img :src="captchaImage" alt="captcha" class="captcha-img" @click="refreshCaptcha" />
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="form.totpCode" :placeholder="t('auth.totpLoginPlaceholder')" />
           </el-form-item>
           <el-button type="primary" class="login-btn" :loading="loading" @click="handleLogin">
-            登 录
+            {{ t('common.login') }}
           </el-button>
         </el-form>
-        <p class="hint">{{ t('admin.defaultHint') }}</p>
+        <p class="hint">
+          <router-link to="/forgot-password">{{ t('auth.forgotPassword') }}</router-link>
+          · {{ t('admin.defaultHint') }}
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
 import request from '../api/request'
 import { useAuthStore } from '../stores/auth'
 import { useI18n } from 'vue-i18n'
+import { useCaptcha } from '../composables/useCaptcha'
 
 const { t } = useI18n()
 const router = useRouter()
 const auth = useAuthStore()
 const loading = ref(false)
-const form = ref({ username: 'admin', password: 'admin123' })
+const form = ref({ username: 'admin', password: 'admin123', totpCode: '' })
+const { captchaImage, captchaCode, refreshCaptcha, captchaPayload } = useCaptcha()
+
+onMounted(refreshCaptcha)
 
 const features = [
   { icon: 'Lock', title: '多重加密', desc: 'HMAC + AES + RSA + BCrypt 五重防护' },
@@ -61,13 +77,15 @@ const features = [
 async function handleLogin() {
   loading.value = true
   try {
-    const res = await request.post('/admin/auth/login', form.value)
+    const res = await request.post('/admin/auth/login', { ...form.value, ...captchaPayload() })
     auth.setAuth(res.data)
-    ElMessage.success('登录成功')
+    ElMessage.success(t('common.success'))
     if (res.data.warnDefaultPassword) {
-      ElMessage.warning('检测到默认密码，请尽快在后台修改')
+      ElMessage.warning(t('auth.defaultPasswordWarn'))
     }
     router.push('/dashboard')
+  } catch {
+    refreshCaptcha()
   } finally {
     loading.value = false
   }
@@ -119,6 +137,9 @@ async function handleLogin() {
 .subtitle { color: #94a3b8; margin-bottom: 32px; font-size: 14px; }
 .login-btn { width: 100%; height: 44px; font-size: 15px; margin-top: 8px; }
 .hint { text-align: center; color: #cbd5e1; font-size: 12px; margin-top: 20px; }
+.hint a { color: #4f6ef7; text-decoration: none; }
+.captcha-row { display: flex; gap: 8px; width: 100%; }
+.captcha-img { height: 40px; border-radius: 6px; cursor: pointer; border: 1px solid #e2e8f0; flex-shrink: 0; }
 
 @media (max-width: 900px) {
   .login-left { display: none; }

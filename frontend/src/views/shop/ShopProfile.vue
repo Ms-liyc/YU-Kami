@@ -21,7 +21,18 @@
           <el-input v-model="form.nickname" />
         </el-form-item>
         <el-form-item :label="t('shop.email')">
-          <el-input v-model="form.email" />
+          <div class="email-row">
+            <el-input v-model="form.email" />
+            <el-tag v-if="profile.emailVerified" type="success" size="small">{{ t('shop.emailVerified') }}</el-tag>
+            <el-tag v-else-if="profile.email" type="warning" size="small">{{ t('shop.emailUnverified') }}</el-tag>
+          </div>
+          <el-button
+            v-if="profile.email && !profile.emailVerified"
+            link
+            type="primary"
+            :loading="resending"
+            @click="resendVerify"
+          >{{ t('shop.resendVerify') }}</el-button>
         </el-form-item>
         <el-button type="primary" :loading="saving" @click="saveProfile">{{ t('common.save') }}</el-button>
       </el-form>
@@ -56,6 +67,7 @@ const auth = useShopAuthStore()
 const loading = ref(false)
 const saving = ref(false)
 const changingPwd = ref(false)
+const resending = ref(false)
 const profile = ref({})
 const form = reactive({ nickname: '', email: '' })
 const pwd = reactive({ oldPassword: '', newPassword: '' })
@@ -85,6 +97,16 @@ async function saveProfile() {
     ElMessage.success(t('common.success'))
   } finally {
     saving.value = false
+  }
+}
+
+async function resendVerify() {
+  resending.value = true
+  try {
+    await shopRequest.post('/shop/auth/resend-verify-email')
+    ElMessage.success(t('shop.verifyEmailSent'))
+  } finally {
+    resending.value = false
   }
 }
 
@@ -125,4 +147,6 @@ onMounted(loadProfile)
 }
 .balance-label { display: block; font-size: 13px; color: var(--shop-text-muted); margin-bottom: 4px; }
 .balance-num { font-size: 22px; color: #4f6ef7; }
+.email-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%; }
+.email-row .el-input { flex: 1; min-width: 180px; }
 </style>

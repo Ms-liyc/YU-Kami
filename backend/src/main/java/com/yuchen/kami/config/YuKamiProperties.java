@@ -16,6 +16,9 @@ public class YuKamiProperties {
     private Stock stock = new Stock();
     private Payment payment = new Payment();
     private Security security = new Security();
+    private Captcha captcha = new Captcha();
+    private Mail mail = new Mail();
+    private FeatureSchemaMigration featureSchemaMigration = new FeatureSchemaMigration();
 
     @Data
     public static class Jwt {
@@ -62,5 +65,23 @@ public class YuKamiProperties {
     public static class Stock {
         /** 未使用卡密低于此值时在仪表盘告警 */
         private int lowThreshold = 10;
+        /** 低库存邮件通知地址（可选，逗号分隔） */
+        private String alertEmail;
+    }
+
+    @Data
+    public static class Captcha {
+        private boolean enabled = true;
+    }
+
+    @Data
+    public static class Mail {
+        private String from;
+        private String appUrl;
+    }
+
+    @Data
+    public static class FeatureSchemaMigration {
+        private boolean enabled = true;
     }
 }

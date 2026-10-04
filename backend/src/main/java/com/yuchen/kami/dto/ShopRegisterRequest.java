@@ -19,4 +19,7 @@ public class ShopRegisterRequest {
     private String email;
 
     private String nickname;
+
+    private String captchaId;
+    private String captchaCode;
 }

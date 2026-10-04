@@ -1,0 +1,101 @@
+# HTTPS 部署：在 docker-compose.hub.yml 基础上启用 TLS 终止
+# 1. 将证书放入 ./certs/fullchain.pem 与 ./certs/privkey.pem
+# 2. 设置 CORS / APP_URL / PAYMENT_BASE_URL 为 https 域名
+# 详见 docs/HTTPS.md
+
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: yukami-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: yukami
+      MYSQL_USER: yukami
+      MYSQL_PASSWORD: yukami123
+    volumes:
+      - mysqldata:/var/lib/mysql
+      - ./backend/src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uyukami", "-pyukami123"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - yukami-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: yukami-redis
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - yukami-net
+
+  backend:
+    image: msliyc/yu-kami-backend:latest
+    container_name: yukami-backend
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: yukami
+      DB_USER: yukami
+      DB_PASSWORD: yukami123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: YuChen-Kami-Docker-JWT-Secret-Change-In-Production
+      HMAC_SECRET: YuChen-HMAC-Docker-Secret-Change-In-Production
+      AES_KEY: YuChenAES256KeyChangeInProd!!
+      SWAGGER_ENABLED: "false"
+      CORS_ALLOWED_ORIGINS: "https://localhost,https://127.0.0.1"
+      APP_URL: "https://localhost"
+      PAYMENT_BASE_URL: "https://localhost"
+      PAYMENT_RETURN_URL: "https://localhost/shop/orders"
+      CAPTCHA_ENABLED: "true"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    networks:
+      - yukami-net
+    restart: unless-stopped
+
+  frontend:
+    image: msliyc/yu-kami-frontend:latest
+    container_name: yukami-frontend
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
+      - ./frontend/nginx-https.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - yukami-net
+    restart: unless-stopped
+
+volumes:
+  mysqldata:
+  redisdata:
+
+networks:
+  yukami-net:
+    driver: bridge

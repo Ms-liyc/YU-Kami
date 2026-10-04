@@ -3,6 +3,7 @@ package com.yuchen.kami.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yuchen.kami.config.YuKamiProperties;
 import com.yuchen.kami.dto.DashboardStats;
+import com.yuchen.kami.dto.DashboardTrends;
 import com.yuchen.kami.dto.ProductStockAlert;
 import com.yuchen.kami.entity.CardBatch;
 import com.yuchen.kami.entity.CardKey;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -70,6 +72,27 @@ public class DashboardService {
                 .lowStockProducts(lowStockProducts)
                 .stockLowThreshold(properties.getStock().getLowThreshold())
                 .build();
+    }
+
+    public DashboardTrends getTrends() {
+        List<DashboardTrends.TrendDay> days = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = LocalDate.now().minusDays(i);
+            LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
+            long orderCount = shopOrderMapper.selectCount(new LambdaQueryWrapper<ShopOrder>()
+                    .in(ShopOrder::getStatus, ShopOrder.STATUS_DELIVERED, ShopOrder.STATUS_PAID,
+                            ShopOrder.STATUS_REFUNDED)
+                    .ge(ShopOrder::getCreatedAt, start)
+                    .le(ShopOrder::getCreatedAt, end));
+            long redeemCount = redeemRecordMapper.selectCount(new LambdaQueryWrapper<RedeemRecord>()
+                    .eq(RedeemRecord::getResult, "SUCCESS")
+                    .ge(RedeemRecord::getCreatedAt, start)
+                    .le(RedeemRecord::getCreatedAt, end));
+            days.add(new DashboardTrends.TrendDay(date.format(formatter), orderCount, redeemCount));
+        }
+        return new DashboardTrends(days);
     }
 
     private List<ProductStockAlert> findLowStockProducts() {

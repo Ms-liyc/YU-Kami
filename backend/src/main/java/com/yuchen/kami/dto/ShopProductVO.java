@@ -10,6 +10,7 @@ public class ShopProductVO {
     private Long id;
     private String name;
     private String code;
+    private String category;
     private String description;
     private String cardType;
     private BigDecimal value;

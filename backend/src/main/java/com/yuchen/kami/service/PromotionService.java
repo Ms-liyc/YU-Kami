@@ -132,6 +132,7 @@ public class PromotionService {
         vo.setId(product.getId());
         vo.setName(product.getName());
         vo.setCode(product.getCode());
+        vo.setCategory(product.getCategory());
         vo.setDescription(product.getDescription());
         vo.setCardType(product.getCardType());
         vo.setValue(product.getValue());

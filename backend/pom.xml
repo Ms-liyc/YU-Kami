@@ -13,7 +13,7 @@
 
     <groupId>com.yuchen</groupId>
     <artifactId>yu-kami</artifactId>
-    <version>1.14.0</version>
+    <version>1.16.0</version>
     <name>YU-Kami</name>
     <description>屿宸科技 - 企业级卡密系统</description>
 
@@ -98,6 +98,15 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dev.samstevens.totp</groupId>
+            <artifactId>totp</artifactId>
+            <version>1.7.1</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

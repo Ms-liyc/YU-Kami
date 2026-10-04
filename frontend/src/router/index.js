@@ -10,6 +10,9 @@ const routes = [
       { path: '', name: 'ShopHome', component: () => import('../views/shop/ShopHome.vue') },
       { path: 'query', name: 'ShopQuery', component: () => import('../views/shop/ShopQuery.vue') },
       { path: 'login', name: 'ShopLogin', component: () => import('../views/shop/ShopLogin.vue') },
+      { path: 'forgot-password', name: 'ShopForgotPassword', component: () => import('../views/shop/ShopForgotPassword.vue') },
+      { path: 'verify-email', name: 'ShopVerifyEmail', component: () => import('../views/shop/ShopVerifyEmail.vue') },
+      { path: 'reset-password', name: 'ShopResetPassword', meta: { scope: 'shop' }, component: () => import('../views/ResetPassword.vue') },
       { path: 'orders', name: 'ShopOrders', meta: { shopAuth: true }, component: () => import('../views/shop/ShopOrders.vue') },
       { path: 'buy/:id', name: 'ShopBuy', meta: { shopAuth: true }, component: () => import('../views/shop/ShopBuy.vue') },
       { path: 'profile', name: 'ShopProfile', meta: { shopAuth: true }, component: () => import('../views/shop/ShopProfile.vue') },
@@ -33,6 +36,8 @@ const routes = [
     ]
   },
   { path: '/login', name: 'Login', component: () => import('../views/Login.vue') },
+  { path: '/forgot-password', name: 'ForgotPassword', component: () => import('../views/ForgotPassword.vue') },
+  { path: '/reset-password', name: 'ResetPassword', component: () => import('../views/ResetPassword.vue') },
   {
     path: '/',
     component: () => import('../layouts/AdminLayout.vue'),
@@ -47,6 +52,7 @@ const routes = [
       { path: 'shop-users', name: 'ShopUsers', component: () => import('../views/ShopUsers.vue') },
       { path: 'promotions', name: 'Promotions', component: () => import('../views/Promotions.vue') },
       { path: 'coupons', name: 'Coupons', component: () => import('../views/Coupons.vue') },
+      { path: 'security', name: 'Security', component: () => import('../views/SecuritySettings.vue') },
       { path: 'api-clients', name: 'ApiClients', meta: { superAdmin: true }, component: () => import('../views/ApiClients.vue') },
       { path: 'users', name: 'Users', meta: { superAdmin: true }, component: () => import('../views/Users.vue') },
       { path: 'audit-logs', name: 'AuditLogs', meta: { superAdmin: true }, component: () => import('../views/AuditLogs.vue') },
@@ -63,6 +69,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.path.startsWith('/shop')) {
     const shopAuth = useShopAuthStore()
+    const publicShopPaths = ['/shop/login', '/shop/forgot-password', '/shop/reset-password', '/shop/verify-email']
     if (to.meta.shopAuth && !shopAuth.token && !to.meta.preview) {
       next({ path: '/shop/login', query: { redirect: to.fullPath } })
     } else if (to.path === '/shop/login' && shopAuth.token) {
@@ -73,7 +80,8 @@ router.beforeEach((to, from, next) => {
     return
   }
   const auth = useAuthStore()
-  if (to.path !== '/login' && !auth.token) {
+  const publicPaths = ['/login', '/forgot-password', '/reset-password']
+  if (!publicPaths.includes(to.path) && !auth.token) {
     next('/login')
   } else if (to.path === '/login' && auth.token) {
     next('/dashboard')

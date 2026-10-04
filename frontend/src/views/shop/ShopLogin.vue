@@ -14,6 +14,12 @@
         <el-form-item>
           <el-input v-model="form.password" type="password" :placeholder="t('shop.passwordPlaceholder')" show-password />
         </el-form-item>
+        <el-form-item v-if="captchaImage">
+          <div class="captcha-row">
+            <el-input v-model="captchaCode" :placeholder="t('auth.captcha')" />
+            <img :src="captchaImage" alt="captcha" class="captcha-img" @click="refreshCaptcha" />
+          </div>
+        </el-form-item>
         <el-button type="primary" style="width:100%" :loading="loading" native-type="submit" @click="handleSubmit">
           {{ isRegister ? t('common.register') : t('common.login') }}
         </el-button>
@@ -22,19 +28,21 @@
         <a @click="isRegister = !isRegister">
           {{ isRegister ? t('common.login') : t('common.register') }}
         </a>
+        · <router-link to="/shop/forgot-password">{{ t('auth.forgotPassword') }}</router-link>
       </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import shopRequest from '../../api/shopRequest'
 import { useShopAuthStore } from '../../stores/shopAuth'
 import { useScrollReveal } from '../../composables/useScrollReveal'
+import { useCaptcha } from '../../composables/useCaptcha'
 
 useScrollReveal()
 const { t } = useI18n()
@@ -44,16 +52,21 @@ const auth = useShopAuthStore()
 const isRegister = ref(false)
 const loading = ref(false)
 const form = ref({ username: '', password: '', email: '' })
+const { captchaImage, captchaCode, refreshCaptcha, captchaPayload } = useCaptcha()
+
+onMounted(refreshCaptcha)
 
 async function handleSubmit() {
   if (!form.value.username.trim() || !form.value.password) return
   loading.value = true
   try {
     const url = isRegister.value ? '/shop/auth/register' : '/shop/auth/login'
-    const res = await shopRequest.post(url, form.value)
+    const res = await shopRequest.post(url, { ...form.value, ...captchaPayload() })
     auth.setAuth(res.data)
     ElMessage.success(t('common.success'))
     router.push(route.query.redirect || '/shop')
+  } catch {
+    refreshCaptcha()
   } finally {
     loading.value = false
   }
@@ -81,4 +94,6 @@ async function handleSubmit() {
 .login-alert { margin-bottom: 16px; }
 .switch { text-align: center; margin-top: 16px; }
 .switch a { color: #4f6ef7; cursor: pointer; font-size: 14px; }
+.captcha-row { display: flex; gap: 8px; width: 100%; }
+.captcha-img { height: 40px; border-radius: 6px; cursor: pointer; border: 1px solid var(--shop-border); }
 </style>

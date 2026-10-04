@@ -38,6 +38,16 @@ docker compose -f docker-compose.hub.yml up -d
 
 详见 [docs/SECURITY.md](SECURITY.md)。
 
+## HTTPS 部署
+
+生产环境建议使用 TLS。将证书放入 `certs/` 后执行：
+
+```bash
+docker compose -f docker-compose.https.yml up -d
+```
+
+配置说明见 [docs/HTTPS.md](HTTPS.md)。
+
 ## 发布新镜像（维护者）
 
 GitHub Actions 工作流 **Docker Publish** 会在推送 `v*` 标签时自动构建并推送到 Docker Hub。

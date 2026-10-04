@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yuchen.kami.common.PageResult;
 import com.yuchen.kami.common.Result;
 import com.yuchen.kami.dto.DashboardStats;
+import com.yuchen.kami.dto.DashboardTrends;
 import com.yuchen.kami.entity.RedeemRecord;
 import com.yuchen.kami.mapper.RedeemRecordMapper;
 import com.yuchen.kami.service.DashboardService;
@@ -25,6 +26,11 @@ public class DashboardController {
     @GetMapping("/dashboard")
     public Result<DashboardStats> stats() {
         return Result.ok(dashboardService.getStats());
+    }
+
+    @GetMapping("/dashboard/trends")
+    public Result<DashboardTrends> trends() {
+        return Result.ok(dashboardService.getTrends());
     }
 
     @GetMapping("/redeem-records")

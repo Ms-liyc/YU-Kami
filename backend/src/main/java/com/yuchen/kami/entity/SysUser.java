@@ -20,6 +20,8 @@ public class SysUser {
     private String password;
     private String nickname;
     private String role;
+    private String totpSecret;
+    private Integer totpEnabled;
     private Integer status;
     @TableLogic
     private Integer deleted;

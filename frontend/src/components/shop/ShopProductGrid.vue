@@ -10,6 +10,10 @@
         <el-radio-button value="SINGLE">{{ t('shop.cardTypeSingle') }}</el-radio-button>
         <el-radio-button value="BALANCE">{{ t('shop.cardTypeBalance') }}</el-radio-button>
       </el-radio-group>
+      <el-radio-group v-if="categories.length" v-model="filterCategory" size="small" class="category-filter">
+        <el-radio-button value="">{{ t('shop.filterAllCategory') }}</el-radio-button>
+        <el-radio-button v-for="c in categories" :key="c" :value="c">{{ c }}</el-radio-button>
+      </el-radio-group>
     </div>
     <el-row :gutter="compact ? 12 : 20" v-loading="loading">
       <el-col
@@ -21,6 +25,7 @@
       >
         <div class="product-card" :class="{ compact }">
           <div class="badges">
+            <span v-if="p.category" class="category-badge">{{ p.category }}</span>
             <span class="product-badge">{{ typeLabel(p.cardType) }}</span>
             <span v-if="p.holiday" class="holiday-badge">{{ t('shop.holiday') }}</span>
             <span v-else-if="p.onSale" class="sale-badge">{{ t('shop.onSale') }}</span>
@@ -71,6 +76,8 @@ const products = ref([])
 const loading = ref(false)
 const search = ref('')
 const filterType = ref('')
+const filterCategory = ref('')
+const categories = ref([])
 
 const typeMap = computed(() => ({
   DURATION: t('shop.cardTypeDuration'),
@@ -83,6 +90,7 @@ function displayPrice(p) { return p.onSale ? p.salePrice : p.value }
 const filteredProducts = computed(() => {
   let list = products.value
   if (filterType.value) list = list.filter(p => p.cardType === filterType.value)
+  if (filterCategory.value) list = list.filter(p => p.category === filterCategory.value)
   if (search.value.trim()) {
     const q = search.value.trim().toLowerCase()
     list = list.filter(p => p.name?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q))
@@ -98,8 +106,12 @@ const visibleProducts = computed(() => {
 async function loadProducts() {
   loading.value = true
   try {
-    const res = await shopHttp.get('/shop/products', { params: { page: 1, size: 50 } })
-    products.value = res.data.data?.records || []
+    const [prodRes, catRes] = await Promise.all([
+      shopHttp.get('/shop/products', { params: { page: 1, size: 50 } }),
+      shopHttp.get('/shop/products/categories')
+    ])
+    products.value = prodRes.data.data?.records || []
+    categories.value = catRes.data.data || []
     emit('loaded', products.value)
   } finally {
     loading.value = false
@@ -153,6 +165,8 @@ defineExpose({ products, loadProducts })
 }
 .badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .product-card.compact .badges { margin-bottom: 8px; }
+.category-filter { flex-wrap: wrap; }
+.category-badge { background: #ecfdf5; color: #059669; font-size: 12px; padding: 2px 10px; border-radius: 20px; }
 .product-badge { background: var(--shop-accent-soft); color: var(--shop-brand-accent, var(--brand)); font-size: 12px; padding: 2px 10px; border-radius: 20px; }
 .product-card.compact .product-badge { font-size: 10px; padding: 1px 8px; }
 .holiday-badge { background: #fef3c7; color: #d97706; font-size: 12px; padding: 2px 10px; border-radius: 20px; }

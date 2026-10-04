@@ -50,6 +50,7 @@
     "about": "About",
     "manage": "Admin",
     "security": "Security",
+    "securitySettings": "Security Settings",
     "banner": "Welcome to YU-Kami · Pay & get your key instantly",
     "footerBrand": "YuChen Tech · Digital goods auto-delivery platform",
     "footerShop": "Shop",
@@ -59,6 +60,30 @@
     "mobileQuery": "Lookup",
     "mobileOrders": "Orders",
     "mobileMine": "Me"
+  },
+  "auth": {
+    "forgotPassword": "Forgot password",
+    "resetPassword": "Reset password",
+    "sendResetLink": "Send reset link",
+    "resetEmailSent": "If the account exists, a reset link was sent (check email or server logs)",
+    "backLogin": "Back to login",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "passwordMismatch": "Passwords do not match",
+    "resetSuccess": "Password reset successfully",
+    "captcha": "Captcha",
+    "securityTitle": "Security Settings",
+    "securitySubtitle": "Two-factor authentication and account security",
+    "totpTitle": "TOTP two-factor authentication",
+    "totpHint": "Scan the QR code with Google Authenticator or similar, then enable",
+    "totpSetup": "Generate secret",
+    "totpSecret": "Secret",
+    "totpCode": "6-digit code",
+    "totpEnable": "Enable 2FA",
+    "totpDisable": "Disable 2FA",
+    "totpEnabledHint": "Two-factor authentication is enabled",
+    "totpLoginPlaceholder": "2FA code (if enabled)",
+    "defaultPasswordWarn": "Default password detected — please change it soon"
   },
   "admin": {
     "welcome": "Welcome Back",
@@ -100,8 +125,15 @@
     "confirmDisableUser": "Disable this buyer? They will not be able to log in.",
     "lowStockTitle": "Low stock: unused card keys below threshold",
     "todayOrders": "Today's orders",
+    "todayRedeems": "Today's redeems",
+    "totalCards": "Total keys",
+    "totalProducts": "Products",
+    "totalBatches": "Batches",
     "unusedStock": "Stock",
-    "walletTransactions": "Wallet history"
+    "walletTransactions": "Wallet history",
+    "trendTitle": "Last 7 days",
+    "category": "Category",
+    "categoryPlaceholder": "e.g. Membership / Games / Tools"
   },
   "shop": {
     "title": "YU-Kami Card Shop",
@@ -187,7 +219,13 @@
     "rechargeAmount": "Amount",
     "rechargeHint": "Mock / Alipay / WeChat supported. Balance credits instantly after payment.",
     "rechargeSuccess": "Top-up successful",
-    "rechargeMin": "Min ¥1, max ¥10000"
+    "rechargeMin": "Min ¥1, max ¥10000",
+    "filterAllCategory": "All categories",
+    "emailVerified": "Verified",
+    "emailUnverified": "Unverified",
+    "resendVerify": "Resend verification email",
+    "verifyEmailSent": "Verification email sent",
+    "verifyInvalid": "Invalid or expired verification link"
   },
   "order": {
     "title": "Order Management",
@@ -206,6 +244,10 @@
     "refund": "Refund",
     "confirmRefund": "Refund this order? Amount returns to buyer balance; card key will be revoked.",
     "refundSuccess": "Refund successful",
+    "export": "Export orders",
+    "refundMode": "Refund mode",
+    "refundBalance": "To balance",
+    "refundOriginal": "Original payment",
     "allStatus": "All statuses"
   },
   "setup": {

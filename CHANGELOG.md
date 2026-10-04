@@ -2,6 +2,45 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.16.0] — 2026-01
+
+### 新增
+
+- 商城商品分类 API 与前台分类筛选
+- 买家邮箱验证状态展示、重发验证邮件、验证结果页
+- 低库存邮件告警（`STOCK_ALERT_EMAIL`）
+- 管理端 2FA 启用状态查询
+
+### 修复
+
+- 管理端密码重置邮件链接路径错误（`/reset-password`）
+- 邮箱验证链接改为跳转商城前端页面
+
+### 改进
+
+- 登录页、仪表盘统计卡片 i18n 补全
+- 安全设置页区分已启用/未启用 2FA 的操作流程
+
+## [1.15.0] — 2026-01
+
+### 新增
+
+- 图形验证码（管理端/商城登录与注册，`GET /api/captcha`）
+- 邮件找回密码（管理端与商城买家）
+- 管理端 TOTP 双因素认证（2FA）
+- 充值订单退款、原路退款（支付宝/微信，需已配置支付渠道）
+- 产品分类字段与筛选
+- 仪表盘近 7 日订单/充值趋势 API
+- 定时低库存 Webhook（`LOW_STOCK`）
+- 管理端订单 CSV 导出
+- `docker-compose.https.yml` 与 [docs/HTTPS.md](docs/HTTPS.md)
+
+### 改进
+
+- 订单退款支持选择「退至余额」或「原路退款」
+- 登录页增加验证码、2FA 与忘记密码入口
+- 管理端新增「安全设置」菜单页
+
 ## [1.14.0] — 2026-01
 
 ### 新增
@@ -133,6 +172,8 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.16.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.15.0...v1.16.0
+[1.15.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.12.0...v1.12.1

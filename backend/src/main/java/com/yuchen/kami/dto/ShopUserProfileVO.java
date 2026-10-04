@@ -13,6 +13,7 @@ public class ShopUserProfileVO {
     private String username;
     private String nickname;
     private String email;
+    private Boolean emailVerified;
     private BigDecimal balance;
     private LocalDateTime createdAt;
 }

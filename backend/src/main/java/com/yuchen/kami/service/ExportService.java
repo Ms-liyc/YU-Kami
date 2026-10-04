@@ -5,10 +5,14 @@ import com.yuchen.kami.entity.CardBatch;
 import com.yuchen.kami.entity.CardKey;
 import com.yuchen.kami.entity.Product;
 import com.yuchen.kami.entity.RedeemRecord;
+import com.yuchen.kami.entity.ShopOrder;
+import com.yuchen.kami.entity.ShopUser;
 import com.yuchen.kami.mapper.CardBatchMapper;
 import com.yuchen.kami.mapper.CardKeyMapper;
 import com.yuchen.kami.mapper.ProductMapper;
 import com.yuchen.kami.mapper.RedeemRecordMapper;
+import com.yuchen.kami.mapper.ShopOrderMapper;
+import com.yuchen.kami.mapper.ShopUserMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,39 @@ public class ExportService {
     private final CardBatchMapper cardBatchMapper;
     private final RedeemRecordMapper redeemRecordMapper;
     private final ProductMapper productMapper;
+    private final ShopOrderMapper shopOrderMapper;
+    private final ShopUserMapper shopUserMapper;
+
+    public void exportOrders(HttpServletResponse response, String status) throws Exception {
+        LambdaQueryWrapper<ShopOrder> wrapper = new LambdaQueryWrapper<>();
+        if (status != null && !status.isBlank()) {
+            wrapper.eq(ShopOrder::getStatus, status);
+        }
+        wrapper.orderByDesc(ShopOrder::getCreatedAt).last("LIMIT 50000");
+
+        Map<Long, String> userMap = shopUserMapper.selectList(null).stream()
+                .collect(Collectors.toMap(ShopUser::getId, ShopUser::getUsername));
+
+        response.setContentType("text/csv;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=orders_export.csv");
+        response.getOutputStream().write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
+
+        PrintWriter writer = new PrintWriter(response.getOutputStream(), true, StandardCharsets.UTF_8);
+        writer.println("订单号,用户,类型,产品,金额,状态,支付方式,创建时间,支付时间");
+        for (ShopOrder order : shopOrderMapper.selectList(wrapper)) {
+            writer.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                    order.getOrderNo(),
+                    userMap.getOrDefault(order.getUserId(), ""),
+                    nullSafe(order.getOrderType()),
+                    nullSafe(order.getProductName()),
+                    order.getAmount(),
+                    nullSafe(order.getStatus()),
+                    nullSafe(order.getPaymentMethod()),
+                    nullSafe(order.getCreatedAt()),
+                    nullSafe(order.getPaidAt()));
+        }
+        writer.flush();
+    }
 
     public void exportCards(HttpServletResponse response, Long batchId, Integer status) throws Exception {
         LambdaQueryWrapper<CardKey> wrapper = new LambdaQueryWrapper<>();
