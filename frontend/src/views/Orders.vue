@@ -28,6 +28,7 @@
             <el-option :label="t('order.statusPaid')" value="PAID" />
             <el-option :label="t('order.statusDelivered')" value="DELIVERED" />
             <el-option :label="t('order.statusCancelled')" value="CANCELLED" />
+            <el-option :label="t('order.statusRefunded')" value="REFUNDED" />
           </el-select>
         </div>
         <el-table :data="tableData" stripe v-loading="loading">
@@ -38,9 +39,15 @@
           <el-table-column prop="statusLabel" :label="t('shop.status')" width="100" />
           <el-table-column prop="paymentMethod" :label="t('order.paymentMethod')" width="100" />
           <el-table-column prop="createdAt" :label="t('order.createdAt')" width="170" />
-          <el-table-column label="" width="100">
+          <el-table-column label="" width="160">
             <template #default="{ row }">
               <el-button v-if="row.status === 'PENDING'" link type="danger" @click="handleCancel(row.id)">{{ t('order.cancel') }}</el-button>
+              <el-button
+                v-if="row.status === 'DELIVERED' || row.status === 'PAID'"
+                link
+                type="warning"
+                @click="handleRefund(row.id)"
+              >{{ t('order.refund') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -157,9 +164,16 @@ async function saveConfig() {
 }
 
 async function handleCancel(id) {
-  await ElMessageBox.confirm('Confirm cancel?', 'Tip')
+  await ElMessageBox.confirm(t('order.cancel') + '?', t('common.confirm'))
   await request.post(`/admin/orders/${id}/cancel`)
-  ElMessage.success('OK')
+  ElMessage.success(t('common.success'))
+  loadData()
+}
+
+async function handleRefund(id) {
+  await ElMessageBox.confirm(t('order.confirmRefund'), t('common.confirm'))
+  await request.post(`/admin/orders/${id}/refund`, {})
+  ElMessage.success(t('order.refundSuccess'))
   loadData()
 }
 

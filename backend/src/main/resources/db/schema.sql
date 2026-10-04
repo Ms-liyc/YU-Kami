@@ -180,6 +180,7 @@ CREATE TABLE IF NOT EXISTS shop_order (
     id              BIGINT         NOT NULL PRIMARY KEY,
     order_no        VARCHAR(64)    NOT NULL,
     user_id         BIGINT         NOT NULL,
+    order_type      VARCHAR(32)    NOT NULL DEFAULT 'PRODUCT',
     product_id      BIGINT         NOT NULL,
     product_name    VARCHAR(128)   NOT NULL,
     amount          DECIMAL(12,2)  NOT NULL,

@@ -19,11 +19,16 @@ public class ShopOrder {
     public static final String STATUS_PAID = "PAID";
     public static final String STATUS_DELIVERED = "DELIVERED";
     public static final String STATUS_CANCELLED = "CANCELLED";
+    public static final String STATUS_REFUNDED = "REFUNDED";
+
+    public static final String TYPE_PRODUCT = "PRODUCT";
+    public static final String TYPE_RECHARGE = "RECHARGE";
 
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
     private String orderNo;
     private Long userId;
+    private String orderType;
     private Long productId;
     private String productName;
     private BigDecimal amount;

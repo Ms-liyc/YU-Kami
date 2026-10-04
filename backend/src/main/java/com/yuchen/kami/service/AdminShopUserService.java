@@ -2,6 +2,7 @@ package com.yuchen.kami.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.yuchen.kami.common.BusinessException;
 import com.yuchen.kami.common.PageResult;
 import com.yuchen.kami.dto.AdminShopUserVO;
 import com.yuchen.kami.entity.ShopUser;
@@ -35,6 +36,19 @@ public class AdminShopUserService {
     public AdminShopUserVO adjustWallet(Long userId, BigDecimal amount, String remark) {
         walletService.adjustBalance(userId, amount, remark);
         ShopUser user = shopUserMapper.selectById(userId);
+        return toVO(user);
+    }
+
+    public AdminShopUserVO updateStatus(Long userId, Integer status) {
+        ShopUser user = shopUserMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        if (status == null || (status != 0 && status != 1)) {
+            throw new BusinessException("状态值无效");
+        }
+        user.setStatus(status);
+        shopUserMapper.updateById(user);
         return toVO(user);
     }
 

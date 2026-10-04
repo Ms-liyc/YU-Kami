@@ -104,6 +104,17 @@ Content-Type: application/json
 |------|------|------|
 | `/api/shop/wallet` | GET | 当前余额 |
 | `/api/shop/wallet/transactions` | GET | 交易明细（分页） |
+| `/api/shop/wallet/recharge/channels` | GET | 充值可用支付渠道（不含余额支付） |
+| `/api/shop/wallet/recharge` | POST | 创建充值订单并预支付 |
+
+**充值请求体：**
+
+```json
+{
+  "amount": 100,
+  "paymentMethod": "MOCK"
+}
+```
 
 余额支付：创建订单后调用 `POST /api/shop/orders/prepay`，`paymentMethod` 设为 `BALANCE`。
 
@@ -117,8 +128,8 @@ Content-Type: application/json
 | 产品 | `/api/admin/products` | CRUD |
 | 卡密 | `/api/admin/cards/**` | 生成、导入、作废、批次 |
 | 兑换记录 | `/api/admin/redeem-records` | 审计明细 |
-| 订单 | `/api/admin/orders/**` | 列表、取消、支付配置 |
-| 商城买家 | `/api/admin/shop-users/**` | 买家列表、钱包余额调整 |
+| 订单 | `/api/admin/orders/**` | 列表、取消、退款、支付配置 |
+| 商城买家 | `/api/admin/shop-users/**` | 买家列表、余额调整、启用/禁用 |
 | 促销 | `/api/admin/promotions` | 满减/折扣/特价 |
 | 优惠券 | `/api/admin/coupons` | 券码管理 |
 | API 客户端 | `/api/admin/api-clients` | 开放接入 |
@@ -133,6 +144,7 @@ Content-Type: application/json
 |------|------|------|
 | `/api/admin/shop-users` | GET | 买家列表，支持 `keyword` |
 | `/api/admin/shop-users/{id}/wallet/adjust` | POST | 调整余额（正数充值，负数扣减） |
+| `/api/admin/shop-users/{id}/status` | POST | 启用/禁用买家（`status`: 1 启用，0 禁用） |
 
 **调整余额请求体：**
 

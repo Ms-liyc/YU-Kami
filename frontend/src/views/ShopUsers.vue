@@ -33,9 +33,21 @@
             </template>
           </el-table-column>
           <el-table-column prop="createdAt" :label="t('order.createdAt')" width="170" />
-          <el-table-column :label="t('common.actions')" width="120" fixed="right">
+          <el-table-column :label="t('common.actions')" width="200" fixed="right">
             <template #default="{ row }">
               <el-button link type="primary" @click="openAdjust(row)">{{ t('admin.adjustBalance') }}</el-button>
+              <el-button
+                v-if="row.status === 1"
+                link
+                type="danger"
+                @click="toggleStatus(row, 0)"
+              >{{ t('admin.disableUser') }}</el-button>
+              <el-button
+                v-else
+                link
+                type="success"
+                @click="toggleStatus(row, 1)"
+              >{{ t('admin.enableUser') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -71,7 +83,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'
 import PageHeader from '../components/PageHeader.vue'
 
@@ -125,6 +137,15 @@ async function submitAdjust() {
   } finally {
     adjusting.value = false
   }
+}
+
+async function toggleStatus(row, status) {
+  const msg = status === 1 ? t('admin.confirmEnableUser') : t('admin.confirmDisableUser')
+  await ElMessageBox.confirm(msg, t('common.confirm'))
+  const res = await request.post(`/admin/shop-users/${row.id}/status`, { status })
+  ElMessage.success(t('common.success'))
+  const idx = tableData.value.findIndex(u => u.id === row.id)
+  if (idx >= 0) tableData.value[idx] = res.data
 }
 
 onMounted(loadData)

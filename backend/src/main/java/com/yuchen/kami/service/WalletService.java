@@ -76,6 +76,11 @@ public class WalletService {
 
     @Transactional
     public void credit(Long userId, BigDecimal amount, String type, String remark) {
+        credit(userId, amount, type, remark, null, null);
+    }
+
+    @Transactional
+    public void credit(Long userId, BigDecimal amount, String type, String remark, Long orderId, String orderNo) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BusinessException("充值金额必须大于 0");
         }
@@ -84,7 +89,13 @@ public class WalletService {
         shopUserMapper.update(null, new LambdaUpdateWrapper<ShopUser>()
                 .eq(ShopUser::getId, userId)
                 .set(ShopUser::getBalance, after));
-        recordTransaction(userId, type, amount, after, null, null, remark);
+        recordTransaction(userId, type, amount, after, orderId, orderNo, remark);
+    }
+
+    @Transactional
+    public void refundOrder(Long userId, BigDecimal amount, Long orderId, String orderNo, String remark) {
+        String detail = remark != null && !remark.isBlank() ? remark : "订单退款";
+        credit(userId, amount, WalletTransaction.TYPE_REFUND, detail, orderId, orderNo);
     }
 
     @Transactional

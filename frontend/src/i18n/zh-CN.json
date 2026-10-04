@@ -93,7 +93,11 @@
     "adjustAmountRequired": "请输入调整金额",
     "adjustRemarkPlaceholder": "如：活动赠送、人工补偿",
     "statusNormal": "正常",
-    "statusDisabled": "禁用"
+    "statusDisabled": "禁用",
+    "enableUser": "启用",
+    "disableUser": "禁用",
+    "confirmEnableUser": "确定启用该买家账号？",
+    "confirmDisableUser": "确定禁用该买家账号？禁用后将无法登录"
   },
   "shop": {
     "title": "YU-Kami 卡密商城",
@@ -174,7 +178,12 @@
     "walletHint": "余额可用于商城内商品购买，演示账号 demo 初始 ¥200",
     "walletHistory": "交易明细",
     "walletType": "类型",
-    "walletRemark": "备注"
+    "walletRemark": "备注",
+    "recharge": "充值余额",
+    "rechargeAmount": "充值金额",
+    "rechargeHint": "支持模拟支付/支付宝/微信，充值成功后即时到账",
+    "rechargeSuccess": "充值成功",
+    "rechargeMin": "最低 ¥1，最高 ¥10000"
   },
   "order": {
     "title": "订单管理",
@@ -188,7 +197,11 @@
     "statusPaid": "已支付",
     "statusDelivered": "已发货",
     "statusCancelled": "已取消",
+    "statusRefunded": "已退款",
     "cancel": "取消",
+    "refund": "退款",
+    "confirmRefund": "确定退款？金额将退回买家余额，已发卡密将作废",
+    "refundSuccess": "退款成功",
     "allStatus": "全部状态"
   },
   "setup": {

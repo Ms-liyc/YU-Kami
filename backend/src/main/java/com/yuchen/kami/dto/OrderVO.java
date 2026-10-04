@@ -20,6 +20,7 @@ public class OrderVO {
     private Integer quantity;
     private String status;
     private String statusLabel;
+    private String orderType;
     private String paymentMethod;
     private String cardKey;
     private LocalDateTime createdAt;

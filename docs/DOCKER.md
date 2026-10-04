@@ -26,6 +26,18 @@ docker compose -f docker-compose.hub.yml up -d
 
 访问地址与 `docker compose up` 相同：商城 `http://localhost/shop`，管理端 `http://localhost/login`。
 
+### 生产环境建议
+
+`docker-compose.hub.yml` 已默认关闭 Swagger 并限制 CORS。上线前请修改 backend 环境变量：
+
+| 变量 | 说明 |
+|------|------|
+| `JWT_SECRET` / `HMAC_SECRET` / `AES_KEY` | 必改随机密钥 |
+| `SWAGGER_ENABLED` | 保持 `false` |
+| `CORS_ALLOWED_ORIGINS` | 改为实际前端域名 |
+
+详见 [docs/SECURITY.md](SECURITY.md)。
+
 ## 发布新镜像（维护者）
 
 GitHub Actions 工作流 **Docker Publish** 会在推送 `v*` 标签时自动构建并推送到 Docker Hub。

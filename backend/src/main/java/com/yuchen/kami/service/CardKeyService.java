@@ -6,6 +6,7 @@ import com.yuchen.kami.common.BusinessException;
 import com.yuchen.kami.common.PageResult;
 import com.yuchen.kami.crypto.CardKeyGenerator;
 import com.yuchen.kami.crypto.CryptoService;
+import com.yuchen.kami.dto.CardDeliveryResult;
 import com.yuchen.kami.dto.GenerateBatchRequest;
 import com.yuchen.kami.entity.CardBatch;
 import com.yuchen.kami.entity.CardKey;
@@ -119,7 +120,7 @@ public class CardKeyService {
     }
 
     @Transactional
-    public String generateForOrder(Long productId, Long userId, String orderNo) {
+    public CardDeliveryResult generateForOrder(Long productId, Long userId, String orderNo) {
         GenerateBatchRequest request = new GenerateBatchRequest();
         request.setProductId(productId);
         request.setCount(1);
@@ -128,6 +129,33 @@ public class CardKeyService {
         if (keys.isEmpty()) {
             throw new BusinessException("卡密生成失败");
         }
-        return keys.get(0);
+        CardBatch batch = cardBatchMapper.selectOne(new LambdaQueryWrapper<CardBatch>()
+                .like(CardBatch::getRemark, orderNo)
+                .orderByDesc(CardBatch::getCreatedAt)
+                .last("LIMIT 1"));
+        if (batch == null) {
+            return new CardDeliveryResult(keys.get(0), null);
+        }
+        CardKey card = cardKeyMapper.selectOne(new LambdaQueryWrapper<CardKey>()
+                .eq(CardKey::getBatchId, batch.getId())
+                .orderByDesc(CardKey::getId)
+                .last("LIMIT 1"));
+        return new CardDeliveryResult(keys.get(0), card != null ? card.getId() : null);
+    }
+
+    @Transactional
+    public void revokeForRefund(Long cardId) {
+        CardKey card = cardKeyMapper.selectById(cardId);
+        if (card == null) {
+            return;
+        }
+        if (card.getStatus() == CardKey.STATUS_USED) {
+            throw new BusinessException("卡密已被兑换，无法自动退款");
+        }
+        if (card.getStatus() == CardKey.STATUS_REVOKED) {
+            return;
+        }
+        card.setStatus(CardKey.STATUS_REVOKED);
+        cardKeyMapper.updateById(card);
     }
 }

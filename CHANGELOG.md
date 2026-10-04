@@ -2,6 +2,21 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.13.0] — 2026-01
+
+### 新增
+
+- 管理端买家账号启用/禁用
+- 买家钱包自助充值（MOCK/支付宝/微信）
+- 管理端订单退款（退回余额、作废卡密）
+- Hub Compose 默认关闭 Swagger 并限制 CORS
+
+### 改进
+
+- 发货订单关联 `card_id`，支持退款时回收卡密
+- `shop_order.order_type` 区分商品订单与充值订单
+- Docker 文档补充生产环境变量说明
+
 ## [1.12.1] — 2026-01
 
 ### 安全
@@ -104,6 +119,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.13.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.10.2...v1.11.0

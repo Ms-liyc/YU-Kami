@@ -8,8 +8,10 @@ import com.yuchen.kami.dto.OrderVO;
 import com.yuchen.kami.dto.PrepayResponse;
 import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.ShopOrder;
+import com.yuchen.kami.entity.WalletTransaction;
 import com.yuchen.kami.mapper.PaymentConfigMapper;
 import com.yuchen.kami.mapper.ShopOrderMapper;
+import com.yuchen.kami.dto.CardDeliveryResult;
 import com.yuchen.kami.dto.JsapiPayParams;
 import com.yuchen.kami.dto.PaymentChannelVO;
 import com.yuchen.kami.payment.AlipayPaymentService;
@@ -55,6 +57,9 @@ public class PaymentService {
         if (!ShopOrder.STATUS_PENDING.equals(order.getStatus())) {
             throw new BusinessException("订单状态不允许支付");
         }
+        if (ShopOrder.TYPE_RECHARGE.equals(order.getOrderType()) && "BALANCE".equals(paymentMethod)) {
+            throw new BusinessException("余额充值不能使用余额支付");
+        }
 
         order.setPaymentMethod(paymentMethod);
         shopOrderMapper.updateById(order);
@@ -83,7 +88,8 @@ public class PaymentService {
     public OrderVO getOrderStatus(Long orderId, Long userId) {
         ShopOrder order = orderService.getOrder(orderId, userId);
         OrderVO vo = orderService.toVO(order);
-        if (ShopOrder.STATUS_DELIVERED.equals(order.getStatus())) {
+        if (ShopOrder.STATUS_DELIVERED.equals(order.getStatus())
+                && ShopOrder.TYPE_PRODUCT.equals(order.getOrderType() != null ? order.getOrderType() : ShopOrder.TYPE_PRODUCT)) {
             String key = redisTemplate.opsForValue().get("order:card:" + orderId);
             vo.setCardKey(key);
         }
@@ -130,6 +136,13 @@ public class PaymentService {
     }
 
     @Transactional
+    public PrepayResponse recharge(Long userId, java.math.BigDecimal amount, String paymentMethod,
+                                   String openid, Boolean wechatJsapi) {
+        ShopOrder order = orderService.createRechargeOrder(userId, amount);
+        return prepay(userId, order.getId(), paymentMethod, openid, wechatJsapi);
+    }
+
+    @Transactional
     public boolean completePayment(String orderNo, String paymentNo) {
         ShopOrder order = shopOrderMapper.selectOne(new LambdaQueryWrapper<ShopOrder>()
                 .eq(ShopOrder::getOrderNo, orderNo));
@@ -153,17 +166,31 @@ public class PaymentService {
                 .set(ShopOrder::getPaidAt, LocalDateTime.now()));
         if (paidRows == 0) {
             ShopOrder latest = shopOrderMapper.selectById(order.getId());
-            return latest != null && ShopOrder.STATUS_DELIVERED.equals(latest.getStatus());
+            return latest != null && (ShopOrder.STATUS_DELIVERED.equals(latest.getStatus())
+                    || ShopOrder.STATUS_REFUNDED.equals(latest.getStatus()));
         }
 
-        String cardKey = cardKeyService.generateForOrder(order.getProductId(), order.getUserId(), order.getOrderNo());
+        if (ShopOrder.TYPE_RECHARGE.equals(order.getOrderType())) {
+            walletService.credit(order.getUserId(), order.getAmount(), WalletTransaction.TYPE_RECHARGE,
+                    "余额充值 " + orderNo, order.getId(), orderNo);
+            shopOrderMapper.update(null, new LambdaUpdateWrapper<ShopOrder>()
+                    .eq(ShopOrder::getId, order.getId())
+                    .eq(ShopOrder::getStatus, ShopOrder.STATUS_PAID)
+                    .set(ShopOrder::getStatus, ShopOrder.STATUS_DELIVERED)
+                    .set(ShopOrder::getDeliveredAt, LocalDateTime.now()));
+            log.info("余额充值完成: {}", orderNo);
+            return true;
+        }
+
+        CardDeliveryResult delivery = cardKeyService.generateForOrder(order.getProductId(), order.getUserId(), order.getOrderNo());
         shopOrderMapper.update(null, new LambdaUpdateWrapper<ShopOrder>()
                 .eq(ShopOrder::getId, order.getId())
                 .eq(ShopOrder::getStatus, ShopOrder.STATUS_PAID)
                 .set(ShopOrder::getStatus, ShopOrder.STATUS_DELIVERED)
-                .set(ShopOrder::getDeliveredAt, LocalDateTime.now()));
+                .set(ShopOrder::getDeliveredAt, LocalDateTime.now())
+                .set(ShopOrder::getCardId, delivery.getCardId()));
 
-        redisTemplate.opsForValue().set("order:card:" + order.getId(), cardKey, Duration.ofHours(24));
+        redisTemplate.opsForValue().set("order:card:" + order.getId(), delivery.getPlainKey(), Duration.ofHours(24));
         promotionService.confirmByOrder(order);
         log.info("订单发货完成: {}", orderNo);
         return true;
@@ -180,6 +207,14 @@ public class PaymentService {
     private PrepayResponse prepayMock(ShopOrder order, Long userId) {
         String paymentNo = "MOCK" + UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase();
         completePayment(order.getOrderNo(), paymentNo);
+        if (ShopOrder.TYPE_RECHARGE.equals(order.getOrderType())) {
+            return PrepayResponse.builder()
+                    .payType("INSTANT")
+                    .orderId(order.getId())
+                    .orderNo(order.getOrderNo())
+                    .message("充值成功")
+                    .build();
+        }
         String cardKey = redisTemplate.opsForValue().get("order:card:" + order.getId());
         return PrepayResponse.builder()
                 .payType("INSTANT")
@@ -258,6 +293,12 @@ public class PaymentService {
                 .collect(java.util.stream.Collectors.toCollection(java.util.ArrayList::new));
         channels.add(PaymentChannelVO.balance());
         return channels;
+    }
+
+    public List<PaymentChannelVO> availableRechargeChannels() {
+        return availableChannels().stream()
+                .map(PaymentChannelVO::from)
+                .toList();
     }
 
     /** 回调验签用：不要求渠道当前处于启用状态 */

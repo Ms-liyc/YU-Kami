@@ -3,6 +3,7 @@ package com.yuchen.kami.controller;
 import com.yuchen.kami.common.PageResult;
 import com.yuchen.kami.common.Result;
 import com.yuchen.kami.dto.AdminShopUserVO;
+import com.yuchen.kami.dto.ShopUserStatusRequest;
 import com.yuchen.kami.dto.WalletAdjustRequest;
 import com.yuchen.kami.service.AdminShopUserService;
 import com.yuchen.kami.service.AuditService;
@@ -39,6 +40,18 @@ public class AdminShopUserController {
                 action + " ¥" + request.getAmount().abs() + " → " + vo.getUsername()
                         + (request.getRemark() != null ? " (" + request.getRemark() + ")" : ""),
                 httpRequest.getRemoteAddr());
+        return Result.ok(vo);
+    }
+
+    @PostMapping("/{id}/status")
+    public Result<AdminShopUserVO> updateStatus(@PathVariable Long id,
+                                                @Valid @RequestBody ShopUserStatusRequest request,
+                                                Authentication auth,
+                                                HttpServletRequest httpRequest) {
+        AdminShopUserVO vo = adminShopUserService.updateStatus(id, request.getStatus());
+        String action = request.getStatus() == 1 ? "启用" : "禁用";
+        auditService.log((Long) auth.getDetails(), auth.getName(), "SHOP_USER_STATUS", "shop_user",
+                action + "买家 " + vo.getUsername(), httpRequest.getRemoteAddr());
         return Result.ok(vo);
     }
 }

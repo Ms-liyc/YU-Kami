@@ -35,6 +35,30 @@ public class OrderService {
     private final PromotionMapper promotionMapper;
 
     @Transactional
+    public ShopOrder createRechargeOrder(Long userId, java.math.BigDecimal amount) {
+        if (amount == null || amount.compareTo(java.math.BigDecimal.ONE) < 0) {
+            throw new BusinessException("充值金额至少 ¥1");
+        }
+        if (amount.compareTo(new java.math.BigDecimal("10000")) > 0) {
+            throw new BusinessException("单次充值不超过 ¥10000");
+        }
+        ShopOrder order = new ShopOrder();
+        order.setOrderNo("R" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+                + String.format("%04d", (int) (Math.random() * 10000)));
+        order.setUserId(userId);
+        order.setOrderType(ShopOrder.TYPE_RECHARGE);
+        order.setProductId(0L);
+        order.setProductName("余额充值");
+        order.setOriginalAmount(amount);
+        order.setDiscountAmount(java.math.BigDecimal.ZERO);
+        order.setAmount(amount);
+        order.setQuantity(1);
+        order.setStatus(ShopOrder.STATUS_PENDING);
+        shopOrderMapper.insert(order);
+        return order;
+    }
+
+    @Transactional
     public ShopOrder createOrder(Long userId, CreateOrderRequest request) {
         Product product = productService.getById(request.getProductId());
         if (product.getStatus() != 1) {
@@ -55,6 +79,7 @@ public class OrderService {
         order.setPromotionId(pricing.getPromotionId());
         order.setCouponCode(pricing.getCouponCode());
         order.setQuantity(qty);
+        order.setOrderType(ShopOrder.TYPE_PRODUCT);
         order.setStatus(ShopOrder.STATUS_PENDING);
         shopOrderMapper.insert(order);
         return order;
@@ -140,6 +165,7 @@ public class OrderService {
         OrderVO vo = new OrderVO();
         vo.setId(order.getId());
         vo.setOrderNo(order.getOrderNo());
+        vo.setOrderType(order.getOrderType() != null ? order.getOrderType() : ShopOrder.TYPE_PRODUCT);
         vo.setProductId(order.getProductId());
         vo.setProductName(order.getProductName());
         vo.setAmount(order.getAmount());
@@ -168,6 +194,7 @@ public class OrderService {
             case ShopOrder.STATUS_PAID -> "已支付";
             case ShopOrder.STATUS_DELIVERED -> "已发货";
             case ShopOrder.STATUS_CANCELLED -> "已取消";
+            case ShopOrder.STATUS_REFUNDED -> "已退款";
             default -> status;
         };
     }
