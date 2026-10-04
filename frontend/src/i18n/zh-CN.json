@@ -389,6 +389,7 @@
     "redeemUserPlaceholder": "用于记录兑换用户",
     "cardKeyPlaceholder": "请输入卡密",
     "redeemBtn": "立即兑换",
+    "redeemSuccess": "兑换成功",
     "redeemSuccessDetail": "兑换成功，权益已生效",
     "deliveredToast": "支付成功，卡密已发放",
     "redeemFail": "兑换失败",
