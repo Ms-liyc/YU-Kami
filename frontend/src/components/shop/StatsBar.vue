@@ -11,18 +11,20 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, onUnmounted } from 'vue'
+import { reactive, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import shopHttp from '../../api/shopHttp'
 
+const { t } = useI18n()
 const targets = reactive({ orders: 0, users: 0, cards: 0, uptime: 99.9 })
 const animated = reactive({ orders: 0, users: 0, cards: 0, uptime: 0 })
 
-const stats = [
-  { key: 'orders', label: '累计成交订单', suffix: '+' },
-  { key: 'users', label: '注册用户', suffix: '+' },
-  { key: 'cards', label: '卡密发放', suffix: '+' },
-  { key: 'uptime', label: '系统可用率', suffix: '%' }
-]
+const stats = computed(() => [
+  { key: 'orders', label: t('landing.stats.orders'), suffix: '+' },
+  { key: 'users', label: t('landing.stats.users'), suffix: '+' },
+  { key: 'cards', label: t('landing.stats.cards'), suffix: '+' },
+  { key: 'uptime', label: t('landing.stats.uptime'), suffix: '%' }
+])
 
 let started = false
 let observer
@@ -59,7 +61,7 @@ async function loadStats() {
       targets.cards = d.cardsDelivered > 0 ? d.cardsDelivered : 52000
       targets.uptime = d.uptime || 99.9
     }
-  } catch { /* 使用默认基数 */ }
+  } catch { /* defaults */ }
 }
 
 onMounted(async () => {
@@ -102,7 +104,7 @@ onUnmounted(() => observer?.disconnect())
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.suffix { font-size: 20px; font-weight: 700; color: #4f6ef7; }
+.suffix { font-size: 20px; font-weight: 700; color: var(--shop-link-hover); }
 .stat-label { font-size: 13px; color: var(--shop-text-muted); }
 @media (max-width: 640px) {
   .stats-bar { grid-template-columns: repeat(2, 1fr); margin-top: -24px; }

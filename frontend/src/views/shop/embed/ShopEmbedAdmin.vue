@@ -6,23 +6,23 @@
         <span>YU-Kami</span>
       </div>
       <nav class="menu">
-        <a class="menu-item active"><span class="mi-dot" />仪表盘</a>
-        <a class="menu-item"><span class="mi-dot" />商品管理</a>
-        <a class="menu-item"><span class="mi-dot" />卡密管理</a>
-        <a class="menu-item"><span class="mi-dot" />批次管理</a>
-        <a class="menu-item"><span class="mi-dot" />商城订单</a>
-        <a class="menu-item"><span class="mi-dot" />促销活动</a>
+        <a class="menu-item active"><span class="mi-dot" />{{ t('nav.dashboard') }}</a>
+        <a class="menu-item"><span class="mi-dot" />{{ t('nav.products') }}</a>
+        <a class="menu-item"><span class="mi-dot" />{{ t('nav.cards') }}</a>
+        <a class="menu-item"><span class="mi-dot" />{{ t('nav.batches') }}</a>
+        <a class="menu-item"><span class="mi-dot" />{{ t('nav.orders') }}</a>
+        <a class="menu-item"><span class="mi-dot" />{{ t('nav.promotions') }}</a>
       </nav>
       <div class="aside-footer">v{{ APP_VERSION }}</div>
     </aside>
     <main class="main">
       <header class="topbar">
-        <span class="breadcrumb">首页 / 仪表盘</span>
+        <span class="breadcrumb">{{ t('landing.embedAdmin.breadcrumb') }}</span>
         <span class="user">admin</span>
       </header>
       <div class="content">
-        <h1 class="page-title">经营概览</h1>
-        <p class="page-sub">卡密发卡与商城销售数据一览</p>
+        <h1 class="page-title">{{ t('landing.embedAdmin.pageTitle') }}</h1>
+        <p class="page-sub">{{ t('landing.embedAdmin.pageSub') }}</p>
         <div class="stat-row">
           <div v-for="s in stats" :key="s.label" class="stat-card" :style="{ '--accent': s.color }">
             <div class="stat-icon">{{ s.abbr }}</div>
@@ -34,10 +34,15 @@
         </div>
         <div class="panels">
           <div class="panel table-panel">
-            <div class="panel-head">最近兑换记录</div>
+            <div class="panel-head">{{ t('landing.embedAdmin.recentRedeems') }}</div>
             <table>
               <thead>
-                <tr><th>用户</th><th>结果</th><th>消息</th><th>时间</th></tr>
+                <tr>
+                  <th>{{ t('admin.recordUser') }}</th>
+                  <th>{{ t('admin.recordResult') }}</th>
+                  <th>{{ t('admin.recordMessage') }}</th>
+                  <th>{{ t('admin.recordTime') }}</th>
+                </tr>
               </thead>
               <tbody>
                 <tr v-for="r in redeems" :key="r.user">
@@ -50,12 +55,12 @@
             </table>
           </div>
           <div class="panel chart-panel">
-            <div class="panel-head">卡密使用率</div>
+            <div class="panel-head">{{ t('landing.embedAdmin.usageRate') }}</div>
             <div class="chart-ring">
               <div class="ring">68%</div>
               <div class="ring-legend">
-                <div><span class="dot used" />已使用 352</div>
-                <div><span class="dot free" />未使用 168</div>
+                <div><span class="dot used" />{{ t('landing.embedAdmin.used') }} 352</div>
+                <div><span class="dot free" />{{ t('landing.embedAdmin.unused') }} 168</div>
               </div>
             </div>
           </div>
@@ -66,21 +71,25 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { APP_VERSION } from '../../../constants/version'
 
-const stats = [
-  { label: '卡密总数', value: '520', abbr: '卡', color: '#4f6ef7' },
-  { label: '已使用', value: '352', abbr: '用', color: '#10b981' },
-  { label: '未使用', value: '168', abbr: '余', color: '#f59e0b' },
-  { label: '商城订单', value: '128', abbr: '单', color: '#6366f1' },
-  { label: '今日成交', value: '¥2,860', abbr: '¥', color: '#ef4444' },
-  { label: '活跃用户', value: '84', abbr: '人', color: '#8b5cf6' }
-]
+const { t } = useI18n()
+
+const stats = computed(() => [
+  { label: t('admin.totalCards'), value: '520', abbr: '卡', color: '#4f6ef7' },
+  { label: t('admin.used'), value: '352', abbr: '用', color: '#10b981' },
+  { label: t('admin.unused'), value: '168', abbr: '余', color: '#f59e0b' },
+  { label: t('nav.orders'), value: '128', abbr: '单', color: '#6366f1' },
+  { label: t('admin.todayOrders'), value: '¥2,860', abbr: '¥', color: '#ef4444' },
+  { label: t('landing.stats.users'), value: '84', abbr: '人', color: '#8b5cf6' }
+])
 
 const redeems = [
-  { user: 'demo', result: 'SUCCESS', msg: '兑换成功', time: '10-02 12:30' },
-  { user: 'user_1024', result: 'SUCCESS', msg: '卡密已发放', time: '10-02 11:15' },
-  { user: 'test_buyer', result: 'FAIL', msg: '卡密已使用', time: '10-02 10:42' }
+  { user: 'demo', result: 'SUCCESS', msg: 'OK', time: '10-02 12:30' },
+  { user: 'user_1024', result: 'SUCCESS', msg: 'Delivered', time: '10-02 11:15' },
+  { user: 'test_buyer', result: 'FAIL', msg: 'Used', time: '10-02 10:42' }
 ]
 </script>
 
@@ -88,13 +97,13 @@ const redeems = [
 .embed-admin {
   display: flex;
   min-height: 100vh;
-  background: #f1f5f9;
+  background: var(--shop-bg, var(--page-bg));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
 }
 .sidebar {
   width: 200px;
   flex-shrink: 0;
-  background: #0f172a;
+  background: var(--sidebar-bg);
   color: #94a3b8;
   display: flex;
   flex-direction: column;
@@ -132,15 +141,15 @@ const redeems = [
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
-  background: #fff;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--shop-card, var(--header-bg));
+  border-bottom: 1px solid var(--shop-border, var(--border));
   font-size: 13px;
 }
-.breadcrumb { color: #64748b; }
-.user { color: #334155; font-weight: 600; }
+.breadcrumb { color: var(--shop-text-muted, var(--text-secondary)); }
+.user { color: var(--shop-text, var(--text-primary)); font-weight: 600; }
 .content { padding: 20px 24px; flex: 1; }
-.page-title { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
-.page-sub { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+.page-title { font-size: 20px; font-weight: 700; color: var(--shop-text, var(--text-primary)); margin-bottom: 4px; }
+.page-sub { font-size: 13px; color: var(--shop-text-muted, var(--text-secondary)); margin-bottom: 20px; }
 .stat-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -148,14 +157,14 @@ const redeems = [
   margin-bottom: 16px;
 }
 .stat-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--shop-card, var(--card-bg));
+  border: 1px solid var(--shop-border, var(--border));
   border-radius: 12px;
   padding: 14px;
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow);
 }
 .stat-icon {
   width: 40px; height: 40px;
@@ -165,33 +174,33 @@ const redeems = [
   font-size: 13px;
   font-weight: 700;
 }
-.stat-val { font-size: 20px; font-weight: 700; color: #1e293b; line-height: 1.2; }
-.stat-label { font-size: 12px; color: #64748b; }
+.stat-val { font-size: 20px; font-weight: 700; color: var(--shop-text, var(--text-primary)); line-height: 1.2; }
+.stat-label { font-size: 12px; color: var(--shop-text-muted, var(--text-secondary)); }
 .panels { display: grid; grid-template-columns: 1.6fr 1fr; gap: 12px; }
 .panel {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--shop-card, var(--card-bg));
+  border: 1px solid var(--shop-border, var(--border));
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow);
 }
 .panel-head {
   padding: 14px 16px;
   font-size: 14px;
   font-weight: 600;
-  color: #1e293b;
-  border-bottom: 1px solid #e2e8f0;
+  color: var(--shop-text, var(--text-primary));
+  border-bottom: 1px solid var(--shop-border, var(--border));
 }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th {
   text-align: left;
   padding: 10px 16px;
-  color: #64748b;
+  color: var(--shop-text-muted, var(--text-secondary));
   font-weight: 500;
-  background: #f8fafc;
+  background: var(--shop-section-alt, var(--page-bg));
 }
-td { padding: 10px 16px; color: #334155; border-top: 1px solid #f1f5f9; }
-.muted { color: #94a3b8; }
+td { padding: 10px 16px; color: var(--shop-text, var(--text-primary)); border-top: 1px solid var(--shop-border, var(--border)); }
+.muted { color: var(--shop-text-muted, var(--text-secondary)); }
 .tag {
   display: inline-block;
   padding: 2px 8px;
@@ -199,19 +208,19 @@ td { padding: 10px 16px; color: #334155; border-top: 1px solid #f1f5f9; }
   font-size: 11px;
   font-weight: 600;
 }
-.tag.ok { background: #dcfce7; color: #16a34a; }
+.tag.ok { background: color-mix(in srgb, var(--success) 15%, transparent); color: var(--success); }
 .chart-panel .chart-ring { padding: 20px; text-align: center; }
 .ring {
   width: 100px; height: 100px;
   margin: 0 auto 16px;
   border-radius: 50%;
-  border: 8px solid #4f6ef7;
-  border-right-color: #e2e8f0;
+  border: 8px solid var(--primary);
+  border-right-color: var(--shop-border, var(--border));
   display: flex; align-items: center; justify-content: center;
-  font-size: 22px; font-weight: 800; color: #4f6ef7;
+  font-size: 22px; font-weight: 800; color: var(--primary);
 }
-.ring-legend { font-size: 12px; color: #64748b; line-height: 1.8; }
+.ring-legend { font-size: 12px; color: var(--shop-text-muted, var(--text-secondary)); line-height: 1.8; }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-.dot.used { background: #4f6ef7; }
-.dot.free { background: #e2e8f0; }
+.dot.used { background: var(--primary); }
+.dot.free { background: var(--shop-border, var(--border)); }
 </style>

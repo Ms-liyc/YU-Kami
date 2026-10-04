@@ -3,26 +3,29 @@
     <header class="m-header">
       <img src="/logo.png" alt="" class="m-logo" />
       <span class="m-brand">YU-Kami</span>
-      <span class="m-action">登录</span>
+      <span class="m-action">{{ t('common.login') }}</span>
     </header>
     <div class="m-hero">
-      <div class="m-badge">自动发卡 · 付款即发货</div>
-      <h1>数字商品发卡网</h1>
-      <p>付款后自动发货，支持微信 / 支付宝</p>
+      <div class="m-badge">{{ t('landing.embedMobile.heroBadge') }}</div>
+      <h1>{{ t('landing.embedMobile.heroTitle') }}</h1>
+      <p>{{ t('landing.embedMobile.heroDesc') }}</p>
     </div>
-    <div class="m-section-title">热销商品</div>
+    <div class="m-section-title">{{ t('landing.embedMobile.hotProducts') }}</div>
     <ShopProductGrid :limit="2" compact :show-toolbar="false" preview />
     <nav class="m-bottom-nav">
-      <a class="nav-item active"><span>首页</span></a>
-      <a class="nav-item"><span>商品</span></a>
-      <a class="nav-item"><span>查单</span></a>
-      <a class="nav-item"><span>我的</span></a>
+      <a class="nav-item active"><span>{{ t('nav.mobileHome') }}</span></a>
+      <a class="nav-item"><span>{{ t('nav.mobileProducts') }}</span></a>
+      <a class="nav-item"><span>{{ t('nav.mobileQuery') }}</span></a>
+      <a class="nav-item"><span>{{ t('nav.mobileMine') }}</span></a>
     </nav>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import ShopProductGrid from '../../../components/shop/ShopProductGrid.vue'
+
+const { t } = useI18n()
 </script>
 
 <style scoped>
@@ -30,7 +33,8 @@ import ShopProductGrid from '../../../components/shop/ShopProductGrid.vue'
   max-width: 390px;
   margin: 0 auto;
   min-height: 100vh;
-  background: #f8fafc;
+  background: var(--shop-bg);
+  color: var(--shop-text);
   padding-bottom: 64px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
 }
@@ -39,45 +43,45 @@ import ShopProductGrid from '../../../components/shop/ShopProductGrid.vue'
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  background: #fff;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--shop-card);
+  border-bottom: 1px solid var(--shop-border);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 .m-logo { width: 28px; height: 28px; border-radius: 8px; }
-.m-brand { font-size: 15px; font-weight: 800; color: #0f172a; }
+.m-brand { font-size: 15px; font-weight: 800; color: var(--shop-text); }
 .m-action {
   margin-left: auto;
   font-size: 13px;
-  color: #4f6ef7;
+  color: var(--shop-link-hover);
   font-weight: 600;
   padding: 6px 14px;
-  background: #eef2ff;
+  background: var(--shop-accent-soft);
   border-radius: 20px;
 }
 .m-hero {
   margin: 12px 16px;
   padding: 20px 16px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #eef2ff, #fdf4ff);
+  background: var(--shop-m-banner);
 }
 .m-badge {
   display: inline-block;
   font-size: 11px;
   font-weight: 600;
-  color: #4f6ef7;
-  background: rgba(255,255,255,0.8);
+  color: var(--shop-link-hover);
+  background: var(--shop-badge-bg);
   padding: 4px 10px;
   border-radius: 12px;
   margin-bottom: 10px;
 }
-.m-hero h1 { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
-.m-hero p { font-size: 12px; color: #64748b; line-height: 1.5; }
+.m-hero h1 { font-size: 20px; font-weight: 800; color: var(--shop-text); margin-bottom: 6px; }
+.m-hero p { font-size: 12px; color: var(--shop-text-muted); line-height: 1.5; }
 .m-section-title {
   font-size: 15px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--shop-text);
   padding: 8px 16px 4px;
 }
 .m-bottom-nav {
@@ -88,8 +92,8 @@ import ShopProductGrid from '../../../components/shop/ShopProductGrid.vue'
   width: 100%;
   max-width: 390px;
   display: flex;
-  background: #fff;
-  border-top: 1px solid #e2e8f0;
+  background: var(--shop-mobile-nav-bg);
+  border-top: 1px solid var(--shop-border);
   padding: 6px 0 env(safe-area-inset-bottom);
   z-index: 20;
 }
@@ -97,10 +101,10 @@ import ShopProductGrid from '../../../components/shop/ShopProductGrid.vue'
   flex: 1;
   text-align: center;
   font-size: 11px;
-  color: #64748b;
+  color: var(--shop-text-muted);
   padding: 6px 0;
   text-decoration: none;
 }
-.nav-item.active { color: #4f6ef7; font-weight: 600; }
+.nav-item.active { color: var(--shop-link-hover); font-weight: 600; }
 .nav-item span { display: block; }
 </style>

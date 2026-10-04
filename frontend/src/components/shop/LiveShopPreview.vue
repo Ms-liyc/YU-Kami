@@ -6,27 +6,27 @@
     <div class="preview-viewport" ref="viewportRef">
       <div v-if="checking && !screenshotMode" class="preview-state">
         <el-icon class="is-loading"><Loading /></el-icon>
-        <p>正在检测服务状态…</p>
+        <p>{{ t('landing.preview.checking') }}</p>
       </div>
       <div v-else-if="!active" class="preview-state preview-offline">
         <div class="state-icon"><YuIcon name="monitor" size="2xl" /></div>
-        <p class="state-title">真实界面预览需前后端同时运行</p>
-        <p class="state-desc">启动 MySQL 与后端后，此处将展示商城商品、购买页与发卡成功界面。</p>
+        <p class="state-title">{{ t('landing.preview.offlineTitle') }}</p>
+        <p class="state-desc">{{ t('landing.preview.offlineDesc') }}</p>
         <div class="state-steps">
           <code>cd backend && mvnw spring-boot:run</code>
           <code>cd frontend && npm run dev</code>
         </div>
-        <el-button size="small" round :loading="checking" @click="recheckAll">重新检测</el-button>
+        <el-button size="small" round :loading="checking" @click="recheckAll">{{ t('landing.preview.recheck') }}</el-button>
       </div>
       <div v-else-if="screenshotMode" class="preview-shot-wrap">
-        <img :key="view" :src="currentScreenshot" class="preview-shot" alt="商城界面预览" />
+        <img :key="view" :src="currentScreenshot" class="preview-shot" :alt="t('landing.preview.shopPreview')" />
       </div>
       <div v-else class="preview-scale">
         <iframe
           :key="iframeSrc"
           :src="iframeSrc"
           class="preview-iframe"
-          title="商城界面预览"
+          :title="t('landing.preview.shopPreview')"
           scrolling="no"
           loading="lazy"
         />
@@ -42,7 +42,7 @@
       />
     </div>
     <div v-if="active && (lockView ? initialView === 'success' : view === 'success')" class="mockup-toast live">
-      <YuIcon name="check" size="sm" /> 支付成功，卡密已发放
+      <YuIcon name="check" size="sm" /> {{ t('shop.deliveredToast') }}
     </div>
   </div>
 
@@ -54,13 +54,13 @@
           v-if="screenshotMode"
           src="/screenshots/preview-mobile.png"
           class="phone-shot"
-          alt="手机端商城预览"
+          :alt="t('landing.preview.mobilePreview')"
         />
         <div v-else class="phone-scale">
           <iframe
             src="/shop/embed/mobile"
             class="phone-iframe"
-            title="手机端商城预览"
+            :title="t('landing.preview.mobilePreview')"
             scrolling="no"
             loading="lazy"
           />
@@ -68,7 +68,7 @@
       </div>
       <div class="phone-home-bar" />
     </div>
-    <span class="phone-label">移动端</span>
+    <span class="phone-label">{{ t('landing.preview.mobileLabel') }}</span>
   </div>
   </div>
 </template>
@@ -76,6 +76,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { Loading } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
 import { useShopPreviewReady } from '../../composables/useShopPreviewReady'
 import YuIcon from '../icons/YuIcon.vue'
 
@@ -102,6 +103,7 @@ const props = defineProps({
   lockView: { type: Boolean, default: false }
 })
 
+const { t } = useI18n()
 const { ready, productId, checking, recheck } = useShopPreviewReady()
 const screenshotMode = ref(false)
 
@@ -109,11 +111,11 @@ const view = ref(props.initialView)
 let timer
 let resizeObs
 
-const views = [
-  { id: 'list', label: '商城首页' },
-  { id: 'buy', label: '购买页' },
-  { id: 'success', label: '发卡成功' }
-]
+const views = computed(() => [
+  { id: 'list', label: t('landing.preview.viewList') },
+  { id: 'buy', label: t('landing.preview.viewBuy') },
+  { id: 'success', label: t('landing.preview.viewSuccess') }
+])
 
 const active = computed(() => screenshotMode.value || ready.value)
 const effectiveView = computed(() => (props.lockView ? props.initialView : view.value))
@@ -324,8 +326,8 @@ onUnmounted(() => {
 .dot.active { background: #4f6ef7; width: 20px; border-radius: 4px; }
 .mockup-toast.live {
   margin: 0 12px 12px;
-  background: #f0fdf4;
-  color: #16a34a;
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  color: var(--success);
   font-size: 12px;
   padding: 8px 12px;
   border-radius: 8px;
@@ -335,6 +337,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  border: 1px solid color-mix(in srgb, var(--success) 25%, transparent);
 }
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(8px); }

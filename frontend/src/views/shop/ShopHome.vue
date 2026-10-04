@@ -8,24 +8,23 @@
       <section class="hero">
       <div class="hero-inner reveal">
         <div class="hero-badge">
-          <span class="badge-dot" />自动发卡 · 付款即发货
+          <span class="badge-dot" />{{ t('landing.heroBadge') }}
         </div>
         <h1>
-          付款即发货的<br />
-          <span class="gradient-text">数字商品发卡网</span>
+          {{ t('landing.heroTitle') }}<br />
+          <span class="gradient-text">{{ t('landing.heroTitleHighlight') }}</span>
         </h1>
         <p class="hero-desc">
-          屿宸科技 YU-Kami — 卡密生成、商城售卖、支付回调、自动发货一体化。
-          支持优惠券促销、支付宝/微信、Webhook 对接。
+          {{ t('landing.heroDesc') }}
         </p>
         <div class="hero-actions">
           <el-button type="primary" size="large" round class="cta-btn" @click="scrollTo('products')">
-            立即选购
+            {{ t('landing.buyNow') }}
           </el-button>
-          <el-button size="large" round @click="$router.push('/shop/query')">订单查询</el-button>
-          <el-button size="large" round plain @click="$router.push('/shop/redeem')">卡密兑换</el-button>
+          <el-button size="large" round @click="$router.push('/shop/query')">{{ t('shop.queryTitle') }}</el-button>
+          <el-button size="large" round plain @click="$router.push('/shop/redeem')">{{ t('nav.redeem') }}</el-button>
           <el-button size="large" round plain @click="$router.push(auth.token ? '/shop/orders' : '/shop/login')">
-            {{ auth.token ? '我的订单' : '登录 / 注册' }}
+            {{ auth.token ? t('nav.myOrders') : t('landing.loginRegister') }}
           </el-button>
         </div>
         <div class="tech-row">
@@ -61,8 +60,8 @@
 
     <!-- 品类 -->
     <section class="section" id="categories">
-      <h2 class="section-title reveal">适合销售各类虚拟商品</h2>
-      <p class="section-sub reveal" data-delay="80">卡密、兑换码、授权码——个人站长与小团队都能轻松上手</p>
+      <h2 class="section-title reveal">{{ t('landing.categoriesTitle') }}</h2>
+      <p class="section-sub reveal" data-delay="80">{{ t('landing.categoriesSub') }}</p>
       <div class="category-grid">
         <div
           v-for="(c, i) in categories"
@@ -81,8 +80,8 @@
 
     <!-- 核心能力（对标四重同步） -->
     <section class="section section-alt" id="sync">
-      <h2 class="section-title reveal">四大核心能力，全链路自动运转</h2>
-      <p class="section-sub reveal" data-delay="80">从卡密生成到售出发货，每一环都有保障</p>
+      <h2 class="section-title reveal">{{ t('landing.syncTitle') }}</h2>
+      <p class="section-sub reveal" data-delay="80">{{ t('landing.syncSub') }}</p>
       <div class="sync-grid">
         <div
           v-for="(s, i) in syncFeatures"
@@ -104,8 +103,8 @@
 
     <!-- 购买流程 -->
     <section class="section" id="flow">
-      <h2 class="section-title reveal">一笔订单，从下单到发货全程自动</h2>
-      <p class="section-sub reveal" data-delay="80">买家付款后无需人工介入</p>
+      <h2 class="section-title reveal">{{ t('landing.flowTitle') }}</h2>
+      <p class="section-sub reveal" data-delay="80">{{ t('landing.flowSub') }}</p>
       <div class="timeline">
         <div class="timeline-line" />
         <div
@@ -126,14 +125,14 @@
 
     <!-- 功能展示 Tab -->
     <section class="section section-alt" id="showcase">
-      <h2 class="section-title reveal">前台好用，后台省心</h2>
-      <p class="section-sub reveal" data-delay="80">商城、管理后台、移动端完整适配</p>
+      <h2 class="section-title reveal">{{ t('landing.showcaseTitle') }}</h2>
+      <p class="section-sub reveal" data-delay="80">{{ t('landing.showcaseSub') }}</p>
       <FeatureShowcase />
     </section>
 
     <!-- 安全 -->
     <section class="section" id="security">
-      <h2 class="section-title reveal">卖得放心，管得省心</h2>
+      <h2 class="section-title reveal">{{ t('landing.securityTitle') }}</h2>
       <div class="security-grid">
         <div v-for="(f, i) in features" :key="f.title" class="security-card reveal" :data-delay="i * 50">
           <div class="feature-icon"><YuIcon :name="f.icon" size="lg" /></div>
@@ -151,7 +150,7 @@
 
     <!-- 截图轮播 -->
     <section class="section section-alt" id="screenshots">
-      <h2 class="section-title reveal">界面一览</h2>
+      <h2 class="section-title reveal">{{ t('landing.screenshotsTitle') }}</h2>
       <el-carousel :interval="5000" type="card" height="440px" class="screenshot-carousel reveal" data-delay="100">
         <el-carousel-item v-for="shot in screenshots" :key="shot.title">
           <div class="shot-card">
@@ -168,8 +167,8 @@
 
     <!-- 商品 -->
     <section class="section" id="products">
-      <h2 class="section-title reveal">热销商品</h2>
-      <p class="section-sub reveal" data-delay="80">支持优惠券与限时促销</p>
+      <h2 class="section-title reveal">{{ t('landing.productsTitle') }}</h2>
+      <p class="section-sub reveal" data-delay="80">{{ t('landing.productsSub') }}</p>
       <ShopProductGrid class="reveal" data-delay="100" @loaded="onProductsLoaded" />
     </section>
 
@@ -178,21 +177,21 @@
       <div class="cta-box">
         <div class="cta-icon"><YuIcon name="search" size="xl" /></div>
         <div class="cta-text">
-          <h2>已有订单？立即查询卡密</h2>
-          <p>输入订单号即可查状态；登录后在「我的订单」筛选、搜索并一键复制卡密</p>
+          <h2>{{ t('landing.ctaTitle') }}</h2>
+          <p>{{ t('landing.ctaDesc') }}</p>
         </div>
         <div class="cta-actions">
           <el-button type="primary" size="large" round class="cta-btn" @click="$router.push('/shop/query')">
-            订单查询
+            {{ t('shop.queryTitle') }}
           </el-button>
-          <el-button size="large" round plain @click="$router.push('/shop/redeem')">卡密兑换</el-button>
+          <el-button size="large" round plain @click="$router.push('/shop/redeem')">{{ t('nav.redeem') }}</el-button>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
     <section class="section section-alt" id="faq">
-      <h2 class="section-title reveal">常见问题</h2>
+      <h2 class="section-title reveal">{{ t('landing.faqTitle') }}</h2>
       <el-collapse class="faq-collapse reveal" data-delay="100">
         <el-collapse-item v-for="q in faqs" :key="q.q" :title="q.q" :name="q.q">
           <p>{{ q.a }}</p>
@@ -203,7 +202,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useShopAuthStore } from '../../stores/shopAuth'
 import { useScrollReveal } from '../../composables/useScrollReveal'
@@ -216,78 +215,20 @@ import ShopProductGrid from '../../components/shop/ShopProductGrid.vue'
 import YuIcon from '../../components/icons/YuIcon.vue'
 
 useScrollReveal('.reveal')
-const { t } = useI18n()
+const { t, tm } = useI18n()
 const auth = useShopAuthStore()
 const products = ref([])
 
 const techStack = ['Vue 3', 'Vite', 'Spring Boot', 'MySQL', 'Redis', 'Docker']
 
-const notices = [
-  { icon: 'spark', text: '新用户注册即可体验完整购买与自动发卡流程' },
-  { icon: 'payment', text: '支持支付宝 / 微信支付（需商家自行配置密钥）' },
-  { icon: 'coupon', text: '限时优惠券活动进行中，购买页输入券码即可抵扣' },
-  { icon: 'lock', text: '卡密五重加密存储，付款成功秒级自动发货' }
-]
-
-const categories = [
-  { icon: 'game', title: '游戏点卡', desc: 'Steam、Xbox、游戏充值码' },
-  { icon: 'media', title: '影音会员', desc: '视频、音乐会员兑换码' },
-  { icon: 'software', title: '软件激活码', desc: '授权码、注册码、序列号' },
-  { icon: 'timer', title: '授权卡密', desc: '天卡、月卡、年卡等时长卡' },
-  { icon: 'gift', title: '礼品卡', desc: '电商与平台礼品卡' },
-  { icon: 'document', title: '文本资源', desc: '账号、教程链接、兑换说明' }
-]
-
-const syncFeatures = [
-  { icon: 'bolt', title: '即时自动发卡', desc: '支付成功秒级生成卡密，订单页一键复制，无需人工处理。', pulse: true, stat: '<3s', statLabel: '平均发货' },
-  { icon: 'payment', title: '多渠道支付', desc: '模拟支付开箱即用，生产环境可对接支付宝、微信 Native/JSAPI。', stat: '3+', statLabel: '支付渠道' },
-  { icon: 'coupon', title: '营销促销', desc: '满减、折扣、节日特价、优惠券码，统一定价引擎取最优价。', stat: '自动', statLabel: '算价' },
-  { icon: 'bell', title: 'Webhook 回调', desc: '兑换成功异步通知第三方，HMAC-SHA256 签名验签。', stat: '24h', statLabel: '卡密缓存' }
-]
-
-const steps = [
-  { title: '买家下单', desc: '选择商品，可使用优惠券，创建待支付订单。' },
-  { title: '锁定库存', desc: '事务内校验商品状态，防止超卖与重复下单。' },
-  { title: '扫码付款', desc: '展示二维码或跳转支付，微信内支持 JSAPI 调起。' },
-  { title: '回调验签', desc: '支付宝/微信异步通知，乐观锁防重复发货。' },
-  { title: '自动发货', desc: '即时生成卡密，订单页展示并支持复制。' }
-]
-
-const features = [
-  { icon: 'lock', title: '五重加密', desc: 'HMAC 哈希 + AES 加密 + Pepper，卡密不明文存储。' },
-  { icon: 'shield', title: '绝不超卖', desc: '分布式锁 + 乐观锁，并发下单安全可靠。' },
-  { icon: 'ban', title: '限流防刷', desc: 'Redis 滑动窗口限流，抵御暴力兑换与刷单。' },
-  { icon: 'chart', title: '全链路审计', desc: '兑换记录、订单流水、管理端操作全程可追溯。' },
-  { icon: 'globe', title: '中英双语', desc: '商城与管理后台支持中英文切换。' },
-  { icon: 'package', title: 'Docker 部署', desc: '一键 Compose 启动，健康检查自动就绪。' }
-]
-
-const securityBadges = [
-  { value: 'HMAC-SHA256', label: 'Webhook 签名' },
-  { value: '±300s', label: '时间戳校验' },
-  { value: 'RBAC', label: '角色权限' },
-  { value: 'JWT', label: '接口鉴权' }
-]
-
-const screenshots = [
-  { title: '商城首页 — 真实商品与价格', view: 'list', image: '/screenshots/preview-list.png' },
-  { title: '购买页 — 优惠券与支付渠道', view: 'buy', image: '/screenshots/preview-buy.png' },
-  { title: '支付成功 — 卡密一键复制', view: 'success', image: '/screenshots/preview-success.png' },
-  { title: '订单查询 — 凭订单号查状态', view: 'query', image: '/screenshots/preview-query.png' },
-  { title: '卡密兑换 — 开放 API 前台入口', view: 'redeem', image: '/screenshots/preview-redeem.png' },
-  { title: '个人中心 — 资料与密码管理', view: 'profile', image: '/screenshots/preview-profile.png' }
-]
-
-const faqs = [
-  { q: '购买后如何获取卡密？', a: '支付成功后，在「我的订单」中查看已发货订单，点击即可复制卡密；也可在「订单查询」页输入订单号直接查看。卡密在 Redis 中缓存 24 小时。' },
-  { q: '没有登录能查订单吗？', a: '可以。在顶部「订单查询」输入完整订单号即可查看状态；查看卡密需订单已发货且为本人账号下的订单（需登录）。' },
-  { q: '支持哪些支付方式？', a: '默认支持模拟支付（测试用）；生产环境可在管理后台配置支付宝、微信支付（含微信内 JSAPI）。' },
-  { q: '可以使用优惠券吗？', a: '可以。在购买页输入优惠券码并选择数量，系统自动计算活动价与券后最优价格。' },
-  { q: '如何兑换已有卡密？', a: '访问「卡密兑换」页面，输入卡密与用户标识即可；第三方系统也可直接调用 POST /api/v1/redeem 接口。' },
-  { q: '如何对接第三方系统？', a: '支持 Webhook 兑换成功回调（HMAC 签名）、API 客户端管理，以及标准化 REST 兑换接口。' },
-  { q: '卡密会重复出售吗？', a: '不会。支付成功后在事务内生成唯一卡密，回调使用乐观锁防止重复发货。' },
-  { q: '如何部署自己的发卡网？', a: 'Docker Compose 一键部署，或手动编译 Jar + Nginx 托管前端静态文件。详见项目 README。' }
-]
+const notices = computed(() => tm('landing.notices'))
+const categories = computed(() => tm('landing.categories'))
+const syncFeatures = computed(() => tm('landing.syncFeatures'))
+const steps = computed(() => tm('landing.steps'))
+const features = computed(() => tm('landing.features'))
+const securityBadges = computed(() => tm('landing.securityBadges'))
+const screenshots = computed(() => tm('landing.screenshots'))
+const faqs = computed(() => tm('landing.faqs'))
 
 function onProductsLoaded(list) {
   products.value = list

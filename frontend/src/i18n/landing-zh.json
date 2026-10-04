@@ -1,0 +1,132 @@
+{
+  "heroBadge": "自动发卡 · 付款即发货",
+  "heroTitle": "付款即发货的",
+  "heroTitleHighlight": "数字商品发卡网",
+  "heroDesc": "屿宸科技 YU-Kami — 卡密生成、商城售卖、支付回调、自动发货一体化。支持优惠券促销、支付宝/微信、Webhook 对接。",
+  "buyNow": "立即选购",
+  "loginRegister": "登录 / 注册",
+  "categoriesTitle": "适合销售各类虚拟商品",
+  "categoriesSub": "卡密、兑换码、授权码——个人站长与小团队都能轻松上手",
+  "syncTitle": "四大核心能力，全链路自动运转",
+  "syncSub": "从卡密生成到售出发货，每一环都有保障",
+  "flowTitle": "一笔订单，从下单到发货全程自动",
+  "flowSub": "买家付款后无需人工介入",
+  "showcaseTitle": "前台好用，后台省心",
+  "showcaseSub": "商城、管理后台、移动端完整适配",
+  "securityTitle": "卖得放心，管得省心",
+  "screenshotsTitle": "界面一览",
+  "productsTitle": "热销商品",
+  "productsSub": "支持优惠券与限时促销",
+  "ctaTitle": "已有订单？立即查询卡密",
+  "ctaDesc": "输入订单号即可查状态；登录后在「我的订单」筛选、搜索并一键复制卡密",
+  "faqTitle": "常见问题",
+  "footerCopy": "© 2026 屿宸科技 YU-Kami · 仅用于合法合规的数字商品销售",
+  "notices": [
+    { "icon": "spark", "text": "新用户注册即可体验完整购买与自动发卡流程" },
+    { "icon": "payment", "text": "支持支付宝 / 微信支付（需商家自行配置密钥）" },
+    { "icon": "coupon", "text": "限时优惠券活动进行中，购买页输入券码即可抵扣" },
+    { "icon": "lock", "text": "卡密五重加密存储，付款成功秒级自动发货" }
+  ],
+  "categories": [
+    { "icon": "game", "title": "游戏点卡", "desc": "Steam、Xbox、游戏充值码" },
+    { "icon": "media", "title": "影音会员", "desc": "视频、音乐会员兑换码" },
+    { "icon": "software", "title": "软件激活码", "desc": "授权码、注册码、序列号" },
+    { "icon": "timer", "title": "授权卡密", "desc": "天卡、月卡、年卡等时长卡" },
+    { "icon": "gift", "title": "礼品卡", "desc": "电商与平台礼品卡" },
+    { "icon": "document", "title": "文本资源", "desc": "账号、教程链接、兑换说明" }
+  ],
+  "syncFeatures": [
+    { "icon": "bolt", "title": "即时自动发卡", "desc": "支付成功秒级生成卡密，订单页一键复制，无需人工处理。", "pulse": true, "stat": "<3s", "statLabel": "平均发货" },
+    { "icon": "payment", "title": "多渠道支付", "desc": "模拟支付开箱即用，生产环境可对接支付宝、微信 Native/JSAPI。", "stat": "3+", "statLabel": "支付渠道" },
+    { "icon": "coupon", "title": "营销促销", "desc": "满减、折扣、节日特价、优惠券码，统一定价引擎取最优价。", "stat": "自动", "statLabel": "算价" },
+    { "icon": "bell", "title": "Webhook 回调", "desc": "兑换成功异步通知第三方，HMAC-SHA256 签名验签。", "stat": "24h", "statLabel": "卡密缓存" }
+  ],
+  "steps": [
+    { "title": "买家下单", "desc": "选择商品，可使用优惠券，创建待支付订单。" },
+    { "title": "锁定库存", "desc": "事务内校验商品状态，防止超卖与重复下单。" },
+    { "title": "扫码付款", "desc": "展示二维码或跳转支付，微信内支持 JSAPI 调起。" },
+    { "title": "回调验签", "desc": "支付宝/微信异步通知，乐观锁防重复发货。" },
+    { "title": "自动发货", "desc": "即时生成卡密，订单页展示并支持复制。" }
+  ],
+  "features": [
+    { "icon": "lock", "title": "五重加密", "desc": "HMAC 哈希 + AES 加密 + Pepper，卡密不明文存储。" },
+    { "icon": "shield", "title": "绝不超卖", "desc": "分布式锁 + 乐观锁，并发下单安全可靠。" },
+    { "icon": "ban", "title": "限流防刷", "desc": "Redis 滑动窗口限流，抵御暴力兑换与刷单。" },
+    { "icon": "chart", "title": "全链路审计", "desc": "兑换记录、订单流水、管理端操作全程可追溯。" },
+    { "icon": "globe", "title": "中英双语", "desc": "商城与管理后台支持中英文切换。" },
+    { "icon": "package", "title": "Docker 部署", "desc": "一键 Compose 启动，健康检查自动就绪。" }
+  ],
+  "securityBadges": [
+    { "value": "HMAC-SHA256", "label": "Webhook 签名" },
+    { "value": "±300s", "label": "时间戳校验" },
+    { "value": "RBAC", "label": "角色权限" },
+    { "value": "JWT", "label": "接口鉴权" }
+  ],
+  "screenshots": [
+    { "title": "商城首页 — 真实商品与价格", "view": "list", "image": "/screenshots/preview-list.png" },
+    { "title": "购买页 — 优惠券与支付渠道", "view": "buy", "image": "/screenshots/preview-buy.png" },
+    { "title": "支付成功 — 卡密一键复制", "view": "success", "image": "/screenshots/preview-success.png" },
+    { "title": "订单查询 — 凭订单号查状态", "view": "query", "image": "/screenshots/preview-query.png" },
+    { "title": "卡密兑换 — 开放 API 前台入口", "view": "redeem", "image": "/screenshots/preview-redeem.png" },
+    { "title": "个人中心 — 资料与密码管理", "view": "profile", "image": "/screenshots/preview-profile.png" }
+  ],
+  "faqs": [
+    { "q": "购买后如何获取卡密？", "a": "支付成功后，在「我的订单」中查看已发货订单，点击即可复制卡密；也可在「订单查询」页输入订单号直接查看。卡密在 Redis 中缓存 24 小时。" },
+    { "q": "没有登录能查订单吗？", "a": "可以。在顶部「订单查询」输入完整订单号即可查看状态；查看卡密需订单已发货且为本人账号下的订单（需登录）。" },
+    { "q": "支持哪些支付方式？", "a": "默认支持模拟支付（测试用）；生产环境可在管理后台配置支付宝、微信支付（含微信内 JSAPI）。" },
+    { "q": "可以使用优惠券吗？", "a": "可以。在购买页输入优惠券码并选择数量，系统自动计算活动价与券后最优价格。" },
+    { "q": "如何兑换已有卡密？", "a": "访问「卡密兑换」页面，输入卡密与用户标识即可；第三方系统也可直接调用 POST /api/v1/redeem 接口。" },
+    { "q": "如何对接第三方系统？", "a": "支持 Webhook 兑换成功回调（HMAC 签名）、API 客户端管理，以及标准化 REST 兑换接口。" },
+    { "q": "卡密会重复出售吗？", "a": "不会。支付成功后在事务内生成唯一卡密，回调使用乐观锁防止重复发货。" },
+    { "q": "如何部署自己的发卡网？", "a": "Docker Compose 一键部署，或手动编译 Jar + Nginx 托管前端静态文件。详见项目 README。" }
+  ],
+  "stats": {
+    "orders": "累计成交订单",
+    "users": "注册用户",
+    "cards": "卡密发放",
+    "uptime": "系统可用率"
+  },
+  "ticker": {
+    "label": "实时成交",
+    "bought": "{user} 购买了 {product}",
+    "justNow": "刚刚",
+    "minAgo": "{n}分钟前"
+  },
+  "preview": {
+    "checking": "正在检测服务状态…",
+    "offlineTitle": "真实界面预览需前后端同时运行",
+    "offlineDesc": "启动 MySQL 与后端后，此处将展示商城商品、购买页与发卡成功界面。",
+    "recheck": "重新检测",
+    "shopPreview": "商城界面预览",
+    "mobilePreview": "手机端商城预览",
+    "mobileLabel": "移动端",
+    "viewList": "商城首页",
+    "viewBuy": "购买页",
+    "viewSuccess": "发卡成功"
+  },
+  "showcase": {
+    "tabShop": "商城前台",
+    "tabAdmin": "管理后台",
+    "tabMobile": "手机端",
+    "adminAlt": "管理后台预览",
+    "mobileAlt": "手机端预览",
+    "shopFeatures": ["分类导航与热销推荐", "订单号查询与卡密查看", "卡密兑换与个人中心", "促销价与优惠券最优算价", "订单筛选搜索与一键复制"],
+    "adminFeatures": ["经营数据仪表盘", "商品/卡密/批次管理", "促销活动与优惠券", "订单筛选与支付配置", "Webhook 与 API 客户端"],
+    "mobileFeatures": ["移动端完整适配", "微信内 JSAPI 支付", "底部导航快速切页", "订单查询与个人中心", "深色模式舒适浏览"]
+  },
+  "embedAdmin": {
+    "breadcrumb": "首页 / 仪表盘",
+    "pageTitle": "经营概览",
+    "pageSub": "卡密发卡与商城销售数据一览",
+    "recentRedeems": "最近兑换记录",
+    "usageRate": "卡密使用率",
+    "used": "已使用",
+    "unused": "未使用"
+  },
+  "embedMobile": {
+    "heroBadge": "自动发卡 · 付款即发货",
+    "heroTitle": "数字商品发卡网",
+    "heroDesc": "付款后自动发货，支持微信 / 支付宝",
+    "hotProducts": "热销商品"
+  }
+}

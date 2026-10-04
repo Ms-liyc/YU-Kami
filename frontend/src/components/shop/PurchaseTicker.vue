@@ -1,11 +1,11 @@
 <template>
   <div class="ticker-wrap" v-if="items.length">
-    <div class="ticker-label"><YuIcon name="fire" size="sm" /> 实时成交</div>
+    <div class="ticker-label"><YuIcon name="fire" size="sm" /> {{ t('landing.ticker.label') }}</div>
     <div class="ticker-track">
       <div class="ticker-content" :style="{ animationDuration: duration + 's' }">
         <span v-for="(item, i) in doubled" :key="i" class="ticker-item">
           <span class="dot" />
-          {{ item.user }} 购买了 <strong>{{ item.product }}</strong>
+          {{ t('landing.ticker.bought', { user: item.user, product: item.product }) }}
           <em>¥{{ item.price }}</em>
           <span class="time">{{ item.time }}</span>
         </span>
@@ -16,8 +16,11 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import YuIcon from '../icons/YuIcon.vue'
 import shopHttp from '../../api/shopHttp'
+
+const { t } = useI18n()
 
 defineProps({
   products: { type: Array, default: () => [] },
@@ -25,11 +28,6 @@ defineProps({
 })
 
 const items = ref([])
-const fallback = [
-  { user: '张**', product: '月度会员卡', price: '29.00', time: '刚刚' },
-  { user: '李**', product: '季度授权码', price: '79.00', time: '1分钟前' },
-  { user: '王**', product: '年度旗舰版', price: '199.00', time: '2分钟前' }
-]
 
 const doubled = computed(() => [...items.value, ...items.value])
 
@@ -47,7 +45,11 @@ onMounted(async () => {
       return
     }
   } catch { /* fallback */ }
-  items.value = fallback
+  items.value = [
+    { user: '张**', product: '月度会员卡', price: '29.00', time: t('landing.ticker.justNow') },
+    { user: '李**', product: '季度授权码', price: '79.00', time: t('landing.ticker.minAgo', { n: 1 }) },
+    { user: '王**', product: '年度旗舰版', price: '199.00', time: t('landing.ticker.minAgo', { n: 2 }) }
+  ]
 })
 </script>
 
@@ -88,8 +90,8 @@ onMounted(async () => {
   color: var(--shop-text-muted);
 }
 .ticker-item strong { color: var(--shop-ticker-strong); }
-.ticker-item em { color: #ef4444; font-style: normal; font-weight: 600; }
-.ticker-item .time { color: #94a3b8; font-size: 12px; }
+.ticker-item em { color: var(--danger); font-style: normal; font-weight: 600; }
+.ticker-item .time { color: var(--shop-text-muted); font-size: 12px; opacity: 0.8; }
 .dot {
   width: 6px; height: 6px;
   border-radius: 50%;

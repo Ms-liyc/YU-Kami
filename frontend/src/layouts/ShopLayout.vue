@@ -70,7 +70,7 @@
           <a href="https://github.com/Ms-liyc/YU-Kami" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
-      <p class="footer-copy">© 2026 屿宸科技 YU-Kami · 仅用于合法合规的数字商品销售</p>
+      <p class="footer-copy">{{ t('landing.footerCopy') }}</p>
     </footer>
 
     <nav class="mobile-nav">

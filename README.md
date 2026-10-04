@@ -365,6 +365,12 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.22.0
+
+* 🌐 **商城落地页 i18n**：Hero、品类、流程、FAQ 等全页中英双语
+* 🖼️ **预览组件 i18n**：FeatureShowcase、LiveShopPreview、统计条、成交滚动
+* 📱 **Embed Admin/Mobile**：预览 mock 页 i18n + 深色变量
+
 #### v1.21.0
 
 * 🖼️ **Embed 预览**：主题切换 + 查单/个人中心/兑换页 i18n 与深色适配

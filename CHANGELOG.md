@@ -2,6 +2,19 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.22.0] — 2026-01
+
+### 新增
+
+- 商城落地页（ShopHome）完整中英 i18n，独立 `landing-*.json` 文案模块
+- Hero / 品类 / 核心能力 / 购买流程 / FAQ 等全部区块支持语言切换
+
+### 改进
+
+- FeatureShowcase、LiveShopPreview、StatsBar、PurchaseTicker 组件 i18n
+- Embed Admin / Mobile 预览页 i18n 与深色主题变量适配
+- 商城页脚文案 i18n
+
 ## [1.21.0] — 2026-01
 
 ### 改进
@@ -231,6 +244,8 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.22.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.21.1...v1.22.0
+[1.21.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.21.0...v1.21.1
 [1.21.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.18.0...v1.19.0

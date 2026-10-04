@@ -1,0 +1,132 @@
+{
+  "heroBadge": "Auto delivery · Pay and ship",
+  "heroTitle": "Pay once,",
+  "heroTitleHighlight": "digital goods delivered instantly",
+  "heroDesc": "YuChen YU-Kami — card keys, storefront, payment callbacks and auto delivery in one stack. Coupons, Alipay/WeChat and Webhooks supported.",
+  "buyNow": "Shop now",
+  "loginRegister": "Sign in / Register",
+  "categoriesTitle": "Sell all kinds of virtual goods",
+  "categoriesSub": "Keys, codes, licenses — easy for solo sellers and small teams",
+  "syncTitle": "Four core capabilities, end-to-end automation",
+  "syncSub": "From key generation to delivery — every step covered",
+  "flowTitle": "One order, fully automated from checkout to delivery",
+  "flowSub": "No manual work after the buyer pays",
+  "showcaseTitle": "Great storefront, effortless admin",
+  "showcaseSub": "Shop, admin panel and mobile — fully adapted",
+  "securityTitle": "Sell with confidence, manage with ease",
+  "screenshotsTitle": "UI gallery",
+  "productsTitle": "Hot products",
+  "productsSub": "Coupons and limited-time promotions supported",
+  "ctaTitle": "Already ordered? Look up your key",
+  "ctaDesc": "Enter order number to check status; sign in to filter, search and copy keys in My Orders.",
+  "faqTitle": "FAQ",
+  "footerCopy": "© 2026 YuChen YU-Kami · For lawful digital goods sales only",
+  "notices": [
+    { "icon": "spark", "text": "Register to try the full purchase and auto-delivery flow" },
+    { "icon": "payment", "text": "Alipay / WeChat Pay supported (merchant keys required)" },
+    { "icon": "coupon", "text": "Limited-time coupons — enter code on checkout" },
+    { "icon": "lock", "text": "Five-layer key encryption — keys delivered in seconds after payment" }
+  ],
+  "categories": [
+    { "icon": "game", "title": "Game cards", "desc": "Steam, Xbox and game top-up codes" },
+    { "icon": "media", "title": "Streaming", "desc": "Video and music membership codes" },
+    { "icon": "software", "title": "Software keys", "desc": "Licenses, serial numbers, activation codes" },
+    { "icon": "timer", "title": "Duration cards", "desc": "Daily, monthly and yearly access cards" },
+    { "icon": "gift", "title": "Gift cards", "desc": "E-commerce and platform gift cards" },
+    { "icon": "document", "title": "Digital resources", "desc": "Accounts, tutorial links, redeem notes" }
+  ],
+  "syncFeatures": [
+    { "icon": "bolt", "title": "Instant delivery", "desc": "Keys generated in seconds after payment — copy from order page, no manual work.", "pulse": true, "stat": "<3s", "statLabel": "Avg. delivery" },
+    { "icon": "payment", "title": "Multi-channel pay", "desc": "Mock pay out of the box; production Alipay and WeChat Native/JSAPI.", "stat": "3+", "statLabel": "Channels" },
+    { "icon": "coupon", "title": "Promotions", "desc": "Fixed off, discounts, holiday pricing and coupon codes — best price engine.", "stat": "Auto", "statLabel": "Pricing" },
+    { "icon": "bell", "title": "Webhooks", "desc": "Async redeem notifications with HMAC-SHA256 signature verification.", "stat": "24h", "statLabel": "Key cache" }
+  ],
+  "steps": [
+    { "title": "Buyer orders", "desc": "Pick a product, optional coupon, create pending order." },
+    { "title": "Lock stock", "desc": "Transactional checks prevent oversell and duplicate orders." },
+    { "title": "Scan & pay", "desc": "QR or redirect pay; WeChat JSAPI inside WeChat browser." },
+    { "title": "Verify callback", "desc": "Alipay/WeChat async notify with optimistic lock against double delivery." },
+    { "title": "Auto deliver", "desc": "Key generated instantly — shown on order page with copy." }
+  ],
+  "features": [
+    { "icon": "lock", "title": "Five-layer crypto", "desc": "HMAC hash + AES + Pepper — keys never stored in plaintext." },
+    { "icon": "shield", "title": "No overselling", "desc": "Distributed lock + optimistic lock for safe concurrency." },
+    { "icon": "ban", "title": "Rate limiting", "desc": "Redis sliding window against brute-force redeem and abuse." },
+    { "icon": "chart", "title": "Full audit trail", "desc": "Redeem logs, order flow and admin actions — all traceable." },
+    { "icon": "globe", "title": "Bilingual UI", "desc": "Shop and admin support Chinese and English." },
+    { "icon": "package", "title": "Docker deploy", "desc": "One-command Compose with health checks." }
+  ],
+  "securityBadges": [
+    { "value": "HMAC-SHA256", "label": "Webhook signing" },
+    { "value": "±300s", "label": "Timestamp check" },
+    { "value": "RBAC", "label": "Role access" },
+    { "value": "JWT", "label": "API auth" }
+  ],
+  "screenshots": [
+    { "title": "Shop home — live products and prices", "view": "list", "image": "/screenshots/preview-list.png" },
+    { "title": "Checkout — coupons and payment channels", "view": "buy", "image": "/screenshots/preview-buy.png" },
+    { "title": "Payment success — copy key in one click", "view": "success", "image": "/screenshots/preview-success.png" },
+    { "title": "Order lookup — status by order number", "view": "query", "image": "/screenshots/preview-query.png" },
+    { "title": "Redeem — public API entry", "view": "redeem", "image": "/screenshots/preview-redeem.png" },
+    { "title": "Profile — account and password", "view": "profile", "image": "/screenshots/preview-profile.png" }
+  ],
+  "faqs": [
+    { "q": "How do I get my key after purchase?", "a": "After payment, open My Orders for delivered orders and copy the key; or use Order Lookup with your order number. Keys are cached in Redis for 24 hours." },
+    { "q": "Can I look up orders without signing in?", "a": "Yes — use Order Lookup with the full order number. Viewing keys requires a delivered order on your signed-in account." },
+    { "q": "Which payment methods are supported?", "a": "Mock payment by default for testing; configure Alipay and WeChat (including JSAPI) in admin for production." },
+    { "q": "Can I use coupons?", "a": "Yes — enter a coupon code on checkout; the pricing engine applies the best promotion and coupon price." },
+    { "q": "How do I redeem an existing key?", "a": "Use the Redeem page with key and user ID; third parties can call POST /api/v1/redeem." },
+    { "q": "How do I integrate third-party systems?", "a": "Webhook redeem callbacks (HMAC signed), API clients and standard REST redeem API." },
+    { "q": "Can the same key be sold twice?", "a": "No — unique keys are generated in a transaction; callbacks use optimistic locking against duplicate delivery." },
+    { "q": "How do I deploy my own shop?", "a": "Docker Compose one-click, or build the JAR and serve the frontend with Nginx. See README." }
+  ],
+  "stats": {
+    "orders": "Total orders",
+    "users": "Registered users",
+    "cards": "Keys delivered",
+    "uptime": "Uptime"
+  },
+  "ticker": {
+    "label": "Live sales",
+    "bought": "{user} bought {product}",
+    "justNow": "Just now",
+    "minAgo": "{n} min ago"
+  },
+  "preview": {
+    "checking": "Checking services…",
+    "offlineTitle": "Live preview needs backend and frontend running",
+    "offlineDesc": "Start MySQL and the backend to preview products, checkout and success screens here.",
+    "recheck": "Check again",
+    "shopPreview": "Shop preview",
+    "mobilePreview": "Mobile shop preview",
+    "mobileLabel": "Mobile",
+    "viewList": "Shop home",
+    "viewBuy": "Checkout",
+    "viewSuccess": "Key delivered"
+  },
+  "showcase": {
+    "tabShop": "Storefront",
+    "tabAdmin": "Admin",
+    "tabMobile": "Mobile",
+    "adminAlt": "Admin preview",
+    "mobileAlt": "Mobile preview",
+    "shopFeatures": ["Category nav and hot picks", "Order lookup and key view", "Redeem and profile", "Best promo and coupon pricing", "Order filter, search and copy"],
+    "adminFeatures": ["Dashboard metrics", "Products, keys and batches", "Promotions and coupons", "Order filters and payment config", "Webhooks and API clients"],
+    "mobileFeatures": ["Full mobile layout", "WeChat JSAPI pay", "Bottom nav quick switch", "Order lookup and profile", "Comfortable dark mode"]
+  },
+  "embedAdmin": {
+    "breadcrumb": "Home / Dashboard",
+    "pageTitle": "Business overview",
+    "pageSub": "Card delivery and shop sales at a glance",
+    "recentRedeems": "Recent redeems",
+    "usageRate": "Key usage rate",
+    "used": "Used",
+    "unused": "Unused"
+  },
+  "embedMobile": {
+    "heroBadge": "Auto delivery · Pay and ship",
+    "heroTitle": "Digital goods shop",
+    "heroDesc": "Auto delivery after payment — WeChat and Alipay",
+    "hotProducts": "Hot products"
+  }
+}

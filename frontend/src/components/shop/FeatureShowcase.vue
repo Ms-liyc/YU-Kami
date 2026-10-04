@@ -20,14 +20,14 @@
             screenshot="/screenshots/preview-admin.png"
             embed-url="/shop/embed/admin"
             url-label="admin.yu-kami.com"
-            alt="管理后台预览"
+            :alt="t('landing.showcase.adminAlt')"
           />
           <ShowcasePreview
             v-else
             screenshot="/screenshots/preview-mobile.png"
             embed-url="/shop/embed/mobile"
             url-label="shop.yu-kami.com"
-            alt="手机端预览"
+            :alt="t('landing.showcase.mobileAlt')"
             phone
           />
         </div>
@@ -44,25 +44,27 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Check } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
 import LiveShopPreview from './LiveShopPreview.vue'
 import ShowcasePreview from './ShowcasePreview.vue'
 import YuIcon from '../icons/YuIcon.vue'
 
+const { t, tm } = useI18n()
 const active = ref('shop')
 
-const tabs = [
-  { id: 'shop', label: '商城前台', icon: 'storefront' },
-  { id: 'admin', label: '管理后台', icon: 'dashboard' },
-  { id: 'mobile', label: '手机端', icon: 'phone' }
-]
+const tabs = computed(() => [
+  { id: 'shop', label: t('landing.showcase.tabShop'), icon: 'storefront' },
+  { id: 'admin', label: t('landing.showcase.tabAdmin'), icon: 'dashboard' },
+  { id: 'mobile', label: t('landing.showcase.tabMobile'), icon: 'phone' }
+])
 
-const featureMap = {
-  shop: ['分类导航与热销推荐', '订单号查询与卡密查看', '卡密兑换与个人中心', '促销价与优惠券最优算价', '订单筛选搜索与一键复制'],
-  admin: ['经营数据仪表盘', '商品/卡密/批次管理', '促销活动与优惠券', '订单筛选与支付配置', 'Webhook 与 API 客户端'],
-  mobile: ['移动端完整适配', '微信内 JSAPI 支付', '底部导航快速切页', '订单查询与个人中心', '深色模式舒适浏览']
-}
+const featureMap = computed(() => ({
+  shop: tm('landing.showcase.shopFeatures'),
+  admin: tm('landing.showcase.adminFeatures'),
+  mobile: tm('landing.showcase.mobileFeatures')
+}))
 
-const currentFeatures = computed(() => featureMap[active.value])
+const currentFeatures = computed(() => featureMap.value[active.value] || [])
 </script>
 
 <style scoped>
