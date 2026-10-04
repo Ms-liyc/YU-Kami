@@ -1,57 +1,57 @@
 <template>
   <div class="page-container">
-    <PageHeader title="优惠券管理" subtitle="发布优惠券码，可限定适用商品与使用次数">
+    <PageHeader :title="t('coupon.title')" :subtitle="t('coupon.subtitle')">
       <template #extra>
-        <el-button type="primary" :icon="Plus" @click="openDialog()">发布优惠券</el-button>
+        <el-button type="primary" :icon="Plus" @click="openDialog()">{{ t('coupon.add') }}</el-button>
       </template>
     </PageHeader>
 
     <div class="page-card">
-      <div class="card-body">
+      <div class="card-body table-scroll-wrap">
         <el-table :data="tableData" stripe v-loading="loading">
-          <el-table-column prop="code" label="券码" width="140">
+          <el-table-column prop="code" :label="t('coupon.code')" width="140">
             <template #default="{ row }">
               <el-tag effect="plain">{{ row.code }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="name" label="名称" min-width="120" />
-          <el-table-column prop="typeLabel" label="类型" width="110" />
-          <el-table-column label="优惠" width="110">
+          <el-table-column prop="name" :label="t('coupon.name')" min-width="120" />
+          <el-table-column prop="typeLabel" :label="t('coupon.type')" width="110" />
+          <el-table-column :label="t('coupon.discount')" width="110">
             <template #default="{ row }">
               <span v-if="row.type === 'PERCENT_OFF'">{{ row.discountValue }}%</span>
-              <span v-else>减 ¥{{ row.discountValue }}</span>
+              <span v-else>{{ t('coupon.fixedOffDisplay', { amount: row.discountValue }) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="适用商品" min-width="140">
+          <el-table-column :label="t('coupon.products')" min-width="140">
             <template #default="{ row }">
-              <el-tag v-if="row.scope === 'ALL'" size="small">全场</el-tag>
+              <el-tag v-if="row.scope === 'ALL'" size="small">{{ t('coupon.scopeAll') }}</el-tag>
               <template v-else>
                 <el-tag v-for="n in row.productNames" :key="n" size="small" style="margin:2px">{{ n }}</el-tag>
               </template>
             </template>
           </el-table-column>
-          <el-table-column label="用量" width="100">
+          <el-table-column :label="t('coupon.usage')" width="100">
             <template #default="{ row }">
-              {{ row.usedCount }} / {{ row.usageLimit ?? '∞' }}
+              {{ row.usedCount }} / {{ row.usageLimit ?? t('coupon.unlimited') }}
             </template>
           </el-table-column>
-          <el-table-column label="有效期" min-width="180">
+          <el-table-column :label="t('coupon.validity')" min-width="180">
             <template #default="{ row }">
               <div class="time-cell">{{ formatTime(row.startAt) }}</div>
-              <div class="time-cell">至 {{ formatTime(row.endAt) }}</div>
+              <div class="time-cell">{{ t('common.to') }} {{ formatTime(row.endAt) }}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" width="80">
+          <el-table-column prop="status" :label="t('common.status')" width="80">
             <template #default="{ row }">
               <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
-                {{ row.status === 1 ? '启用' : '禁用' }}
+                {{ row.status === 1 ? t('common.enabled') : t('common.disabled') }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="140" fixed="right">
+          <el-table-column :label="t('common.actions')" width="140" fixed="right">
             <template #default="{ row }">
-              <el-button link type="primary" @click="openDialog(row)">编辑</el-button>
-              <el-button link type="danger" @click="handleDelete(row.id)">删除</el-button>
+              <el-button link type="primary" @click="openDialog(row)">{{ t('common.edit') }}</el-button>
+              <el-button link type="danger" @click="handleDelete(row.id)">{{ t('common.delete') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -59,50 +59,50 @@
       </div>
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="form.id ? '编辑优惠券' : '发布优惠券'" width="600px" destroy-on-close>
+    <el-dialog v-model="dialogVisible" :title="form.id ? t('coupon.edit') : t('coupon.add')" width="600px" destroy-on-close>
       <el-form :model="form" label-width="100px">
-        <el-form-item label="券码" required>
-          <el-input v-model="form.code" placeholder="如 SPRING2026" :disabled="!!form.id" />
+        <el-form-item :label="t('coupon.code')" required>
+          <el-input v-model="form.code" :placeholder="t('coupon.codePlaceholder')" :disabled="!!form.id" />
         </el-form-item>
-        <el-form-item label="名称" required><el-input v-model="form.name" /></el-form-item>
-        <el-form-item label="描述"><el-input v-model="form.description" type="textarea" :rows="2" /></el-form-item>
-        <el-form-item label="类型" required>
+        <el-form-item :label="t('coupon.name')" required><el-input v-model="form.name" /></el-form-item>
+        <el-form-item :label="t('coupon.description')"><el-input v-model="form.description" type="textarea" :rows="2" /></el-form-item>
+        <el-form-item :label="t('coupon.type')" required>
           <el-select v-model="form.type" style="width:100%">
-            <el-option label="百分比折扣" value="PERCENT_OFF" />
-            <el-option label="满减（固定金额）" value="FIXED_OFF" />
+            <el-option :label="t('coupon.typePercentOff')" value="PERCENT_OFF" />
+            <el-option :label="t('coupon.typeFixedOff')" value="FIXED_OFF" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="form.type === 'PERCENT_OFF' ? '折扣(%)' : '减免(元)'" required>
+        <el-form-item :label="form.type === 'PERCENT_OFF' ? t('coupon.valuePercent') : t('coupon.valueFixedOff')" required>
           <el-input-number v-model="form.discountValue" :min="0" :precision="2" style="width:100%" />
         </el-form-item>
-        <el-form-item label="最低消费">
+        <el-form-item :label="t('promotion.minAmount')">
           <el-input-number v-model="form.minAmount" :min="0" :precision="2" style="width:100%" />
         </el-form-item>
-        <el-form-item v-if="form.type === 'PERCENT_OFF'" label="封顶减免">
+        <el-form-item v-if="form.type === 'PERCENT_OFF'" :label="t('promotion.maxDiscount')">
           <el-input-number v-model="form.maxDiscount" :min="0" :precision="2" style="width:100%" />
         </el-form-item>
-        <el-form-item label="有效期" required>
+        <el-form-item :label="t('coupon.validity')" required>
           <el-date-picker v-model="timeRange" type="datetimerange" style="width:100%"
             value-format="YYYY-MM-DDTHH:mm:ss" />
         </el-form-item>
-        <el-form-item label="适用商品">
-          <el-select v-model="form.productIds" multiple filterable placeholder="不选则全场通用" style="width:100%">
+        <el-form-item :label="t('coupon.products')">
+          <el-select v-model="form.productIds" multiple filterable :placeholder="t('coupon.productScopePlaceholder')" style="width:100%">
             <el-option v-for="p in products" :key="p.id" :label="p.name" :value="p.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="总发行量">
-          <el-input-number v-model="form.usageLimit" :min="1" style="width:100%" placeholder="不填则不限" />
+        <el-form-item :label="t('coupon.usageLimit')">
+          <el-input-number v-model="form.usageLimit" :min="1" style="width:100%" :placeholder="t('coupon.usageLimitPlaceholder')" />
         </el-form-item>
-        <el-form-item label="每人限用">
+        <el-form-item :label="t('coupon.perUserLimit')">
           <el-input-number v-model="form.perUserLimit" :min="1" style="width:100%" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item :label="t('common.status')">
           <el-switch v-model="form.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSave">保存</el-button>
+        <el-button @click="dialogVisible = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSave">{{ t('common.save') }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -112,9 +112,11 @@
 import { ref, onMounted } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import request from '../api/request'
 import PageHeader from '../components/PageHeader.vue'
 
+const { t } = useI18n()
 const tableData = ref([])
 const products = ref([])
 const loading = ref(false)
@@ -125,9 +127,9 @@ const dialogVisible = ref(false)
 const form = ref({})
 const timeRange = ref([])
 
-function formatTime(t) {
-  if (!t) return ''
-  return String(t).replace('T', ' ').slice(0, 16)
+function formatTime(val) {
+  if (!val) return ''
+  return String(val).replace('T', ' ').slice(0, 16)
 }
 
 async function loadProducts() {
@@ -159,7 +161,7 @@ function openDialog(row) {
 
 async function handleSave() {
   if (!form.value.code || !form.value.name || !timeRange.value?.length) {
-    ElMessage.warning('请填写券码、名称和有效期')
+    ElMessage.warning(t('coupon.fillRequired'))
     return
   }
   const payload = { ...form.value, startAt: timeRange.value[0], endAt: timeRange.value[1] }
@@ -168,15 +170,15 @@ async function handleSave() {
   } else {
     await request.post('/admin/coupons', payload)
   }
-  ElMessage.success('保存成功')
+  ElMessage.success(t('common.saveSuccess'))
   dialogVisible.value = false
   loadData()
 }
 
 async function handleDelete(id) {
-  await ElMessageBox.confirm('确定删除该优惠券？', '提示', { type: 'warning' })
+  await ElMessageBox.confirm(t('coupon.deleteConfirm'), t('common.tip'), { type: 'warning' })
   await request.delete(`/admin/coupons/${id}`)
-  ElMessage.success('已删除')
+  ElMessage.success(t('common.deleteSuccess'))
   loadData()
 }
 

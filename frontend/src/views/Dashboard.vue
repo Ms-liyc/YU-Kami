@@ -26,7 +26,13 @@
     <el-row :gutter="16" style="margin-top: 20px">
       <el-col :xs="24" :md="16">
         <div class="page-card" style="margin-bottom:16px">
-          <div class="card-header"><h3>{{ t('admin.trendTitle') }}</h3></div>
+          <div class="card-header">
+            <h3>{{ t('admin.trendTitle') }}</h3>
+            <div class="trend-legend">
+              <span><i class="legend-dot orders"></i>{{ t('admin.trendLegendOrders') }}</span>
+              <span><i class="legend-dot redeems"></i>{{ t('admin.trendLegendRedeems') }}</span>
+            </div>
+          </div>
           <div class="card-body trend-chart">
             <div v-for="d in trends" :key="d.date" class="trend-bar-group">
               <div class="bars">
@@ -40,18 +46,18 @@
         <div class="page-card">
           <div class="card-header"><h3>{{ t('admin.recentRedeems') }}</h3></div>
           <div class="card-body" style="padding: 0">
-            <el-table :data="stats.recentRedeems || []" stripe empty-text="暂无兑换记录">
-              <el-table-column prop="redeemUser" label="用户" width="140" />
-              <el-table-column prop="result" label="结果" width="100">
+            <el-table :data="stats.recentRedeems || []" stripe :empty-text="t('admin.noRedeemRecords')">
+              <el-table-column prop="redeemUser" :label="t('admin.recordUser')" width="140" />
+              <el-table-column prop="result" :label="t('admin.recordResult')" width="100">
                 <template #default="{ row }">
                   <el-tag :type="row.result === 'SUCCESS' ? 'success' : 'danger'" size="small" effect="light">
                     {{ row.result }}
                   </el-tag>
                 </template>
               </el-table-column>
-              <el-table-column prop="message" label="消息" show-overflow-tooltip />
-              <el-table-column prop="redeemIp" label="IP" width="130" />
-              <el-table-column prop="createdAt" label="时间" width="170" />
+              <el-table-column prop="message" :label="t('admin.recordMessage')" show-overflow-tooltip />
+              <el-table-column prop="redeemIp" :label="t('admin.recordIp')" width="130" />
+              <el-table-column prop="createdAt" :label="t('admin.recordTime')" width="170" />
             </el-table>
           </div>
         </div>
@@ -115,13 +121,13 @@ const statCards = computed(() => [
   { label: t('admin.totalBatches'), value: stats.value.totalBatches || 0, icon: 'Files', color: '#14b8a6' }
 ])
 
-const cryptoItems = [
-  { label: '卡密存储', value: 'HMAC-SHA256 + Pepper', icon: 'Lock', color: '#4f6ef7' },
-  { label: '元数据', value: 'AES-256-GCM', icon: 'Key', color: '#7c3aed' },
-  { label: '密码', value: 'BCrypt', icon: 'Shield', color: '#10b981' },
-  { label: 'API 签名', value: 'RSA-SHA256', icon: 'Stamp', color: '#f59e0b' },
-  { label: '高并发', value: 'Redis 锁 + 乐观锁', icon: 'Lightning', color: '#ef4444' }
-]
+const cryptoItems = computed(() => [
+  { label: t('admin.cryptoCardStorage'), value: t('admin.cryptoCardStorageValue'), icon: 'Lock', color: '#4f6ef7' },
+  { label: t('admin.cryptoMetadata'), value: t('admin.cryptoMetadataValue'), icon: 'Key', color: '#7c3aed' },
+  { label: t('admin.cryptoPassword'), value: t('admin.cryptoPasswordValue'), icon: 'Shield', color: '#10b981' },
+  { label: t('admin.cryptoApiSign'), value: t('admin.cryptoApiSignValue'), icon: 'Stamp', color: '#f59e0b' },
+  { label: t('admin.cryptoConcurrency'), value: t('admin.cryptoConcurrencyValue'), icon: 'Lightning', color: '#ef4444' }
+])
 
 onMounted(async () => {
   const [statsRes, trendsRes] = await Promise.all([
@@ -154,4 +160,9 @@ onMounted(async () => {
 .bar.orders { background: #4f6ef7; }
 .bar.redeems { background: #10b981; }
 .trend-label { font-size: 11px; color: var(--text-secondary); margin-top: 6px; display: block; }
+.trend-legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); }
+.legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.legend-dot.orders { background: #4f6ef7; }
+.legend-dot.redeems { background: #10b981; }
+.card-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 </style>

@@ -1,54 +1,54 @@
 <template>
   <div class="page-container">
-    <PageHeader title="促销活动" subtitle="配置满减、折扣与节假日特价，可限定适用商品">
+    <PageHeader :title="t('promotion.title')" :subtitle="t('promotion.subtitle')">
       <template #extra>
-        <el-button type="primary" :icon="Plus" @click="openDialog()">新增活动</el-button>
+        <el-button type="primary" :icon="Plus" @click="openDialog()">{{ t('promotion.add') }}</el-button>
       </template>
     </PageHeader>
 
     <div class="page-card">
-      <div class="card-body">
+      <div class="card-body table-scroll-wrap">
         <el-table :data="tableData" stripe v-loading="loading">
-          <el-table-column prop="name" label="活动名称" min-width="140" />
-          <el-table-column prop="typeLabel" label="类型" width="120" />
-          <el-table-column label="优惠" width="120">
+          <el-table-column prop="name" :label="t('promotion.name')" min-width="140" />
+          <el-table-column prop="typeLabel" :label="t('promotion.type')" width="120" />
+          <el-table-column :label="t('promotion.discount')" width="120">
             <template #default="{ row }">
               <span v-if="row.type === 'PERCENT_OFF'">{{ row.discountValue }}%</span>
-              <span v-else-if="row.type === 'FIXED_OFF'">减 ¥{{ row.discountValue }}</span>
-              <span v-else>¥{{ row.discountValue }}</span>
+              <span v-else-if="row.type === 'FIXED_OFF'">{{ t('promotion.fixedOffDisplay', { amount: row.discountValue }) }}</span>
+              <span v-else>{{ t('promotion.overrideDisplay', { amount: row.discountValue }) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="适用商品" min-width="160">
+          <el-table-column :label="t('promotion.products')" min-width="160">
             <template #default="{ row }">
-              <el-tag v-if="row.scope === 'ALL'" size="small">全场</el-tag>
+              <el-tag v-if="row.scope === 'ALL'" size="small">{{ t('promotion.scopeAll') }}</el-tag>
               <template v-else>
                 <el-tag v-for="n in row.productNames" :key="n" size="small" style="margin:2px">{{ n }}</el-tag>
               </template>
             </template>
           </el-table-column>
-          <el-table-column label="时间" min-width="200">
+          <el-table-column :label="t('promotion.time')" min-width="200">
             <template #default="{ row }">
               <div class="time-cell">{{ formatTime(row.startAt) }}</div>
-              <div class="time-cell">至 {{ formatTime(row.endAt) }}</div>
+              <div class="time-cell">{{ t('common.to') }} {{ formatTime(row.endAt) }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="标签" width="90">
+          <el-table-column :label="t('promotion.tag')" width="90">
             <template #default="{ row }">
-              <el-tag v-if="row.holiday" type="warning" size="small">节假日</el-tag>
+              <el-tag v-if="row.holiday" type="warning" size="small">{{ t('promotion.holiday') }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="priority" label="优先级" width="80" />
-          <el-table-column prop="status" label="状态" width="80">
+          <el-table-column prop="priority" :label="t('promotion.priority')" width="80" />
+          <el-table-column prop="status" :label="t('common.status')" width="80">
             <template #default="{ row }">
               <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
-                {{ row.status === 1 ? '启用' : '禁用' }}
+                {{ row.status === 1 ? t('common.enabled') : t('common.disabled') }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="140" fixed="right">
+          <el-table-column :label="t('common.actions')" width="140" fixed="right">
             <template #default="{ row }">
-              <el-button link type="primary" @click="openDialog(row)">编辑</el-button>
-              <el-button link type="danger" @click="handleDelete(row.id)">删除</el-button>
+              <el-button link type="primary" @click="openDialog(row)">{{ t('common.edit') }}</el-button>
+              <el-button link type="danger" @click="handleDelete(row.id)">{{ t('common.delete') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -56,48 +56,48 @@
       </div>
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="form.id ? '编辑活动' : '新增活动'" width="600px" destroy-on-close>
+    <el-dialog v-model="dialogVisible" :title="form.id ? t('promotion.edit') : t('promotion.add')" width="600px" destroy-on-close>
       <el-form :model="form" label-width="100px">
-        <el-form-item label="名称" required><el-input v-model="form.name" /></el-form-item>
-        <el-form-item label="描述"><el-input v-model="form.description" type="textarea" :rows="2" /></el-form-item>
-        <el-form-item label="类型" required>
+        <el-form-item :label="t('promotion.formName')" required><el-input v-model="form.name" /></el-form-item>
+        <el-form-item :label="t('promotion.description')"><el-input v-model="form.description" type="textarea" :rows="2" /></el-form-item>
+        <el-form-item :label="t('promotion.type')" required>
           <el-select v-model="form.type" style="width:100%">
-            <el-option label="百分比折扣" value="PERCENT_OFF" />
-            <el-option label="满减（固定金额）" value="FIXED_OFF" />
-            <el-option label="特价/节日价" value="OVERRIDE_PRICE" />
+            <el-option :label="t('promotion.typePercentOff')" value="PERCENT_OFF" />
+            <el-option :label="t('promotion.typeFixedOff')" value="FIXED_OFF" />
+            <el-option :label="t('promotion.typeOverridePrice')" value="OVERRIDE_PRICE" />
           </el-select>
         </el-form-item>
         <el-form-item :label="valueLabel" required>
           <el-input-number v-model="form.discountValue" :min="0" :precision="2" style="width:100%" />
         </el-form-item>
-        <el-form-item label="最低消费">
-          <el-input-number v-model="form.minAmount" :min="0" :precision="2" style="width:100%" placeholder="不填则无门槛" />
+        <el-form-item :label="t('promotion.minAmount')">
+          <el-input-number v-model="form.minAmount" :min="0" :precision="2" style="width:100%" :placeholder="t('promotion.minAmountPlaceholder')" />
         </el-form-item>
-        <el-form-item v-if="form.type === 'PERCENT_OFF'" label="封顶减免">
+        <el-form-item v-if="form.type === 'PERCENT_OFF'" :label="t('promotion.maxDiscount')">
           <el-input-number v-model="form.maxDiscount" :min="0" :precision="2" style="width:100%" />
         </el-form-item>
-        <el-form-item label="活动时间" required>
+        <el-form-item :label="t('promotion.activityTime')" required>
           <el-date-picker v-model="timeRange" type="datetimerange" style="width:100%"
-            start-placeholder="开始" end-placeholder="结束" value-format="YYYY-MM-DDTHH:mm:ss" />
+            :start-placeholder="t('promotion.startPlaceholder')" :end-placeholder="t('promotion.endPlaceholder')" value-format="YYYY-MM-DDTHH:mm:ss" />
         </el-form-item>
-        <el-form-item label="适用商品">
-          <el-select v-model="form.productIds" multiple filterable placeholder="不选则全场通用" style="width:100%">
+        <el-form-item :label="t('promotion.products')">
+          <el-select v-model="form.productIds" multiple filterable :placeholder="t('promotion.productScopePlaceholder')" style="width:100%">
             <el-option v-for="p in products" :key="p.id" :label="p.name" :value="p.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="节假日">
+        <el-form-item :label="t('promotion.holiday')">
           <el-switch v-model="form.holiday" />
         </el-form-item>
-        <el-form-item label="优先级">
+        <el-form-item :label="t('promotion.priority')">
           <el-input-number v-model="form.priority" :min="0" style="width:100%" />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item :label="t('common.status')">
           <el-switch v-model="form.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSave">保存</el-button>
+        <el-button @click="dialogVisible = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSave">{{ t('common.save') }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -107,9 +107,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import request from '../api/request'
 import PageHeader from '../components/PageHeader.vue'
 
+const { t } = useI18n()
 const tableData = ref([])
 const products = ref([])
 const loading = ref(false)
@@ -121,14 +123,14 @@ const form = ref({})
 const timeRange = ref([])
 
 const valueLabel = computed(() => {
-  if (form.value.type === 'PERCENT_OFF') return '折扣(%)'
-  if (form.value.type === 'OVERRIDE_PRICE') return '特价(元)'
-  return '减免(元)'
+  if (form.value.type === 'PERCENT_OFF') return t('promotion.valuePercent')
+  if (form.value.type === 'OVERRIDE_PRICE') return t('promotion.valueOverride')
+  return t('promotion.valueFixedOff')
 })
 
-function formatTime(t) {
-  if (!t) return ''
-  return String(t).replace('T', ' ').slice(0, 16)
+function formatTime(val) {
+  if (!val) return ''
+  return String(val).replace('T', ' ').slice(0, 16)
 }
 
 async function loadProducts() {
@@ -166,7 +168,7 @@ function openDialog(row) {
 
 async function handleSave() {
   if (!form.value.name || !timeRange.value?.length) {
-    ElMessage.warning('请填写名称和活动时间')
+    ElMessage.warning(t('promotion.fillRequired'))
     return
   }
   const payload = {
@@ -179,15 +181,15 @@ async function handleSave() {
   } else {
     await request.post('/admin/promotions', payload)
   }
-  ElMessage.success('保存成功')
+  ElMessage.success(t('common.saveSuccess'))
   dialogVisible.value = false
   loadData()
 }
 
 async function handleDelete(id) {
-  await ElMessageBox.confirm('确定删除该活动？', '提示', { type: 'warning' })
+  await ElMessageBox.confirm(t('promotion.deleteConfirm'), t('common.tip'), { type: 'warning' })
   await request.delete(`/admin/promotions/${id}`)
-  ElMessage.success('已删除')
+  ElMessage.success(t('common.deleteSuccess'))
   loadData()
 }
 

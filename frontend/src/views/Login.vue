@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
@@ -68,11 +68,11 @@ const { captchaImage, captchaCode, refreshCaptcha, captchaPayload } = useCaptcha
 
 onMounted(refreshCaptcha)
 
-const features = [
-  { icon: 'Lock', title: '多重加密', desc: 'HMAC + AES + RSA + BCrypt 五重防护' },
-  { icon: 'Lightning', title: '高并发', desc: 'Redis 分布式锁 + 乐观锁保障' },
-  { icon: 'DataAnalysis', title: '全链路审计', desc: '操作日志与兑换记录可追溯' }
-]
+const features = computed(() => [
+  { icon: 'Lock', title: t('admin.loginFeatureCryptoTitle'), desc: t('admin.loginFeatureCryptoDesc') },
+  { icon: 'Lightning', title: t('admin.loginFeatureConcurrencyTitle'), desc: t('admin.loginFeatureConcurrencyDesc') },
+  { icon: 'DataAnalysis', title: t('admin.loginFeatureAuditTitle'), desc: t('admin.loginFeatureAuditDesc') }
+])
 
 async function handleLogin() {
   loading.value = true

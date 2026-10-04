@@ -2,6 +2,15 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.19.0] — 2026-01
+
+### 改进
+
+- 管理端 Promotions / Coupons / Users / API Clients / Audit Logs 页面完整 i18n（中英双语）
+- 仪表盘趋势图图例、最近兑换表格、加密体系区块 i18n
+- 登录页左侧特性介绍 i18n
+- 管理端表格页统一 `table-scroll-wrap` 移动端横向滚动
+
 ## [1.18.0] — 2026-01
 
 ### 新增
@@ -199,6 +208,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.19.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.15.0...v1.16.0

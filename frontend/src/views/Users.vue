@@ -1,36 +1,36 @@
 <template>
   <div class="page-container">
-    <PageHeader title="用户管理" subtitle="管理系统管理员账号与权限">
+    <PageHeader :title="t('sysUser.title')" :subtitle="t('sysUser.subtitle')">
       <template #extra>
-        <el-button type="primary" :icon="Plus" @click="createDialog = true">新增用户</el-button>
+        <el-button type="primary" :icon="Plus" @click="createDialog = true">{{ t('sysUser.add') }}</el-button>
       </template>
     </PageHeader>
 
     <div class="page-card">
-      <div class="card-body">
+      <div class="card-body table-scroll-wrap">
         <el-table :data="tableData" stripe v-loading="loading">
-          <el-table-column prop="username" label="用户名" width="140" />
-          <el-table-column prop="nickname" label="昵称" width="140" />
-          <el-table-column prop="role" label="角色" width="130">
+          <el-table-column prop="username" :label="t('sysUser.username')" width="140" />
+          <el-table-column prop="nickname" :label="t('sysUser.nickname')" width="140" />
+          <el-table-column prop="role" :label="t('sysUser.role')" width="130">
             <template #default="{ row }">
               <el-tag :type="row.role === 'SUPER_ADMIN' ? 'danger' : 'primary'" size="small" effect="light">
-                {{ row.role === 'SUPER_ADMIN' ? '超级管理员' : '管理员' }}
+                {{ row.role === 'SUPER_ADMIN' ? t('sysUser.superAdmin') : t('sysUser.admin') }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" width="90">
+          <el-table-column prop="status" :label="t('common.status')" width="90">
             <template #default="{ row }">
               <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
-                {{ row.status === 1 ? '正常' : '禁用' }}
+                {{ row.status === 1 ? t('admin.statusNormal') : t('admin.statusDisabled') }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="createdAt" label="创建时间" width="170" />
-          <el-table-column label="操作" width="200" fixed="right">
+          <el-table-column prop="createdAt" :label="t('order.createdAt')" width="170" />
+          <el-table-column :label="t('common.actions')" width="200" fixed="right">
             <template #default="{ row }">
-              <el-button link type="primary" @click="openReset(row)">重置密码</el-button>
+              <el-button link type="primary" @click="openReset(row)">{{ t('sysUser.resetPassword') }}</el-button>
               <el-button link :type="row.status === 1 ? 'warning' : 'success'" @click="handleToggle(row.id)">
-                {{ row.status === 1 ? '禁用' : '启用' }}
+                {{ row.status === 1 ? t('admin.disableUser') : t('admin.enableUser') }}
               </el-button>
             </template>
           </el-table-column>
@@ -39,29 +39,29 @@
       </div>
     </div>
 
-    <el-dialog v-model="createDialog" title="新增用户" width="440px" destroy-on-close>
+    <el-dialog v-model="createDialog" :title="t('sysUser.add')" width="440px" destroy-on-close>
       <el-form :model="form" label-width="80px">
-        <el-form-item label="用户名"><el-input v-model="form.username" /></el-form-item>
-        <el-form-item label="密码"><el-input v-model="form.password" type="password" show-password /></el-form-item>
-        <el-form-item label="昵称"><el-input v-model="form.nickname" /></el-form-item>
-        <el-form-item label="角色">
+        <el-form-item :label="t('sysUser.username')"><el-input v-model="form.username" /></el-form-item>
+        <el-form-item :label="t('sysUser.password')"><el-input v-model="form.password" type="password" show-password /></el-form-item>
+        <el-form-item :label="t('sysUser.nickname')"><el-input v-model="form.nickname" /></el-form-item>
+        <el-form-item :label="t('sysUser.role')">
           <el-select v-model="form.role" style="width:100%">
-            <el-option label="管理员" value="ADMIN" />
-            <el-option label="超级管理员" value="SUPER_ADMIN" />
+            <el-option :label="t('sysUser.admin')" value="ADMIN" />
+            <el-option :label="t('sysUser.superAdmin')" value="SUPER_ADMIN" />
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="createDialog = false">取消</el-button>
-        <el-button type="primary" @click="handleCreate">创建</el-button>
+        <el-button @click="createDialog = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleCreate">{{ t('common.create') }}</el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="resetDialog" title="重置密码" width="400px">
-      <el-input v-model="newPassword" type="password" placeholder="新密码（至少6位）" show-password />
+    <el-dialog v-model="resetDialog" :title="t('sysUser.resetPassword')" width="400px">
+      <el-input v-model="newPassword" type="password" :placeholder="t('sysUser.newPasswordPlaceholder')" show-password />
       <template #footer>
-        <el-button @click="resetDialog = false">取消</el-button>
-        <el-button type="primary" @click="handleReset">确认</el-button>
+        <el-button @click="resetDialog = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleReset">{{ t('common.confirm') }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -71,9 +71,11 @@
 import { ref, onMounted } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import request from '../api/request'
 import PageHeader from '../components/PageHeader.vue'
 
+const { t } = useI18n()
 const tableData = ref([])
 const loading = ref(false)
 const page = ref(1)
@@ -98,7 +100,7 @@ async function loadData() {
 
 async function handleCreate() {
   await request.post('/admin/users', form.value)
-  ElMessage.success('创建成功')
+  ElMessage.success(t('common.createSuccess'))
   createDialog.value = false
   form.value = { username: '', password: '', nickname: '', role: 'ADMIN' }
   loadData()
@@ -112,13 +114,13 @@ function openReset(row) {
 
 async function handleReset() {
   await request.post(`/admin/users/${resetUserId.value}/reset-password`, { password: newPassword.value })
-  ElMessage.success('密码已重置')
+  ElMessage.success(t('sysUser.resetSuccess'))
   resetDialog.value = false
 }
 
 async function handleToggle(id) {
   await request.post(`/admin/users/${id}/toggle`)
-  ElMessage.success('操作成功')
+  ElMessage.success(t('common.success'))
   loadData()
 }
 
