@@ -80,6 +80,13 @@ public class ProductionSecurityChecker {
                 && (properties.getMail().getFrom() == null || properties.getMail().getFrom().isBlank())) {
             warnings.add("已设置 STOCK_ALERT_EMAIL 但未配置 MAIL_FROM/MAIL_HOST，库存邮件告警将无法发送");
         }
+        String stockAlertPhone = properties.getStock().getAlertPhone();
+        if (stockAlertPhone != null && !stockAlertPhone.isBlank()) {
+            String provider = properties.getSms().getProvider();
+            if (provider == null || provider.isBlank() || "none".equalsIgnoreCase(provider.trim())) {
+                warnings.add("已设置 STOCK_ALERT_PHONE 但 SMS_PROVIDER 未配置，库存短信告警将无法发送");
+            }
+        }
         if (warnings.isEmpty()) {
             return;
         }

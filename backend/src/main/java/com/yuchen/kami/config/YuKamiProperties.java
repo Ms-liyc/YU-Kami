@@ -18,6 +18,7 @@ public class YuKamiProperties {
     private Security security = new Security();
     private Captcha captcha = new Captcha();
     private Mail mail = new Mail();
+    private Sms sms = new Sms();
     private FeatureSchemaMigration featureSchemaMigration = new FeatureSchemaMigration();
 
     @Data
@@ -69,6 +70,8 @@ public class YuKamiProperties {
         private int lowThreshold = 10;
         /** 低库存邮件通知地址（可选，逗号分隔） */
         private String alertEmail;
+        /** 低库存短信通知手机号（可选，逗号分隔） */
+        private String alertPhone;
     }
 
     @Data
@@ -80,6 +83,18 @@ public class YuKamiProperties {
     public static class Mail {
         private String from;
         private String appUrl;
+    }
+
+    @Data
+    public static class Sms {
+        /** none / http / aliyun / log */
+        private String provider = "none";
+        private String httpUrl;
+        private String httpSecret;
+        private String aliyunAccessKeyId;
+        private String aliyunAccessKeySecret;
+        private String aliyunSignName;
+        private String aliyunTemplateCode;
     }
 
     @Data

@@ -71,6 +71,15 @@ yukami:
   stock:
     low-threshold: ${STOCK_LOW_THRESHOLD:10}
     alert-email: ${STOCK_ALERT_EMAIL:}
+    alert-phone: ${STOCK_ALERT_PHONE:}
+  sms:
+    provider: ${SMS_PROVIDER:none}
+    http-url: ${SMS_HTTP_URL:}
+    http-secret: ${SMS_HTTP_SECRET:}
+    aliyun-access-key-id: ${SMS_ALIYUN_ACCESS_KEY_ID:}
+    aliyun-access-key-secret: ${SMS_ALIYUN_ACCESS_KEY_SECRET:}
+    aliyun-sign-name: ${SMS_ALIYUN_SIGN_NAME:}
+    aliyun-template-code: ${SMS_ALIYUN_TEMPLATE_CODE:}
   payment:
     # 支付回调/跳转地址：无固定值，部署者按实际环境通过环境变量配置（见 docs/PAYMENT.md）
     base-url: ${PAYMENT_BASE_URL:http://localhost:8080}

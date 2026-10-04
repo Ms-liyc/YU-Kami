@@ -40,6 +40,14 @@ public class RateLimitService {
         }
     }
 
+    /** 短信测试：每管理员每小时最多 5 次，每 IP 每小时最多 10 次 */
+    public void checkSmsTestLimit(Long userId, String ip) {
+        checkLimit("sms:test:user:" + userId, 5, Duration.ofHours(1));
+        if (ip != null && !ip.isBlank()) {
+            checkLimit("sms:test:ip:" + ip, 10, Duration.ofHours(1));
+        }
+    }
+
     private void checkLimit(String scope, int maxPerWindow, Duration window) {
         String key = "rate:" + scope;
         Long count = redisTemplate.opsForValue().increment(key);

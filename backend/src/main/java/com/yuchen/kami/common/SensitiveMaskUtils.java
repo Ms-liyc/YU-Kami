@@ -23,4 +23,18 @@ public final class SensitiveMaskUtils {
         }
         return local.charAt(0) + "***" + local.charAt(local.length() - 1) + domain;
     }
+
+    public static String maskPhone(String phone) {
+        if (phone == null || phone.isBlank()) {
+            return "";
+        }
+        String digits = phone.trim().replaceAll("\\s+", "");
+        if (digits.length() <= 4) {
+            return "***";
+        }
+        if (digits.length() <= 7) {
+            return digits.substring(0, 2) + "***";
+        }
+        return digits.substring(0, 3) + "****" + digits.substring(digits.length() - 4);
+    }
 }

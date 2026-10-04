@@ -21,8 +21,10 @@
 | `DB_PASSWORD` | 数据库强密码，勿使用 `yukami123` 等默认值 |
 | `MAIL_PASSWORD` | QQ 邮箱 **16 位授权码**（非 QQ 密码），仅放环境变量，勿提交仓库 |
 | `STOCK_ALERT_EMAIL` | 库存告警收件人，仅服务端使用，API 不返回明文 |
+| `SMS_ALIYUN_ACCESS_KEY_SECRET` / `SMS_HTTP_SECRET` | 短信密钥，仅放环境变量 |
+| `STOCK_ALERT_PHONE` | 库存短信告警手机号，API 不返回明文 |
 
-完整示例见项目根目录 [.env.example](../.env.example)。邮件配置详见 [MAIL.md](MAIL.md)。
+完整示例见项目根目录 [.env.example](../.env.example)。邮件配置详见 [MAIL.md](MAIL.md)，短信详见 [SMS.md](SMS.md)。
 
 ## 推荐生产配置
 

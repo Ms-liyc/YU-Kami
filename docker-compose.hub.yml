@@ -65,6 +65,10 @@ services:
       # MAIL_USERNAME: 123456789@qq.com
       # MAIL_PASSWORD: 你的16位授权码
       # MAIL_FROM: 123456789@qq.com
+      # 短信告警（见 docs/SMS.md）
+      # STOCK_ALERT_PHONE: "13800138000"
+      # SMS_PROVIDER: http
+      # SMS_HTTP_URL: https://your-gateway.example.com/sms/send
     depends_on:
       mysql:
         condition: service_healthy

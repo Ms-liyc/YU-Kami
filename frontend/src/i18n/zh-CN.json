@@ -119,6 +119,23 @@
     "viewGuide": "查看配置文档",
     "needsConfig": "已设置库存告警邮箱，但 SMTP 未配置，邮件提醒将无法发送"
   },
+  "sms": {
+    "title": "短信通知",
+    "subtitle": "通过可插拔 SMS 通道发送库存告警（HTTP 网关 / 阿里云 / 日志模式）",
+    "configured": "通道已配置",
+    "notConfigured": "通道未配置",
+    "provider": "当前提供者",
+    "stockAlert": "库存告警手机号",
+    "stockAlertSet": "已配置",
+    "stockAlertUnset": "未配置",
+    "configHint": "短信密钥与手机号仅保存在服务器环境变量中，不会出现在接口或页面中。详见 docs/SMS.md",
+    "providerHint": "推荐 SMS_PROVIDER=http 对接自建网关；开发可用 log；生产可用 aliyun",
+    "testPhone": "测试手机号",
+    "testSend": "发送测试短信",
+    "testSuccess": "测试短信已发送，请检查手机",
+    "viewGuide": "查看配置文档",
+    "needsConfig": "已设置库存告警手机号，但 SMS 通道未配置，短信提醒将无法发送"
+  },
   "admin": {
     "welcome": "欢迎回来",
     "loginSubtitle": "登录管理后台",

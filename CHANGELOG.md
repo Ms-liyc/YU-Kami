@@ -2,6 +2,20 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.25.0] — 2026-01
+
+### 新增
+
+- 可插拔短信通知框架：`none` / `log` / `http`（自建网关）/ `aliyun`（阿里云 dysmsapi）
+- 库存告警支持短信提醒（`STOCK_ALERT_PHONE`）
+- 管理端安全设置：短信通道状态查看与测试发信（SUPER_ADMIN）
+- 配置文档 `docs/SMS.md`
+
+### 安全
+
+- 短信 API 不返回密钥或手机号明文；日志手机号脱敏
+- 测试发短信限流；凭据仅存环境变量
+
 ## [1.24.0] — 2026-01
 
 ### 新增
@@ -278,6 +292,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.25.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.22.1...v1.23.0
 [1.22.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.22.0...v1.22.1

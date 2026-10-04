@@ -119,6 +119,23 @@
     "viewGuide": "View setup guide",
     "needsConfig": "Stock alert email is set but SMTP is not configured — email alerts will not be sent"
   },
+  "sms": {
+    "title": "SMS notifications",
+    "subtitle": "Stock alerts via pluggable SMS providers (HTTP gateway / Aliyun / log mode)",
+    "configured": "Channel configured",
+    "notConfigured": "Channel not configured",
+    "provider": "Provider",
+    "stockAlert": "Stock alert phones",
+    "stockAlertSet": "Configured",
+    "stockAlertUnset": "Not configured",
+    "configHint": "SMS secrets and phone numbers live only in server env vars. See docs/SMS.md",
+    "providerHint": "Use SMS_PROVIDER=http for a custom gateway; log for dev; aliyun for production",
+    "testPhone": "Test phone number",
+    "testSend": "Send test SMS",
+    "testSuccess": "Test SMS sent — check your phone",
+    "viewGuide": "View setup guide",
+    "needsConfig": "Stock alert phone is set but SMS channel is not configured"
+  },
   "admin": {
     "welcome": "Welcome Back",
     "loginSubtitle": "Sign in to admin panel",

@@ -33,4 +33,10 @@ public class SetupStatusDTO {
 
     /** 是否已配置库存告警收件人（不暴露具体邮箱） */
     private boolean hasStockAlertRecipient;
+
+    /** 短信通道是否已配置 */
+    private boolean smsConfigured;
+
+    /** 是否已配置库存短信告警（不暴露具体手机号） */
+    private boolean hasStockSmsRecipient;
 }

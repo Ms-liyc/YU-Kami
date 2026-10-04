@@ -8,6 +8,7 @@ import com.yuchen.kami.entity.Product;
 import com.yuchen.kami.mapper.CardKeyMapper;
 import com.yuchen.kami.mapper.ProductMapper;
 import com.yuchen.kami.service.EmailService;
+import com.yuchen.kami.service.SmsService;
 import com.yuchen.kami.service.WebhookDispatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class StockAlertScheduler {
     private final StringRedisTemplate redisTemplate;
     private final WebhookDispatchService webhookDispatchService;
     private final EmailService emailService;
+    private final SmsService smsService;
     private final YuKamiProperties properties;
 
     @Scheduled(cron = "0 0 * * * *")
@@ -67,6 +69,20 @@ public class StockAlertScheduler {
             redisTemplate.opsForValue().set(key, "1", Duration.ofHours(24));
             log.info("低库存告警已发送: {} (剩余 {})", product.getName(), unused);
             sendEmailAlert(product.getName(), product.getCode(), unused, threshold);
+            sendSmsAlert(product.getName(), product.getCode(), unused, threshold);
+        }
+    }
+
+    private void sendSmsAlert(String name, String code, long unused, int threshold) {
+        String recipients = properties.getStock().getAlertPhone();
+        if (!StringUtils.hasText(recipients)) {
+            return;
+        }
+        for (String to : recipients.split(",")) {
+            String phone = to.trim();
+            if (!phone.isBlank()) {
+                smsService.sendLowStockAlert(phone, name, code, unused, threshold);
+            }
         }
     }
 

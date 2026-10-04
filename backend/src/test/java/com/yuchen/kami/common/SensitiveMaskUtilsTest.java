@@ -13,4 +13,11 @@ class SensitiveMaskUtilsTest {
         assertEquals("1***9@qq.com", masked);
         assertFalse(masked.contains("123456789"));
     }
+
+    @Test
+    void maskPhone_shouldHideMiddleDigits() {
+        String masked = SensitiveMaskUtils.maskPhone("13812345678");
+        assertEquals("138****5678", masked);
+        assertFalse(masked.contains("1234"));
+    }
 }
