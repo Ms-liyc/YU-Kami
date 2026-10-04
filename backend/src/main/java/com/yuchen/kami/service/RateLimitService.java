@@ -32,6 +32,14 @@ public class RateLimitService {
         checkLimit("auth:register:ip:" + ip, limit, Duration.ofMinutes(1));
     }
 
+    /** 邮件测试：每管理员每小时最多 5 次，每 IP 每小时最多 10 次 */
+    public void checkMailTestLimit(Long userId, String ip) {
+        checkLimit("mail:test:user:" + userId, 5, Duration.ofHours(1));
+        if (ip != null && !ip.isBlank()) {
+            checkLimit("mail:test:ip:" + ip, 10, Duration.ofHours(1));
+        }
+    }
+
     private void checkLimit(String scope, int maxPerWindow, Duration window) {
         String key = "rate:" + scope;
         Long count = redisTemplate.opsForValue().increment(key);

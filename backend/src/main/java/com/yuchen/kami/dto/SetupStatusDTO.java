@@ -27,4 +27,10 @@ public class SetupStatusDTO {
 
     /** 配置文档路径 */
     private String paymentGuidePath;
+
+    /** SMTP 邮件是否已配置 */
+    private boolean mailConfigured;
+
+    /** 是否已配置库存告警收件人（不暴露具体邮箱） */
+    private boolean hasStockAlertRecipient;
 }

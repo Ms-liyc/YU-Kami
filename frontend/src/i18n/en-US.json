@@ -103,6 +103,22 @@
     "changePasswordTitle": "Change password",
     "currentPassword": "Current password"
   },
+  "mail": {
+    "title": "Email notifications",
+    "subtitle": "Send stock alerts, verification and password reset via QQ Mail SMTP",
+    "configured": "SMTP configured",
+    "notConfigured": "SMTP not configured",
+    "stockAlert": "Stock alert recipients",
+    "stockAlertSet": "Configured",
+    "stockAlertUnset": "Not configured",
+    "configHint": "SMTP credentials live only in server env vars — never exposed via API or UI. See docs/MAIL.md",
+    "qqHint": "QQ Mail: smtp.qq.com:465; use the 16-char authorization code (not your QQ password)",
+    "testTo": "Test recipient",
+    "testSend": "Send test email",
+    "testSuccess": "Test email sent — check your inbox",
+    "viewGuide": "View setup guide",
+    "needsConfig": "Stock alert email is set but SMTP is not configured — email alerts will not be sent"
+  },
   "admin": {
     "welcome": "Welcome Back",
     "loginSubtitle": "Sign in to admin panel",

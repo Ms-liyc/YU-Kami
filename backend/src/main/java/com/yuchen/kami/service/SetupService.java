@@ -16,6 +16,7 @@ public class SetupService {
     private final PaymentConfigMapper paymentConfigMapper;
     private final PaymentChannelHelper paymentChannelHelper;
     private final YuKamiProperties properties;
+    private final EmailService emailService;
 
     public SetupStatusDTO getStatus() {
         PaymentConfig alipay = findChannel("ALIPAY");
@@ -34,6 +35,8 @@ public class SetupService {
                 .paymentBaseUrl(properties.getPayment().getBaseUrl())
                 .paymentReturnUrl(properties.getPayment().getReturnUrl())
                 .paymentGuidePath("docs/PAYMENT.md")
+                .mailConfigured(emailService.isConfigured())
+                .hasStockAlertRecipient(hasStockAlertRecipient())
                 .build();
     }
 
@@ -64,5 +67,10 @@ public class SetupService {
 
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private boolean hasStockAlertRecipient() {
+        String recipients = properties.getStock().getAlertEmail();
+        return recipients != null && !recipients.isBlank();
     }
 }

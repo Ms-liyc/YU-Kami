@@ -2,6 +2,19 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.24.0] — 2026-01
+
+### 新增
+
+- QQ 邮箱 SMTP 支持（465 SSL / 587 STARTTLS），库存告警、验证与找回密码邮件
+- 管理端安全设置：邮件状态查看与测试发信（SUPER_ADMIN）
+- 配置文档 `docs/MAIL.md`
+
+### 安全
+
+- 邮件 API 不返回 SMTP 账号、授权码或收件人明文；日志邮箱脱敏
+- 测试发信限流；凭据仅存环境变量
+
 ## [1.23.0] — 2026-01
 
 ### 安全
@@ -265,6 +278,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.24.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.22.1...v1.23.0
 [1.22.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.22.0...v1.22.1
 [1.22.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.21.1...v1.22.0

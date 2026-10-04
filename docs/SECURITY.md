@@ -19,8 +19,10 @@
 | `HMAC_SECRET` | Webhook / API 签名密钥 |
 | `AES_KEY` | 卡密等敏感字段 AES 密钥（32 字符） |
 | `DB_PASSWORD` | 数据库强密码，勿使用 `yukami123` 等默认值 |
+| `MAIL_PASSWORD` | QQ 邮箱 **16 位授权码**（非 QQ 密码），仅放环境变量，勿提交仓库 |
+| `STOCK_ALERT_EMAIL` | 库存告警收件人，仅服务端使用，API 不返回明文 |
 
-完整示例见项目根目录 [.env.example](../.env.example)。
+完整示例见项目根目录 [.env.example](../.env.example)。邮件配置详见 [MAIL.md](MAIL.md)。
 
 ## 推荐生产配置
 

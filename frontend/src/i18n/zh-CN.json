@@ -103,6 +103,22 @@
     "changePasswordTitle": "修改密码",
     "currentPassword": "当前密码"
   },
+  "mail": {
+    "title": "邮件通知",
+    "subtitle": "通过 QQ 邮箱 SMTP 发送库存告警、验证与找回密码邮件",
+    "configured": "SMTP 已配置",
+    "notConfigured": "SMTP 未配置",
+    "stockAlert": "库存告警收件人",
+    "stockAlertSet": "已配置",
+    "stockAlertUnset": "未配置",
+    "configHint": "SMTP 账号与授权码仅保存在服务器环境变量中，不会出现在接口或页面中。详见 docs/MAIL.md",
+    "qqHint": "推荐使用 QQ 邮箱：smtp.qq.com:465，密码填 16 位授权码（非 QQ 密码）",
+    "testTo": "测试收件邮箱",
+    "testSend": "发送测试邮件",
+    "testSuccess": "测试邮件已发送，请检查收件箱",
+    "viewGuide": "查看配置文档",
+    "needsConfig": "已设置库存告警邮箱，但 SMTP 未配置，邮件提醒将无法发送"
+  },
   "admin": {
     "welcome": "欢迎回来",
     "loginSubtitle": "登录管理后台",

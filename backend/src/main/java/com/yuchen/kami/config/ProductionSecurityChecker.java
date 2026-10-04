@@ -75,6 +75,11 @@ public class ProductionSecurityChecker {
                 warnings.add("数据库中 MOCK 支付渠道仍为启用状态，生产环境请在管理后台禁用");
             }
         }
+        String stockAlertEmail = properties.getStock().getAlertEmail();
+        if (stockAlertEmail != null && !stockAlertEmail.isBlank()
+                && (properties.getMail().getFrom() == null || properties.getMail().getFrom().isBlank())) {
+            warnings.add("已设置 STOCK_ALERT_EMAIL 但未配置 MAIL_FROM/MAIL_HOST，库存邮件告警将无法发送");
+        }
         if (warnings.isEmpty()) {
             return;
         }
