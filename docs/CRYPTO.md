@@ -6,16 +6,18 @@ YU-Kami 卡密**不以明文存入数据库**，采用多层防护：
 
 | 字段 | 算法 | 说明 |
 |------|------|------|
-| `key_hash` | HMAC-SHA256 | 每卡独立 Pepper + HKDF 派生密钥（v2）；兼容历史 v1 拼接密钥 |
+| `key_hash` | 多轮 HMAC-SHA256（v3，默认 3 轮） | 每卡独立 Pepper + HKDF 逐轮派生密钥；兼容 v1/v2 |
 | `key_pepper` | 16 字节随机 hex | 每卡独立，与主密钥组合后哈希 |
-| `key_checksum` | HMAC-SHA256 截断 8 位（v2） | 兑换时快速索引；兼容历史 SHA-256 6 位 |
-| `encrypted_meta` | AES-256-GCM | 批次/产品元数据（HKDF 派生 AES 密钥） |
+| `key_checksum` | 多轮 HMAC 截断 8 位（v3） | 兑换时快速索引；兼容 v1 六位 / v2 八位 |
+| `encrypted_meta` | 多层 AES-256-GCM（默认 3 层） | 批次/产品元数据，每层独立 HKDF 密钥 |
 
 ## 密钥环境变量
 
 ```bash
 HMAC_SECRET=至少32位随机字符串   # 卡密哈希 + 校验码
 AES_KEY=恰好32位随机字符串       # 元数据 + Redis 临时缓存加密
+CRYPTO_HASH_ROUNDS=3             # 卡密 HMAC 哈希轮数（可选，默认 3）
+CRYPTO_AES_ROUNDS=3              # AES 加密层数（可选，默认 3）
 ```
 
 生成示例：
@@ -27,9 +29,10 @@ openssl rand -base64 24   # AES_KEY（取前32字符或自行裁剪）
 
 ## 版本兼容
 
-- **v1 卡密**（已发行）：HMAC 主密钥拼接 Pepper；SHA-256 六位校验码 — 兑换时自动识别
-- **v2 卡密**（新发行）：HKDF 派生 HMAC 密钥；HMAC 八位校验码
-- **Redis 缓存**：新写入 `enc:` 前缀 AES 密文；历史明文条目仍可读取
+- **v1 卡密**（已发行）：HMAC 主密钥拼接 Pepper；SHA-256 六位校验码
+- **v2 卡密**：单轮 HKDF 派生 HMAC 密钥；HMAC 八位校验码
+- **v3 卡密**（新发行，默认）：3 轮链式 HMAC 哈希 + 3 轮链式 HMAC 校验码
+- **Redis 缓存**：`enc3:` 三层 AES 密文；兼容 `enc:` 单层与历史明文
 
 ## 临时明文暴露点
 

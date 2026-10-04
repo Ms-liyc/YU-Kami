@@ -33,6 +33,10 @@ public class YuKamiProperties {
         private String aesKey;
         private String rsaPrivateKeyPath;
         private String rsaPublicKeyPath;
+        /** 卡密 HMAC 哈希轮数（新卡密 v3，默认 3） */
+        private int hashRounds = 3;
+        /** AES 加密轮数（元数据 / Redis 缓存，默认 3） */
+        private int aesRounds = 3;
     }
 
     @Data

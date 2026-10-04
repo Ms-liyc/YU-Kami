@@ -44,10 +44,14 @@ public final class KeyDerivation {
     }
 
     public static byte[] deriveAesKey(String keyMaterial) {
+        return deriveAesLayerKey(keyMaterial, 0);
+    }
+
+    public static byte[] deriveAesLayerKey(String keyMaterial, int layer) {
         return hkdfSha256(
                 keyMaterial.getBytes(StandardCharsets.UTF_8),
                 "yu-kami:aes:salt".getBytes(StandardCharsets.UTF_8),
-                "aes-256-gcm".getBytes(StandardCharsets.UTF_8),
+                ("aes-256-gcm:layer:" + layer).getBytes(StandardCharsets.UTF_8),
                 32);
     }
 
@@ -56,6 +60,22 @@ public final class KeyDerivation {
                 masterSecret.getBytes(StandardCharsets.UTF_8),
                 pepper.getBytes(StandardCharsets.UTF_8),
                 "yu-kami:card-key:v2".getBytes(StandardCharsets.UTF_8),
+                32);
+    }
+
+    public static byte[] deriveCardHmacKeyRound(String masterSecret, String pepper, int round) {
+        return hkdfSha256(
+                masterSecret.getBytes(StandardCharsets.UTF_8),
+                pepper.getBytes(StandardCharsets.UTF_8),
+                ("yu-kami:card-key:v3:round:" + round).getBytes(StandardCharsets.UTF_8),
+                32);
+    }
+
+    public static byte[] deriveChecksumKeyRound(String masterSecret, int round) {
+        return hkdfSha256(
+                masterSecret.getBytes(StandardCharsets.UTF_8),
+                "yu-kami:checksum:salt".getBytes(StandardCharsets.UTF_8),
+                ("yu-kami:checksum:v3:round:" + round).getBytes(StandardCharsets.UTF_8),
                 32);
     }
 

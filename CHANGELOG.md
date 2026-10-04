@@ -2,6 +2,15 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.27.0] — 2026-01
+
+### 安全
+
+- 卡密哈希升级 v3：默认 **3 轮**链式 HMAC（`CRYPTO_HASH_ROUNDS` 可配置）
+- 校验码同步升级 v3 多轮 HMAC，兼容 v1/v2
+- 元数据与 Redis 缓存默认 **3 层** AES 加密（`CRYPTO_AES_ROUNDS` 可配置）
+- 兼容 v1/v2 卡密兑换及 `enc:` 单层 Redis 缓存
+
 ## [1.26.0] — 2026-01
 
 ### 安全
@@ -303,6 +312,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.27.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.26.0...v1.27.0
 [1.26.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.23.0...v1.24.0

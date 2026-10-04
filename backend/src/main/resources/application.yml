@@ -60,6 +60,8 @@ yukami:
   crypto:
     hmac-secret: ${HMAC_SECRET:YuChen-HMAC-Master-Secret-Change-In-Production}
     aes-key: ${AES_KEY:YuChenAES256KeyChangeInProd!!}
+    hash-rounds: ${CRYPTO_HASH_ROUNDS:3}
+    aes-rounds: ${CRYPTO_AES_ROUNDS:3}
     rsa-private-key-path: ${RSA_PRIVATE_KEY:}
     rsa-public-key-path: ${RSA_PUBLIC_KEY:}
   redeem:

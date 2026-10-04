@@ -19,8 +19,15 @@ public class AesGcmCipher {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     public String encrypt(String plainText, String keyMaterial) {
+        return encryptWithRawKey(plainText, KeyDerivation.deriveAesKey(keyMaterial));
+    }
+
+    public String decrypt(String cipherText, String keyMaterial) {
+        return decryptWithRawKey(cipherText, KeyDerivation.deriveAesKey(keyMaterial));
+    }
+
+    public String encryptWithRawKey(String plainText, byte[] key) {
         try {
-            byte[] key = KeyDerivation.deriveAesKey(keyMaterial);
             byte[] iv = new byte[IV_LENGTH];
             RANDOM.nextBytes(iv);
 
@@ -37,9 +44,8 @@ public class AesGcmCipher {
         }
     }
 
-    public String decrypt(String cipherText, String keyMaterial) {
+    public String decryptWithRawKey(String cipherText, byte[] key) {
         try {
-            byte[] key = KeyDerivation.deriveAesKey(keyMaterial);
             byte[] decoded = Base64.getDecoder().decode(cipherText);
             ByteBuffer buffer = ByteBuffer.wrap(decoded);
             byte[] iv = new byte[IV_LENGTH];
