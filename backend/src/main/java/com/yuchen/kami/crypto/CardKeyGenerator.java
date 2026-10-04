@@ -22,7 +22,8 @@ public class CardKeyGenerator {
         if (prefix != null && !prefix.isBlank()) {
             sb.append(prefix).append('-');
         }
-        int bodyLength = length - sb.length() - 7; // 预留校验码和分隔符
+        // 预留 "-"+8位HMAC校验码
+        int bodyLength = length - sb.length() - 1 - CryptoService.CHECKSUM_V2_LENGTH;
         for (int i = 0; i < bodyLength; i++) {
             sb.append(charset.charAt(RANDOM.nextInt(charset.length())));
         }

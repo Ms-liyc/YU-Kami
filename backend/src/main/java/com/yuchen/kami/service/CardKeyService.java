@@ -66,7 +66,7 @@ public class CardKeyService {
             card.setProductId(product.getId());
             card.setKeyHash(hash);
             card.setKeyPepper(pepper);
-            card.setKeyChecksum(cryptoService.computeChecksum(plainKey));
+            card.setKeyChecksum(cryptoService.resolveChecksumForStorage(plainKey));
             card.setEncryptedMeta(cryptoService.encryptMeta(
                     "{\"productCode\":\"" + product.getCode() + "\",\"batchNo\":\"" + batch.getBatchNo() + "\"}"));
             card.setStatus(CardKey.STATUS_UNUSED);

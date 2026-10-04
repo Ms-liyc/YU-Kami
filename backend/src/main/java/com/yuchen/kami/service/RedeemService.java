@@ -121,8 +121,7 @@ public class RedeemService {
                         .eq(CardKey::getStatus, CardKey.STATUS_UNUSED)
                         .last("LIMIT 10"));
         for (CardKey candidate : candidates) {
-            String hash = cryptoService.hashCardKey(plainKey, candidate.getKeyPepper());
-            if (hash.equals(candidate.getKeyHash())) {
+            if (cryptoService.matchesCardKeyHash(plainKey, candidate.getKeyPepper(), candidate.getKeyHash())) {
                 return candidate;
             }
         }

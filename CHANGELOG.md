@@ -2,6 +2,17 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.26.0] — 2026-01
+
+### 安全
+
+- 卡密哈希升级 v2：HKDF 派生每卡 HMAC 密钥，兼容历史 v1 卡密兑换
+- 校验码升级：HMAC-SHA256 八位（v2），兼容六位 SHA 历史格式
+- AES 密钥派生改用 HKDF，Redis 订单卡密 AES 加密缓存
+- 哈希比对常量时间防时序攻击；`key_checksum` 索引加速兑换查询
+- 修复生成卡密时 `key_checksum` 入库值与兑换索引不一致的问题
+- 配置文档 `docs/CRYPTO.md`
+
 ## [1.25.0] — 2026-01
 
 ### 新增
@@ -292,6 +303,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.26.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.22.1...v1.23.0

@@ -2,6 +2,7 @@ package com.yuchen.kami.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yuchen.kami.config.YuKamiProperties;
+import com.yuchen.kami.crypto.CryptoService;
 import com.yuchen.kami.entity.ShopOrder;
 import com.yuchen.kami.mapper.PaymentConfigMapper;
 import com.yuchen.kami.mapper.ShopOrderMapper;
@@ -39,6 +40,7 @@ class PaymentServiceTest {
     @Mock private PromotionService promotionService;
     @Mock private WalletService walletService;
     @Mock private WebhookDispatchService webhookDispatchService;
+    @Mock private CryptoService cryptoService;
     @Mock private ValueOperations<String, String> valueOperations;
     @Spy private YuKamiProperties properties = new YuKamiProperties();
 

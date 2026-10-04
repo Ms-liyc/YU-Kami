@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS card_key (
     created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uk_card_key_hash (key_hash),
     KEY idx_card_key_batch (batch_id),
+    KEY idx_card_key_checksum (key_checksum, status),
     KEY idx_card_key_product_status (product_id, status),
     KEY idx_card_key_redeem_user (redeem_user),
     CONSTRAINT fk_card_key_batch FOREIGN KEY (batch_id) REFERENCES card_batch(id),

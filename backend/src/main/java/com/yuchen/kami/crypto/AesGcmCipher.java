@@ -20,7 +20,7 @@ public class AesGcmCipher {
 
     public String encrypt(String plainText, String keyMaterial) {
         try {
-            byte[] key = normalizeKey(keyMaterial);
+            byte[] key = KeyDerivation.deriveAesKey(keyMaterial);
             byte[] iv = new byte[IV_LENGTH];
             RANDOM.nextBytes(iv);
 
@@ -39,7 +39,7 @@ public class AesGcmCipher {
 
     public String decrypt(String cipherText, String keyMaterial) {
         try {
-            byte[] key = normalizeKey(keyMaterial);
+            byte[] key = KeyDerivation.deriveAesKey(keyMaterial);
             byte[] decoded = Base64.getDecoder().decode(cipherText);
             ByteBuffer buffer = ByteBuffer.wrap(decoded);
             byte[] iv = new byte[IV_LENGTH];
@@ -53,14 +53,5 @@ public class AesGcmCipher {
         } catch (Exception e) {
             throw new IllegalStateException("AES 解密失败", e);
         }
-    }
-
-    private byte[] normalizeKey(String keyMaterial) {
-        byte[] raw = keyMaterial.getBytes(StandardCharsets.UTF_8);
-        byte[] key = new byte[32];
-        for (int i = 0; i < 32; i++) {
-            key[i] = raw[i % raw.length];
-        }
-        return key;
     }
 }

@@ -54,6 +54,14 @@ public class ProductionSecurityChecker {
         if (DEFAULT_AES_KEYS.contains(properties.getCrypto().getAesKey())) {
             warnings.add("AES_KEY 仍为默认值");
         }
+        String hmacSecret = properties.getCrypto().getHmacSecret();
+        if (hmacSecret != null && hmacSecret.length() < 32) {
+            warnings.add("HMAC_SECRET 长度不足 32 字符，卡密哈希强度偏弱");
+        }
+        String aesKey = properties.getCrypto().getAesKey();
+        if (aesKey != null && aesKey.length() < 32) {
+            warnings.add("AES_KEY 长度不足 32 字符，元数据加密强度偏弱");
+        }
         if (dbPassword == null || dbPassword.isBlank() || DEFAULT_DB_PASSWORDS.contains(dbPassword)) {
             warnings.add("DB_PASSWORD 仍为默认值或未设置，请通过环境变量配置强密码");
         }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.yuchen.kami.common.BusinessException;
 import com.yuchen.kami.config.YuKamiProperties;
+import com.yuchen.kami.crypto.CryptoService;
 import com.yuchen.kami.dto.OrderVO;
 import com.yuchen.kami.dto.PaymentConfigUpdateRequest;
 import com.yuchen.kami.dto.PaymentConfigVO;
@@ -51,6 +52,7 @@ public class PaymentService {
     private final WalletService walletService;
     private final WebhookDispatchService webhookDispatchService;
     private final YuKamiProperties properties;
+    private final CryptoService cryptoService;
 
     public List<PaymentConfig> availableChannels() {
         return paymentConfigMapper.selectList(new LambdaQueryWrapper<PaymentConfig>()
@@ -105,8 +107,7 @@ public class PaymentService {
         OrderVO vo = orderService.toVO(order);
         if (ShopOrder.STATUS_DELIVERED.equals(order.getStatus())
                 && ShopOrder.TYPE_PRODUCT.equals(order.getOrderType() != null ? order.getOrderType() : ShopOrder.TYPE_PRODUCT)) {
-            String key = redisTemplate.opsForValue().get("order:card:" + orderId);
-            vo.setCardKey(key);
+            vo.setCardKey(readCachedCardKey(orderId));
         }
         return vo;
     }
@@ -116,7 +117,7 @@ public class PaymentService {
         if (!ShopOrder.STATUS_DELIVERED.equals(order.getStatus())) {
             throw new BusinessException("订单未发货");
         }
-        String key = redisTemplate.opsForValue().get("order:card:" + orderId);
+        String key = readCachedCardKey(orderId);
         if (key == null) {
             throw new BusinessException("卡密已过期，请联系客服");
         }
@@ -225,7 +226,7 @@ public class PaymentService {
                 .set(ShopOrder::getDeliveredAt, LocalDateTime.now())
                 .set(ShopOrder::getCardId, delivery.getCardId()));
 
-        redisTemplate.opsForValue().set("order:card:" + order.getId(), delivery.getPlainKey(), Duration.ofHours(24));
+        writeCachedCardKey(order.getId(), delivery.getPlainKey());
         promotionService.confirmByOrder(order);
         log.info("订单发货完成: {}", orderNo);
         dispatchOrderWebhook(order);
@@ -277,12 +278,11 @@ public class PaymentService {
                     .message("充值成功")
                     .build();
         }
-        String cardKey = redisTemplate.opsForValue().get("order:card:" + order.getId());
         return PrepayResponse.builder()
                 .payType("INSTANT")
                 .orderId(order.getId())
                 .orderNo(order.getOrderNo())
-                .cardKey(cardKey)
+                .cardKey(readCachedCardKey(order.getId()))
                 .message("模拟支付成功")
                 .build();
     }
@@ -291,12 +291,11 @@ public class PaymentService {
     private PrepayResponse prepayBalance(ShopOrder order, Long userId) {
         String paymentNo = walletService.payOrder(userId, order);
         completePayment(order.getOrderNo(), paymentNo);
-        String cardKey = redisTemplate.opsForValue().get("order:card:" + order.getId());
         return PrepayResponse.builder()
                 .payType("INSTANT")
                 .orderId(order.getId())
                 .orderNo(order.getOrderNo())
-                .cardKey(cardKey)
+                .cardKey(readCachedCardKey(order.getId()))
                 .message("余额支付成功")
                 .build();
     }
@@ -419,5 +418,16 @@ public class PaymentService {
                 "paymentMethod", order.getPaymentMethod() != null ? order.getPaymentMethod() : "",
                 "status", order.getStatus() != null ? order.getStatus() : ""
         );
+    }
+
+    private void writeCachedCardKey(Long orderId, String plainKey) {
+        redisTemplate.opsForValue().set(
+                "order:card:" + orderId,
+                cryptoService.protectForCache(plainKey),
+                Duration.ofHours(24));
+    }
+
+    private String readCachedCardKey(Long orderId) {
+        return cryptoService.unprotectFromCache(redisTemplate.opsForValue().get("order:card:" + orderId));
     }
 }

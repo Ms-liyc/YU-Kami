@@ -16,15 +16,15 @@
 | 变量 | 说明 |
 |------|------|
 | `JWT_SECRET` | JWT 签名密钥，至少 32 位随机字符串 |
-| `HMAC_SECRET` | Webhook / API 签名密钥 |
-| `AES_KEY` | 卡密等敏感字段 AES 密钥（32 字符） |
+| `HMAC_SECRET` | Webhook / API 签名 + 卡密 HMAC 哈希/校验码（建议 ≥32 字符） |
+| `AES_KEY` | 卡密元数据 / Redis 缓存 AES 密钥（32 字符，HKDF 派生） |
 | `DB_PASSWORD` | 数据库强密码，勿使用 `yukami123` 等默认值 |
 | `MAIL_PASSWORD` | QQ 邮箱 **16 位授权码**（非 QQ 密码），仅放环境变量，勿提交仓库 |
 | `STOCK_ALERT_EMAIL` | 库存告警收件人，仅服务端使用，API 不返回明文 |
 | `SMS_ALIYUN_ACCESS_KEY_SECRET` / `SMS_HTTP_SECRET` | 短信密钥，仅放环境变量 |
 | `STOCK_ALERT_PHONE` | 库存短信告警手机号，API 不返回明文 |
 
-完整示例见项目根目录 [.env.example](../.env.example)。邮件配置详见 [MAIL.md](MAIL.md)，短信详见 [SMS.md](SMS.md)。
+完整示例见项目根目录 [.env.example](../.env.example)。卡密加密详见 [CRYPTO.md](CRYPTO.md)，邮件配置详见 [MAIL.md](MAIL.md)，短信详见 [SMS.md](SMS.md)。
 
 ## 推荐生产配置
 

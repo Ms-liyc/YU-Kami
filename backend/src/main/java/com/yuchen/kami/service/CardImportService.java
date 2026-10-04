@@ -86,7 +86,7 @@ public class CardImportService {
                 card.setProductId(product.getId());
                 card.setKeyHash(hash);
                 card.setKeyPepper(pepper);
-                card.setKeyChecksum(resolveChecksum(normalized));
+                card.setKeyChecksum(cryptoService.resolveChecksumForStorage(normalized));
                 card.setEncryptedMeta(cryptoService.encryptMeta(
                         "{\"productCode\":\"" + product.getCode() + "\",\"batchNo\":\"" + batch.getBatchNo() + "\",\"imported\":true}"));
                 card.setStatus(CardKey.STATUS_UNUSED);
@@ -107,17 +107,6 @@ public class CardImportService {
                 .skipped(skipped)
                 .failed(failed)
                 .build();
-    }
-
-    private String resolveChecksum(String plainKey) {
-        if (plainKey.contains("-")) {
-            int lastDash = plainKey.lastIndexOf('-');
-            if (lastDash > 0 && plainKey.length() - lastDash - 1 == 6) {
-                return plainKey.substring(lastDash + 1);
-            }
-            return cryptoService.computeChecksum(plainKey.substring(0, lastDash));
-        }
-        return cryptoService.computeChecksum(plainKey);
     }
 
     private List<String> parseFile(MultipartFile file) throws Exception {
