@@ -365,6 +365,13 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.17.0
+
+* 🛍️ **商品详情页**：`/shop/product/:id`，展示分类/促销后再购买
+* 🌐 **管理端 i18n**：Webhook 页、订单支付配置弹窗中英双语
+* 🐳 **Hub Compose**：补充邮件/验证码/库存告警环境变量示例
+* 🧪 **单元测试**：密码重置链接路径校验
+
 #### v1.16.0
 
 * 📂 **商城分类筛选**：商品列表按 category 标签过滤
@@ -550,6 +557,7 @@ Content-Type: application/json
 * [x] 产品分类 / 趋势图表 / 库存 Webhook
 * [x] HTTPS Docker 部署示例
 * [x] 商城分类筛选 / 邮箱验证 / 库存邮件告警
+* [x] 商城商品详情页 / Webhook 与支付配置 i18n
 
 ---
 

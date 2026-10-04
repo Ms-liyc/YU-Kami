@@ -58,7 +58,6 @@ import { Search } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import shopHttp from '../../api/shopHttp'
-import { useShopAuthStore } from '../../stores/shopAuth'
 
 const props = defineProps({
   limit: { type: Number, default: 0 },
@@ -71,7 +70,6 @@ const emit = defineEmits(['loaded'])
 
 const { t } = useI18n()
 const router = useRouter()
-const auth = useShopAuthStore()
 const products = ref([])
 const loading = ref(false)
 const search = ref('')
@@ -120,11 +118,7 @@ async function loadProducts() {
 
 function handleBuy(product) {
   if (props.preview) return
-  if (!auth.token) {
-    router.push('/shop/login?redirect=/shop/buy/' + String(product.id))
-    return
-  }
-  router.push('/shop/buy/' + String(product.id))
+  router.push('/shop/product/' + String(product.id))
 }
 
 onMounted(loadProducts)

@@ -15,6 +15,7 @@ const routes = [
       { path: 'reset-password', name: 'ShopResetPassword', meta: { scope: 'shop' }, component: () => import('../views/ResetPassword.vue') },
       { path: 'orders', name: 'ShopOrders', meta: { shopAuth: true }, component: () => import('../views/shop/ShopOrders.vue') },
       { path: 'buy/:id', name: 'ShopBuy', meta: { shopAuth: true }, component: () => import('../views/shop/ShopBuy.vue') },
+      { path: 'product/:id', name: 'ShopProductDetail', component: () => import('../views/shop/ShopProductDetail.vue') },
       { path: 'profile', name: 'ShopProfile', meta: { shopAuth: true }, component: () => import('../views/shop/ShopProfile.vue') },
       { path: 'wallet', name: 'ShopWallet', meta: { shopAuth: true }, component: () => import('../views/shop/ShopWallet.vue') },
       { path: 'redeem', name: 'ShopRedeem', component: () => import('../views/shop/ShopRedeem.vue') }

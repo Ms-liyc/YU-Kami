@@ -65,31 +65,30 @@
         </p>
       </el-alert>
       <el-table :data="paymentConfigs" size="small">
-        <el-table-column prop="channel" label="Channel" />
-        <el-table-column prop="appId" label="App ID" />
-        <el-table-column prop="status" label="Status">
+        <el-table-column prop="channel" :label="t('order.channel')" />
+        <el-table-column prop="appId" :label="t('order.appId')" />
+        <el-table-column prop="status" :label="t('common.status')">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'info'" size="small">{{ row.status === 1 ? 'ON' : 'OFF' }}</el-tag>
+            <el-tag :type="row.status === 1 ? 'success' : 'info'" size="small">{{ row.status === 1 ? t('webhook.enabled') : t('webhook.disabled') }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="">
           <template #default="{ row }">
-            <el-button link @click="editConfig(row)">Edit</el-button>
+            <el-button link @click="editConfig(row)">{{ t('common.edit') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-dialog>
 
-    <el-dialog v-model="editDialog" title="Edit Payment" width="480px">
+    <el-dialog v-model="editDialog" :title="t('order.editPayment')" width="480px">
       <el-form :model="editForm" label-width="100px">
-        <el-form-item label="App ID"><el-input v-model="editForm.appId" /></el-form-item>
-        <el-form-item label="App Secret"><el-input v-model="editForm.appSecret" type="password" show-password /></el-form-item>
-        <el-form-item label="Notify URL"><el-input v-model="editForm.notifyUrl" placeholder="留空使用默认 /api/payment/{channel}/notify" /></el-form-item>
-        <el-form-item label="扩展配置 (JSON)">
-          <el-input v-model="editForm.configJson" type="textarea" :rows="8" placeholder='支付宝: {"privateKey":"...","alipayPublicKey":"...","sandbox":true}
-微信: {"mchId":"...","privateKey":"...","merchantSerialNumber":"...","apiV3Key":"..."}' />
+        <el-form-item :label="t('order.appId')"><el-input v-model="editForm.appId" /></el-form-item>
+        <el-form-item :label="t('order.appSecret')"><el-input v-model="editForm.appSecret" type="password" show-password /></el-form-item>
+        <el-form-item :label="t('order.notifyUrl')"><el-input v-model="editForm.notifyUrl" :placeholder="t('order.notifyUrlPlaceholder')" /></el-form-item>
+        <el-form-item :label="t('order.configJson')">
+          <el-input v-model="editForm.configJson" type="textarea" :rows="8" :placeholder="t('order.configJsonPlaceholder')" />
         </el-form-item>
-        <el-form-item label="Status">
+        <el-form-item :label="t('common.status')">
           <el-switch v-model="editForm.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
       </el-form>
@@ -181,7 +180,7 @@ function editConfig(row) {
 
 async function saveConfig() {
   await request.put(`/admin/orders/payment-config/${editForm.value.id}`, editForm.value)
-  ElMessage.success('OK')
+  ElMessage.success(t('common.success'))
   editDialog.value = false
   loadConfigs()
 }

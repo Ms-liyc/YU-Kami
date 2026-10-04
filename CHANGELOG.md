@@ -2,6 +2,20 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.17.0] — 2026-01
+
+### 新增
+
+- 商城独立商品详情页 `/shop/product/:id`
+- Webhook 管理页完整 i18n（中英双语）
+- 订单支付配置弹窗 i18n
+- 密码重置链接单元测试
+
+### 改进
+
+- 商品卡片点击跳转详情页，再进入购买流程
+- `docker-compose.hub.yml` 补充邮件/验证码/库存告警环境变量示例
+
 ## [1.16.0] — 2026-01
 
 ### 新增
@@ -172,6 +186,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.17.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.13.0...v1.14.0
