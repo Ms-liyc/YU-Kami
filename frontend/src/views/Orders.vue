@@ -3,7 +3,7 @@
     <PageHeader :title="t('order.title')" :subtitle="t('order.subtitle')">
       <template #extra>
         <el-button @click="exportOrders">{{ t('order.export') }}</el-button>
-        <el-button @click="openPaymentConfig">{{ t('order.paymentConfig') }}</el-button>
+        <el-button v-if="auth.isSuperAdmin" @click="openPaymentConfig">{{ t('order.paymentConfig') }}</el-button>
       </template>
     </PageHeader>
 
@@ -125,9 +125,11 @@ import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'
 import { downloadExport } from '../api/export'
+import { useAuthStore } from '../stores/auth'
 import PageHeader from '../components/PageHeader.vue'
 
 const { t } = useI18n()
+const auth = useAuthStore()
 const route = useRoute()
 const tableData = ref([])
 const setupStatus = ref(null)
@@ -156,6 +158,7 @@ async function loadData() {
 }
 
 async function loadConfigs() {
+  if (!auth.isSuperAdmin) return
   const res = await request.get('/admin/orders/payment-config')
   paymentConfigs.value = res.data
 }

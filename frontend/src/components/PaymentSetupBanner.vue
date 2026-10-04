@@ -17,7 +17,7 @@
       </li>
     </ul>
     <div class="setup-actions">
-      <el-button type="primary" size="small" @click="goPaymentConfig">
+      <el-button v-if="isSuperAdmin" type="primary" size="small" @click="goPaymentConfig">
         {{ t('setup.goPaymentConfig') }}
       </el-button>
       <el-button size="small" @click="openGuide">{{ t('setup.viewGuide') }}</el-button>
@@ -26,15 +26,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import request from '../api/request'
+import { useAuthStore } from '../stores/auth'
 
 const DISMISS_KEY = 'yukami-payment-setup-dismissed'
 
 const { t } = useI18n()
 const router = useRouter()
+const auth = useAuthStore()
+const isSuperAdmin = computed(() => auth.isSuperAdmin)
 const visible = ref(false)
 const status = ref(null)
 

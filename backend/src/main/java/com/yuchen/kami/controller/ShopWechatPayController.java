@@ -42,18 +42,14 @@ public class ShopWechatPayController {
             @RequestParam(required = false) String state,
             HttpServletResponse response) throws IOException {
         PaymentConfig config = getWechatConfig();
-        Long uid = null;
-        if (state != null && state.contains("|")) {
-            try {
-                uid = Long.parseLong(state.split("\\|", 3)[0]);
-            } catch (NumberFormatException ignored) {
-            }
-        }
-        if (uid == null) {
-            response.sendError(400, "缺少用户标识");
+        WechatOAuthService.OAuthState parsed;
+        try {
+            parsed = wechatOAuthService.parseState(state);
+        } catch (BusinessException e) {
+            response.sendError(400, e.getMessage());
             return;
         }
-        String redirect = wechatOAuthService.handleCallback(config, code, state, uid);
+        String redirect = wechatOAuthService.handleCallback(config, code, parsed);
         response.sendRedirect(redirect);
     }
 

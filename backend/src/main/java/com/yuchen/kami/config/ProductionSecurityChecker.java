@@ -1,5 +1,8 @@
 package com.yuchen.kami.config;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.yuchen.kami.entity.PaymentConfig;
+import com.yuchen.kami.mapper.PaymentConfigMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +37,7 @@ public class ProductionSecurityChecker {
     );
 
     private final YuKamiProperties properties;
+    private final PaymentConfigMapper paymentConfigMapper;
 
     @Value("${spring.datasource.password}")
     private String dbPassword;
@@ -59,6 +63,17 @@ public class ProductionSecurityChecker {
         String cors = properties.getSecurity().getCorsAllowedOrigins();
         if (cors == null || cors.isBlank() || "*".equals(cors.trim())) {
             warnings.add("CORS 允许任意来源（*），生产环境请设置 CORS_ALLOWED_ORIGINS 为实际域名");
+        }
+        boolean productionSecrets = !DEFAULT_JWT_SECRETS.contains(properties.getJwt().getSecret());
+        if (productionSecrets && properties.getPayment().isMockEnabled()) {
+            warnings.add("MOCK_PAYMENT_ENABLED=true，生产环境请设置 MOCK_PAYMENT_ENABLED=false");
+        }
+        if (productionSecrets) {
+            PaymentConfig mock = paymentConfigMapper.selectOne(new LambdaQueryWrapper<PaymentConfig>()
+                    .eq(PaymentConfig::getChannel, "MOCK"));
+            if (mock != null && mock.getStatus() != null && mock.getStatus() == 1) {
+                warnings.add("数据库中 MOCK 支付渠道仍为启用状态，生产环境请在管理后台禁用");
+            }
         }
         if (warnings.isEmpty()) {
             return;

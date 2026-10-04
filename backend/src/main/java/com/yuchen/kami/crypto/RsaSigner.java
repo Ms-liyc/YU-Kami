@@ -58,8 +58,8 @@ public class RsaSigner {
     }
 
     public boolean verify(String data, String signBase64) {
-        if (publicKey == null || signBase64 == null || signBase64.isBlank()) {
-            return true;
+        if (signBase64 == null || signBase64.isBlank() || publicKey == null) {
+            return false;
         }
         try {
             Signature signature = Signature.getInstance("SHA256withRSA");

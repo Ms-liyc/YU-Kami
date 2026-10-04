@@ -50,6 +50,8 @@ public class YuKamiProperties {
     public static class Payment {
         private String baseUrl;
         private String returnUrl;
+        /** 是否允许 MOCK 模拟支付（生产环境应设为 false） */
+        private boolean mockEnabled = true;
     }
 
     @Data

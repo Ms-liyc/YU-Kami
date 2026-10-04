@@ -365,6 +365,12 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.23.0
+
+* 🔒 **支付安全**：回调金额校验、微信 OAuth state 签名、重定向白名单
+* 🔐 **支付配置**：仅 SUPER_ADMIN 可读写，appSecret 脱敏
+* 🚫 **MOCK 开关**：`MOCK_PAYMENT_ENABLED=false` 可在生产禁用模拟支付
+
 #### v1.22.1
 
 * 🐛 **修复退出登录**：管理端 logout 不再清空全局 localStorage

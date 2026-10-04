@@ -72,6 +72,7 @@ yukami:
     # 支付回调/跳转地址：无固定值，部署者按实际环境通过环境变量配置（见 docs/PAYMENT.md）
     base-url: ${PAYMENT_BASE_URL:http://localhost:8080}
     return-url: ${PAYMENT_RETURN_URL:http://localhost:5173/shop/orders}
+    mock-enabled: ${MOCK_PAYMENT_ENABLED:true}
   security:
     cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:80,http://127.0.0.1:5173}
     swagger-enabled: ${SWAGGER_ENABLED:true}

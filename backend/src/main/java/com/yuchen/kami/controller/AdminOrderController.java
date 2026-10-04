@@ -4,11 +4,13 @@ import com.yuchen.kami.common.PageResult;
 import com.yuchen.kami.common.Result;
 import com.yuchen.kami.dto.OrderRefundRequest;
 import com.yuchen.kami.dto.OrderVO;
-import com.yuchen.kami.entity.PaymentConfig;
+import com.yuchen.kami.dto.PaymentConfigUpdateRequest;
+import com.yuchen.kami.dto.PaymentConfigVO;
 import com.yuchen.kami.service.OrderService;
 import com.yuchen.kami.service.PaymentService;
 import com.yuchen.kami.service.RefundService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,14 +44,15 @@ public class AdminOrderController {
     }
 
     @GetMapping("/payment-config")
-    public Result<List<PaymentConfig>> paymentConfigs() {
-        return Result.ok(paymentService.listConfigs());
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public Result<List<PaymentConfigVO>> paymentConfigs() {
+        return Result.ok(paymentService.listConfigViews());
     }
 
     @PutMapping("/payment-config/{id}")
-    public Result<Void> updatePaymentConfig(@PathVariable Long id, @RequestBody PaymentConfig config) {
-        config.setId(id);
-        paymentService.updatePaymentConfig(config);
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public Result<Void> updatePaymentConfig(@PathVariable Long id, @RequestBody PaymentConfigUpdateRequest config) {
+        paymentService.updatePaymentConfig(id, config);
         return Result.ok();
     }
 }

@@ -2,6 +2,16 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.23.0] — 2026-01
+
+### 安全
+
+- 支付宝/微信回调增加订单金额校验，防止少付多发货
+- 微信 OAuth `state` 增加 HMAC 签名，重定向限制为 `/shop/` 站内路径
+- 支付配置接口限制 `SUPER_ADMIN`，`appSecret` 响应脱敏
+- 新增 `MOCK_PAYMENT_ENABLED` 开关，生产环境可强制禁用模拟支付
+- `RsaSigner.verify()` 在缺少公钥/签名时返回 false
+
 ## [1.22.1] — 2026-01
 
 ### 修复
@@ -255,6 +265,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.23.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.22.1...v1.23.0
 [1.22.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.22.0...v1.22.1
 [1.22.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.21.1...v1.22.0
 [1.21.1]: https://github.com/Ms-liyc/YU-Kami/compare/v1.21.0...v1.21.1

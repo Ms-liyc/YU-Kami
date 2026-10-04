@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.yuchen.kami.common.BusinessException;
+import com.yuchen.kami.config.YuKamiProperties;
 import com.yuchen.kami.dto.OrderVO;
+import com.yuchen.kami.dto.PaymentConfigUpdateRequest;
+import com.yuchen.kami.dto.PaymentConfigVO;
 import com.yuchen.kami.dto.PrepayResponse;
 import com.yuchen.kami.entity.PaymentConfig;
 import com.yuchen.kami.entity.ShopOrder;
@@ -23,6 +26,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,10 +50,14 @@ public class PaymentService {
     private final PromotionService promotionService;
     private final WalletService walletService;
     private final WebhookDispatchService webhookDispatchService;
+    private final YuKamiProperties properties;
 
     public List<PaymentConfig> availableChannels() {
         return paymentConfigMapper.selectList(new LambdaQueryWrapper<PaymentConfig>()
-                .eq(PaymentConfig::getStatus, 1));
+                .eq(PaymentConfig::getStatus, 1))
+                .stream()
+                .filter(this::isChannelVisible)
+                .toList();
     }
 
     @Transactional
@@ -66,7 +75,12 @@ public class PaymentService {
         shopOrderMapper.updateById(order);
 
         return switch (paymentMethod) {
-            case "MOCK" -> prepayMock(order, userId);
+            case "MOCK" -> {
+                if (!properties.getPayment().isMockEnabled()) {
+                    throw new BusinessException("模拟支付未启用");
+                }
+                yield prepayMock(order, userId);
+            }
             case "BALANCE" -> prepayBalance(order, userId);
             case "ALIPAY" -> prepayAlipay(getEnabledConfig("ALIPAY"), order);
             case "WECHAT" -> prepayWechat(getEnabledConfig("WECHAT"), order, userId, openid, wechatJsapi);
@@ -122,7 +136,12 @@ public class PaymentService {
             return false;
         }
         String paymentNo = params.get("trade_no");
-        return completePayment(orderNo, paymentNo);
+        BigDecimal paidAmount = parseAmount(params.get("total_amount"));
+        if (paidAmount == null) {
+            log.warn("支付宝回调缺少 total_amount: {}", orderNo);
+            return false;
+        }
+        return completePayment(orderNo, paymentNo, paidAmount);
     }
 
     @Transactional
@@ -132,7 +151,12 @@ public class PaymentService {
         Transaction transaction = wechatPaymentService.parseNotify(config, body, serial, nonce, timestamp, signature);
         if (transaction.getTradeState() != null
                 && "SUCCESS".equals(transaction.getTradeState().name())) {
-            completePayment(transaction.getOutTradeNo(), transaction.getTransactionId());
+            if (transaction.getAmount() == null || transaction.getAmount().getTotal() == null) {
+                log.warn("微信回调缺少金额: {}", transaction.getOutTradeNo());
+                return;
+            }
+            BigDecimal paidAmount = new BigDecimal(transaction.getAmount().getTotal()).movePointLeft(2);
+            completePayment(transaction.getOutTradeNo(), transaction.getTransactionId(), paidAmount);
         }
     }
 
@@ -145,6 +169,11 @@ public class PaymentService {
 
     @Transactional
     public boolean completePayment(String orderNo, String paymentNo) {
+        return completePayment(orderNo, paymentNo, null);
+    }
+
+    @Transactional
+    public boolean completePayment(String orderNo, String paymentNo, BigDecimal paidAmount) {
         ShopOrder order = shopOrderMapper.selectOne(new LambdaQueryWrapper<ShopOrder>()
                 .eq(ShopOrder::getOrderNo, orderNo));
         if (order == null) {
@@ -156,6 +185,10 @@ public class PaymentService {
         }
         if (!ShopOrder.STATUS_PENDING.equals(order.getStatus())) {
             log.warn("订单状态异常: {} status={}", orderNo, order.getStatus());
+            return false;
+        }
+        if (paidAmount != null && !amountsMatch(order.getAmount(), paidAmount)) {
+            log.warn("回调金额不匹配: order={} expected={} actual={}", orderNo, order.getAmount(), paidAmount);
             return false;
         }
 
@@ -199,12 +232,38 @@ public class PaymentService {
         return true;
     }
 
-    public void updatePaymentConfig(PaymentConfig config) {
-        paymentConfigMapper.updateById(config);
+    public void updatePaymentConfig(Long id, PaymentConfigUpdateRequest request) {
+        PaymentConfig existing = paymentConfigMapper.selectById(id);
+        if (existing == null) {
+            throw new BusinessException("支付配置不存在");
+        }
+        if ("MOCK".equals(existing.getChannel()) && request.getStatus() != null
+                && request.getStatus() == 1 && !properties.getPayment().isMockEnabled()) {
+            throw new BusinessException("模拟支付已在服务端禁用，无法启用 MOCK 渠道");
+        }
+        if (request.getAppId() != null) {
+            existing.setAppId(request.getAppId());
+        }
+        if (request.getNotifyUrl() != null) {
+            existing.setNotifyUrl(request.getNotifyUrl());
+        }
+        if (request.getStatus() != null) {
+            existing.setStatus(request.getStatus());
+        }
+        if (request.getConfigJson() != null) {
+            existing.setConfigJson(request.getConfigJson());
+        }
+        if (request.getAppSecret() != null && !request.getAppSecret().isBlank()
+                && !PaymentConfigVO.SECRET_MASK.equals(request.getAppSecret())) {
+            existing.setAppSecret(request.getAppSecret());
+        }
+        paymentConfigMapper.updateById(existing);
     }
 
-    public List<PaymentConfig> listConfigs() {
-        return paymentConfigMapper.selectList(null);
+    public List<PaymentConfigVO> listConfigViews() {
+        return paymentConfigMapper.selectList(null).stream()
+                .map(PaymentConfigVO::from)
+                .toList();
     }
 
     private PrepayResponse prepayMock(ShopOrder order, Long userId) {
@@ -312,6 +371,33 @@ public class PaymentService {
             throw new BusinessException("支付渠道未配置: " + channel);
         }
         return config;
+    }
+
+    private boolean isChannelVisible(PaymentConfig config) {
+        if ("MOCK".equals(config.getChannel()) && !properties.getPayment().isMockEnabled()) {
+            return false;
+        }
+        return config.getStatus() != null && config.getStatus() == 1;
+    }
+
+    private boolean amountsMatch(BigDecimal expected, BigDecimal actual) {
+        if (expected == null || actual == null) {
+            return false;
+        }
+        BigDecimal exp = expected.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal act = actual.setScale(2, RoundingMode.HALF_UP);
+        return exp.compareTo(act) == 0;
+    }
+
+    private BigDecimal parseAmount(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return null;
+        }
+        try {
+            return new BigDecimal(raw.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private void dispatchOrderWebhook(ShopOrder order) {
