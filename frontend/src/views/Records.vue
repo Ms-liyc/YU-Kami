@@ -3,11 +3,11 @@
     <PageHeader :title="t('admin.recordsTitle')" :subtitle="t('admin.recordsSubtitle')">
       <template #extra>
         <el-dropdown @command="handleExport">
-          <el-button :icon="Download">导出 <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
+          <el-button :icon="Download">{{ t('common.export') }} <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="csv">导出 CSV</el-dropdown-item>
-              <el-dropdown-item command="xlsx">导出 Excel</el-dropdown-item>
+              <el-dropdown-item command="csv">{{ t('admin.exportCsv') }}</el-dropdown-item>
+              <el-dropdown-item command="xlsx">{{ t('admin.exportExcel') }}</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -17,18 +17,18 @@
     <div class="page-card">
       <div class="card-body">
         <el-table :data="tableData" stripe v-loading="loading">
-          <el-table-column prop="redeemUser" label="用户" width="150" />
-          <el-table-column prop="result" label="结果" width="110">
+          <el-table-column prop="redeemUser" :label="t('admin.recordUser')" width="150" />
+          <el-table-column prop="result" :label="t('admin.recordResult')" width="110">
             <template #default="{ row }">
               <el-tag :type="row.result === 'SUCCESS' ? 'success' : 'danger'" size="small" effect="light">
                 {{ row.result }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="message" label="消息" min-width="160" show-overflow-tooltip />
-          <el-table-column prop="redeemIp" label="IP" width="140" />
-          <el-table-column prop="userAgent" label="User-Agent" min-width="200" show-overflow-tooltip />
-          <el-table-column prop="createdAt" label="时间" width="170" />
+          <el-table-column prop="message" :label="t('admin.recordMessage')" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="redeemIp" :label="t('admin.recordIp')" width="140" />
+          <el-table-column prop="userAgent" :label="t('admin.recordUserAgent')" min-width="200" show-overflow-tooltip />
+          <el-table-column prop="createdAt" :label="t('admin.recordTime')" width="170" />
         </el-table>
         <el-pagination v-model:current-page="page" :page-size="size" :total="total" @current-change="loadData" />
       </div>
@@ -39,13 +39,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
 import { Download, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import request from '../api/request'
 import { downloadExport } from '../api/export'
 import PageHeader from '../components/PageHeader.vue'
+
+const { t } = useI18n()
 
 const tableData = ref([])
 const loading = ref(false)
@@ -67,7 +67,7 @@ async function loadData() {
 async function handleExport(format) {
   const ext = format === 'xlsx' ? 'xlsx' : 'csv'
   await downloadExport('/admin/export/redeem-records', `redeem_records.${ext}`, format)
-  ElMessage.success('导出成功')
+  ElMessage.success(t('admin.exportSuccess'))
 }
 
 onMounted(loadData)

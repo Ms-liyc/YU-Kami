@@ -23,6 +23,15 @@
         <span>{{ t('shop.productCode') }}: {{ product.code }}</span>
         <span v-if="product.durationDays">{{ t('shop.durationDays') }}: {{ product.durationDays }}</span>
       </div>
+      <div class="share-row">
+        <span class="share-label">{{ t('shop.shareLink') }}</span>
+        <el-input :model-value="shareUrl" readonly size="small">
+          <template #append>
+            <el-button @click="copyShareLink">{{ t('shop.copyShareLink') }}</el-button>
+          </template>
+        </el-input>
+        <el-button v-if="canNativeShare" @click="nativeShare">{{ t('shop.shareNative') }}</el-button>
+      </div>
       <div class="actions">
         <el-button type="primary" size="large" @click="goBuy">{{ t('shop.buyNow') }}</el-button>
         <el-button size="large" @click="$router.push('/shop#products')">{{ t('shop.backToShop') }}</el-button>
@@ -35,9 +44,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { ElMessage } from 'element-plus'
 import shopHttp from '../../api/shopHttp'
 import { useShopAuthStore } from '../../stores/shopAuth'
 import { useScrollReveal } from '../../composables/useScrollReveal'
+import { usePageMeta, getShareUrl } from '../../composables/usePageMeta'
 
 useScrollReveal()
 const { t } = useI18n()
@@ -54,6 +65,20 @@ const typeMap = computed(() => ({
 }))
 function typeLabel(type) { return typeMap.value[type] || type }
 const displayPrice = computed(() => product.value?.onSale ? product.value.salePrice : product.value?.value)
+const shareUrl = computed(() => getShareUrl(route.fullPath))
+const canNativeShare = computed(() => typeof navigator !== 'undefined' && !!navigator.share)
+
+usePageMeta(() => {
+  if (!product.value) return {}
+  const desc = product.value.description || t('shop.defaultDesc')
+  return {
+    title: t('shop.productDetailTitle', { name: product.value.name }),
+    description: `${product.value.name} · ¥${displayPrice.value} · ${desc}`,
+    url: shareUrl.value,
+    type: 'product',
+    image: `${window.location.origin}/logo.png`
+  }
+})
 
 onMounted(async () => {
   loading.value = true
@@ -75,6 +100,27 @@ function goBuy() {
   }
   router.push(path)
 }
+
+async function copyShareLink() {
+  await navigator.clipboard.writeText(shareUrl.value)
+  ElMessage.success(t('shop.linkCopied'))
+}
+
+async function nativeShare() {
+  if (!navigator.share) {
+    ElMessage.info(t('shop.shareNotSupported'))
+    return
+  }
+  try {
+    await navigator.share({
+      title: product.value?.name,
+      text: product.value?.description || t('shop.defaultDesc'),
+      url: shareUrl.value
+    })
+  } catch (e) {
+    if (e?.name !== 'AbortError') ElMessage.info(t('shop.shareNotSupported'))
+  }
+}
 </script>
 
 <style scoped>
@@ -95,7 +141,10 @@ function goBuy() {
 .price { font-size: 36px; font-weight: 800; color: #ef4444; }
 .original { font-size: 18px; color: #94a3b8; text-decoration: line-through; }
 .promo-name { margin-top: 8px; color: #4f6ef7; font-size: 14px; }
-.meta { display: flex; flex-wrap: wrap; gap: 16px; color: var(--shop-text-muted); font-size: 14px; margin-bottom: 24px; }
+.meta { display: flex; flex-wrap: wrap; gap: 16px; color: var(--shop-text-muted); font-size: 14px; margin-bottom: 16px; }
+.share-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 24px; }
+.share-label { font-size: 13px; color: var(--shop-text-muted); width: 100%; }
+.share-row .el-input { flex: 1; min-width: 220px; }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .actions .el-button { min-width: 140px; }
 @media (max-width: 640px) {

@@ -3,17 +3,17 @@
     <PageHeader :title="t('admin.cardsTitle')" :subtitle="t('admin.cardsSubtitle')">
       <template #extra>
         <div class="btn-group">
-          <el-button :icon="Upload" @click="importDialog = true">批量导入</el-button>
+          <el-button :icon="Upload" @click="importDialog = true">{{ t('admin.batchImport') }}</el-button>
           <el-dropdown @command="handleExport">
-            <el-button :icon="Download">导出 <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
+            <el-button :icon="Download">{{ t('common.export') }} <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item command="csv">导出 CSV</el-dropdown-item>
-                <el-dropdown-item command="xlsx">导出 Excel</el-dropdown-item>
+                <el-dropdown-item command="csv">{{ t('admin.exportCsv') }}</el-dropdown-item>
+                <el-dropdown-item command="xlsx">{{ t('admin.exportExcel') }}</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <el-button type="primary" :icon="Plus" @click="genDialog = true">批量生成</el-button>
+          <el-button type="primary" :icon="Plus" @click="genDialog = true">{{ t('admin.batchGenerate') }}</el-button>
         </div>
       </template>
     </PageHeader>
@@ -21,31 +21,31 @@
     <div class="page-card">
       <div class="card-body">
         <div class="filter-bar">
-          <el-select v-model="status" clearable placeholder="全部状态" style="width:140px" @change="loadData">
-            <el-option label="未使用" :value="0" />
-            <el-option label="已使用" :value="1" />
-            <el-option label="已作废" :value="2" />
-            <el-option label="已过期" :value="3" />
+          <el-select v-model="status" clearable :placeholder="t('admin.allStatus')" style="width:140px" @change="loadData">
+            <el-option :label="t('admin.cardStatusUnused')" :value="0" />
+            <el-option :label="t('admin.cardStatusUsed')" :value="1" />
+            <el-option :label="t('admin.cardStatusRevoked')" :value="2" />
+            <el-option :label="t('admin.cardStatusExpired')" :value="3" />
           </el-select>
-          <el-button :icon="Refresh" @click="loadData">刷新</el-button>
+          <el-button :icon="Refresh" @click="loadData">{{ t('common.refresh') }}</el-button>
         </div>
         <el-table :data="tableData" stripe v-loading="loading">
           <el-table-column prop="id" label="ID" width="180" show-overflow-tooltip />
-          <el-table-column prop="batchId" label="批次ID" width="180" show-overflow-tooltip />
-          <el-table-column prop="keyChecksum" label="校验码" width="100" />
-          <el-table-column prop="status" label="状态" width="100">
+          <el-table-column prop="batchId" :label="t('admin.batchId')" width="180" show-overflow-tooltip />
+          <el-table-column prop="keyChecksum" :label="t('admin.checksum')" width="100" />
+          <el-table-column prop="status" :label="t('common.status')" width="100">
             <template #default="{ row }">
               <el-tag :type="statusMap[row.status]?.type" size="small" effect="light">
                 {{ statusMap[row.status]?.label }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="redeemUser" label="兑换用户" min-width="120" />
-          <el-table-column prop="redeemAt" label="兑换时间" width="170" />
-          <el-table-column prop="createdAt" label="创建时间" width="170" />
-          <el-table-column label="操作" width="80" fixed="right">
+          <el-table-column prop="redeemUser" :label="t('admin.redeemUser')" min-width="120" />
+          <el-table-column prop="redeemAt" :label="t('admin.redeemAt')" width="170" />
+          <el-table-column prop="createdAt" :label="t('order.createdAt')" width="170" />
+          <el-table-column :label="t('common.actions')" width="80" fixed="right">
             <template #default="{ row }">
-              <el-button v-if="row.status === 0" link type="danger" @click="handleRevoke(row.id)">作废</el-button>
+              <el-button v-if="row.status === 0" link type="danger" @click="handleRevoke(row.id)">{{ t('admin.revoke') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -53,81 +53,79 @@
       </div>
     </div>
 
-    <el-dialog v-model="genDialog" title="批量生成卡密" width="520px" destroy-on-close>
+    <el-dialog v-model="genDialog" :title="t('admin.batchGenerateTitle')" width="520px" destroy-on-close>
       <el-form :model="genForm" label-width="90px">
-        <el-form-item label="产品">
-          <el-select v-model="genForm.productId" style="width:100%" placeholder="选择产品">
+        <el-form-item :label="t('order.product')">
+          <el-select v-model="genForm.productId" style="width:100%" :placeholder="t('admin.selectProduct')">
             <el-option v-for="p in products" :key="p.id" :label="p.name" :value="p.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="数量">
+        <el-form-item :label="t('admin.count')">
           <el-input-number v-model="genForm.count" :min="1" :max="10000" style="width:100%" />
         </el-form-item>
-        <el-form-item label="前缀"><el-input v-model="genForm.prefix" placeholder="可选，如 VIP" /></el-form-item>
-        <el-form-item label="备注"><el-input v-model="genForm.remark" /></el-form-item>
-        <el-form-item label="过期时间">
+        <el-form-item :label="t('admin.prefix')"><el-input v-model="genForm.prefix" :placeholder="t('admin.prefixPlaceholder')" /></el-form-item>
+        <el-form-item :label="t('admin.remark')"><el-input v-model="genForm.remark" /></el-form-item>
+        <el-form-item :label="t('admin.expireAt')">
           <el-date-picker v-model="genForm.expireAt" type="datetime" style="width:100%" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="genDialog = false">取消</el-button>
-        <el-button type="primary" :loading="generating" @click="handleGenerate">生成</el-button>
+        <el-button @click="genDialog = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" :loading="generating" @click="handleGenerate">{{ t('admin.batchGenerate') }}</el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="importDialog" title="批量导入卡密" width="520px" destroy-on-close>
-      <el-alert type="info" :closable="false" show-icon style="margin-bottom:16px"
-        title="支持 TXT / CSV / Excel 格式，每行一个卡密，首列或首行为卡密内容" />
+    <el-dialog v-model="importDialog" :title="t('admin.batchImportTitle')" width="520px" destroy-on-close>
+      <el-alert type="info" :closable="false" show-icon style="margin-bottom:16px" :title="t('admin.importHint')" />
       <el-form label-width="90px">
-        <el-form-item label="产品">
-          <el-select v-model="importForm.productId" style="width:100%" placeholder="选择产品">
+        <el-form-item :label="t('order.product')">
+          <el-select v-model="importForm.productId" style="width:100%" :placeholder="t('admin.selectProduct')">
             <el-option v-for="p in products" :key="p.id" :label="p.name" :value="p.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="备注"><el-input v-model="importForm.remark" placeholder="可选" /></el-form-item>
-        <el-form-item label="文件">
+        <el-form-item :label="t('admin.remark')"><el-input v-model="importForm.remark" :placeholder="t('admin.remarkOptional')" /></el-form-item>
+        <el-form-item :label="t('admin.file')">
           <el-upload ref="uploadRef" :auto-upload="false" :limit="1" accept=".txt,.csv,.xlsx,.xls"
             :on-change="onFileChange" drag>
             <el-icon :size="40"><Upload /></el-icon>
-            <div>拖拽文件到此处，或点击上传</div>
+            <div>{{ t('admin.uploadHint') }}</div>
           </el-upload>
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="importDialog = false">取消</el-button>
-        <el-button type="primary" :loading="importing" @click="handleImport">开始导入</el-button>
+        <el-button @click="importDialog = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" :loading="importing" @click="handleImport">{{ t('admin.startImport') }}</el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="resultDialog" title="生成成功" width="640px">
-      <el-alert type="warning" :closable="false" show-icon style="margin-bottom:16px"
-        title="请立即保存以下卡密，系统不存储明文，关闭后无法找回！" />
+    <el-dialog v-model="resultDialog" :title="t('admin.generateSuccessTitle')" width="640px">
+      <el-alert type="warning" :closable="false" show-icon style="margin-bottom:16px" :title="t('admin.saveKeysWarning')" />
       <el-input type="textarea" :rows="14" :model-value="generatedKeys.join('\n')" readonly />
       <template #footer>
-        <el-button type="primary" :icon="CopyDocument" @click="copyKeys">复制全部</el-button>
-        <el-button @click="resultDialog = false">关闭</el-button>
+        <el-button type="primary" :icon="CopyDocument" @click="copyKeys">{{ t('admin.copyAll') }}</el-button>
+        <el-button @click="resultDialog = false">{{ t('admin.close') }}</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
 import { Plus, Download, Refresh, CopyDocument, Upload, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'
 import { downloadExport } from '../api/export'
 import PageHeader from '../components/PageHeader.vue'
 
-const statusMap = {
-  0: { label: '未使用', type: 'success' },
-  1: { label: '已使用', type: 'info' },
-  2: { label: '已作废', type: 'danger' },
-  3: { label: '已过期', type: 'warning' }
-}
+const { t } = useI18n()
+
+const statusMap = computed(() => ({
+  0: { label: t('admin.cardStatusUnused'), type: 'success' },
+  1: { label: t('admin.cardStatusUsed'), type: 'info' },
+  2: { label: t('admin.cardStatusRevoked'), type: 'danger' },
+  3: { label: t('admin.cardStatusExpired'), type: 'warning' }
+}))
 
 const tableData = ref([])
 const products = ref([])
@@ -170,7 +168,7 @@ async function handleGenerate() {
     genDialog.value = false
     resultDialog.value = true
     loadData()
-    ElMessage.success(`成功生成 ${res.data.length} 张卡密`)
+    ElMessage.success(t('admin.generateCount', { count: res.data.length }))
   } finally {
     generating.value = false
   }
@@ -178,13 +176,13 @@ async function handleGenerate() {
 
 function copyKeys() {
   navigator.clipboard.writeText(generatedKeys.value.join('\n'))
-  ElMessage.success('已复制到剪贴板')
+  ElMessage.success(t('admin.copied'))
 }
 
 async function handleRevoke(id) {
-  await ElMessageBox.confirm('确定作废该卡密？', '提示', { type: 'warning' })
+  await ElMessageBox.confirm(t('admin.revokeConfirm'), t('common.tip'), { type: 'warning' })
   await request.post(`/admin/cards/${id}/revoke`)
-  ElMessage.success('已作废')
+  ElMessage.success(t('admin.revoked'))
   loadData()
 }
 
@@ -193,8 +191,8 @@ function onFileChange(file) {
 }
 
 async function handleImport() {
-  if (!importForm.value.productId) return ElMessage.warning('请选择产品')
-  if (!importFile.value) return ElMessage.warning('请选择文件')
+  if (!importForm.value.productId) return ElMessage.warning(t('admin.selectProductRequired'))
+  if (!importFile.value) return ElMessage.warning(t('admin.selectFileRequired'))
   importing.value = true
   try {
     const formData = new FormData()
@@ -204,7 +202,7 @@ async function handleImport() {
     const res = await request.post('/admin/cards/import', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
-    ElMessage.success(`导入完成：成功 ${res.data.success}，跳过 ${res.data.skipped}，失败 ${res.data.failed}`)
+    ElMessage.success(t('admin.importResult', { success: res.data.success, skipped: res.data.skipped, failed: res.data.failed }))
     importDialog.value = false
     importFile.value = null
     loadData()
@@ -220,7 +218,7 @@ async function handleExport(format) {
   if (params.length) url += '?' + params.join('&')
   const ext = format === 'xlsx' ? 'xlsx' : 'csv'
   await downloadExport(url, `cards_export.${ext}`, format)
-  ElMessage.success('导出成功')
+  ElMessage.success(t('admin.exportSuccess'))
 }
 
 onMounted(() => { loadData(); loadProducts() })

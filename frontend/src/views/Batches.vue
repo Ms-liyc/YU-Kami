@@ -3,11 +3,11 @@
     <PageHeader :title="t('admin.batchesTitle')" :subtitle="t('admin.batchesSubtitle')">
       <template #extra>
         <el-dropdown @command="handleExport">
-          <el-button :icon="Download">导出 <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
+          <el-button :icon="Download">{{ t('common.export') }} <el-icon class="el-icon--right"><ArrowDown /></el-icon></el-button>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="csv">导出 CSV</el-dropdown-item>
-              <el-dropdown-item command="xlsx">导出 Excel</el-dropdown-item>
+              <el-dropdown-item command="csv">{{ t('admin.exportCsv') }}</el-dropdown-item>
+              <el-dropdown-item command="xlsx">{{ t('admin.exportExcel') }}</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -17,23 +17,23 @@
     <div class="page-card">
       <div class="card-body">
         <el-table :data="tableData" stripe v-loading="loading">
-          <el-table-column prop="batchNo" label="批次号" min-width="180">
+          <el-table-column prop="batchNo" :label="t('admin.batchNo')" min-width="180">
             <template #default="{ row }">
               <span class="batch-no">{{ row.batchNo }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="productId" label="产品ID" width="180" show-overflow-tooltip />
-          <el-table-column prop="totalCount" label="总数" width="80" align="center" />
-          <el-table-column prop="usedCount" label="已用" width="80" align="center" />
-          <el-table-column label="使用率" width="160">
+          <el-table-column prop="productId" :label="t('admin.productId')" width="180" show-overflow-tooltip />
+          <el-table-column prop="totalCount" :label="t('admin.totalCount')" width="80" align="center" />
+          <el-table-column prop="usedCount" :label="t('admin.used')" width="80" align="center" />
+          <el-table-column :label="t('admin.usageRate')" width="160">
             <template #default="{ row }">
               <el-progress :percentage="usageRate(row)" :stroke-width="8"
                 :color="usageRate(row) > 80 ? '#10b981' : '#4f6ef7'" />
             </template>
           </el-table-column>
-          <el-table-column prop="prefix" label="前缀" width="80" />
-          <el-table-column prop="remark" label="备注" show-overflow-tooltip />
-          <el-table-column prop="createdAt" label="创建时间" width="170" />
+          <el-table-column prop="prefix" :label="t('admin.prefix')" width="80" />
+          <el-table-column prop="remark" :label="t('admin.remark')" show-overflow-tooltip />
+          <el-table-column prop="createdAt" :label="t('order.createdAt')" width="170" />
         </el-table>
         <el-pagination v-model:current-page="page" :page-size="size" :total="total" @current-change="loadData" />
       </div>
@@ -44,13 +44,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
 import { Download, ArrowDown } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import request from '../api/request'
 import { downloadExport } from '../api/export'
 import PageHeader from '../components/PageHeader.vue'
+
+const { t } = useI18n()
 
 const tableData = ref([])
 const loading = ref(false)
@@ -76,7 +76,7 @@ async function loadData() {
 async function handleExport(format) {
   const ext = format === 'xlsx' ? 'xlsx' : 'csv'
   await downloadExport('/admin/export/batches', `batches_export.${ext}`, format)
-  ElMessage.success('导出成功')
+  ElMessage.success(t('admin.exportSuccess'))
 }
 
 onMounted(loadData)

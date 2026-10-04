@@ -9,24 +9,24 @@
     <div class="page-card">
       <div class="card-body">
         <el-table :data="tableData" stripe v-loading="loading">
-          <el-table-column prop="name" label="产品名称" min-width="140" />
-          <el-table-column prop="code" label="编码" width="140">
+          <el-table-column prop="name" :label="t('admin.productName')" min-width="140" />
+          <el-table-column prop="code" :label="t('admin.productCode')" width="140">
             <template #default="{ row }">
               <el-tag effect="plain" size="small">{{ row.code }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="category" :label="t('admin.category')" width="100" />
-          <el-table-column prop="cardType" label="类型" width="100">
+          <el-table-column prop="cardType" :label="t('admin.type')" width="100">
             <template #default="{ row }">
               <el-tag :type="typeMap[row.cardType]?.type" size="small" effect="light">
                 {{ typeMap[row.cardType]?.label }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="value" label="面值" width="100">
+          <el-table-column prop="value" :label="t('admin.faceValue')" width="100">
             <template #default="{ row }">¥{{ row.value || 0 }}</template>
           </el-table-column>
-          <el-table-column prop="durationDays" label="时长(天)" width="100" />
+          <el-table-column prop="durationDays" :label="t('admin.durationDaysLabel')" width="100" />
           <el-table-column :label="t('admin.unusedStock')" width="100">
             <template #default="{ row }">
               <el-tag :type="row.unusedStock <= 10 ? 'danger' : 'success'" size="small">
@@ -34,17 +34,17 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" width="80">
+          <el-table-column prop="status" :label="t('common.status')" width="80">
             <template #default="{ row }">
               <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
-                {{ row.status === 1 ? '启用' : '禁用' }}
+                {{ row.status === 1 ? t('admin.statusNormal') : t('admin.statusDisabled') }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="140" fixed="right">
+          <el-table-column :label="t('common.actions')" width="140" fixed="right">
             <template #default="{ row }">
-              <el-button link type="primary" @click="openDialog(row)">编辑</el-button>
-              <el-button link type="danger" @click="handleDelete(row.id)">删除</el-button>
+              <el-button link type="primary" @click="openDialog(row)">{{ t('common.edit') }}</el-button>
+              <el-button link type="danger" @click="handleDelete(row.id)">{{ t('common.delete') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -52,45 +52,45 @@
       </div>
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="form.id ? '编辑产品' : '新增产品'" width="520px" destroy-on-close>
+    <el-dialog v-model="dialogVisible" :title="form.id ? t('admin.editProduct') : t('admin.addProduct')" width="520px" destroy-on-close>
       <el-form :model="form" label-width="90px">
-        <el-form-item label="名称"><el-input v-model="form.name" /></el-form-item>
-        <el-form-item label="编码"><el-input v-model="form.code" /></el-form-item>
+        <el-form-item :label="t('admin.productName')"><el-input v-model="form.name" /></el-form-item>
+        <el-form-item :label="t('admin.productCode')"><el-input v-model="form.code" /></el-form-item>
         <el-form-item :label="t('admin.category')"><el-input v-model="form.category" :placeholder="t('admin.categoryPlaceholder')" /></el-form-item>
-        <el-form-item label="类型">
+        <el-form-item :label="t('admin.type')">
           <el-select v-model="form.cardType" style="width:100%">
-            <el-option label="时长卡" value="DURATION" />
-            <el-option label="余额卡" value="BALANCE" />
-            <el-option label="单次卡" value="SINGLE" />
+            <el-option :label="t('admin.typeDuration')" value="DURATION" />
+            <el-option :label="t('admin.typeBalance')" value="BALANCE" />
+            <el-option :label="t('admin.typeSingle')" value="SINGLE" />
           </el-select>
         </el-form-item>
-        <el-form-item label="面值"><el-input-number v-model="form.value" :min="0" :precision="2" style="width:100%" /></el-form-item>
-        <el-form-item label="时长(天)"><el-input-number v-model="form.durationDays" :min="0" style="width:100%" /></el-form-item>
-        <el-form-item label="描述"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
+        <el-form-item :label="t('admin.faceValue')"><el-input-number v-model="form.value" :min="0" :precision="2" style="width:100%" /></el-form-item>
+        <el-form-item :label="t('admin.durationDaysLabel')"><el-input-number v-model="form.durationDays" :min="0" style="width:100%" /></el-form-item>
+        <el-form-item :label="t('admin.description')"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSave">保存</el-button>
+        <el-button @click="dialogVisible = false">{{ t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSave">{{ t('common.save') }}</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../api/request'
 import PageHeader from '../components/PageHeader.vue'
 
-const typeMap = {
-  DURATION: { label: '时长卡', type: 'primary' },
-  BALANCE: { label: '余额卡', type: 'success' },
-  SINGLE: { label: '单次卡', type: 'warning' }
-}
+const { t } = useI18n()
+
+const typeMap = computed(() => ({
+  DURATION: { label: t('admin.typeDuration'), type: 'primary' },
+  BALANCE: { label: t('admin.typeBalance'), type: 'success' },
+  SINGLE: { label: t('admin.typeSingle'), type: 'warning' }
+}))
 
 const tableData = ref([])
 const loading = ref(false)
@@ -122,15 +122,15 @@ async function handleSave() {
   } else {
     await request.post('/admin/products', form.value)
   }
-  ElMessage.success('保存成功')
+  ElMessage.success(t('common.success'))
   dialogVisible.value = false
   loadData()
 }
 
 async function handleDelete(id) {
-  await ElMessageBox.confirm('确定删除该产品？', '提示', { type: 'warning' })
+  await ElMessageBox.confirm(t('admin.deleteProductConfirm'), t('common.tip'), { type: 'warning' })
   await request.delete(`/admin/products/${id}`)
-  ElMessage.success('删除成功')
+  ElMessage.success(t('common.success'))
   loadData()
 }
 

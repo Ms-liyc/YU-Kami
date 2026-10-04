@@ -2,6 +2,19 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.18.0] — 2026-01
+
+### 新增
+
+- 管理端 Cards / Products / Batches / Records 页面深度 i18n（中英双语）
+- 商品详情页 SEO（title、description、Open Graph）与分享链接
+- `RefundServiceTest`、`WebhookDispatchServiceTest` 单元测试
+
+### 改进
+
+- 商品详情页支持复制链接与系统原生分享（Web Share API）
+- 新增 `usePageMeta` composable 统一管理页面元信息
+
 ## [1.17.0] — 2026-01
 
 ### 新增
@@ -186,6 +199,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.18.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.14.0...v1.15.0

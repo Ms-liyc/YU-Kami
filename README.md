@@ -365,6 +365,13 @@ Content-Type: application/json
 
 ### 📅 更新日志
 
+#### v1.18.0
+
+* 🌐 **管理端 i18n 深度补全**：卡密 / 产品 / 批次 / 兑换记录页中英双语
+* 🔍 **商品详情 SEO**：动态 title、description、Open Graph 元信息
+* 🔗 **分享链接**：详情页复制链接 + 系统原生分享
+* 🧪 **单元测试**：退款服务与 Webhook 签名/事件匹配测试
+
 #### v1.17.0
 
 * 🛍️ **商品详情页**：`/shop/product/:id`，展示分类/促销后再购买
@@ -558,6 +565,9 @@ Content-Type: application/json
 * [x] HTTPS Docker 部署示例
 * [x] 商城分类筛选 / 邮箱验证 / 库存邮件告警
 * [x] 商城商品详情页 / Webhook 与支付配置 i18n
+* [x] 管理端卡密/产品/批次/记录 i18n 深度补全
+* [x] 商品详情 SEO 与分享链接
+* [x] 退款 / Webhook 后端单元测试
 
 ---
 
