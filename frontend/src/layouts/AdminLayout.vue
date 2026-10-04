@@ -92,6 +92,7 @@
         </div>
         <div class="header-right">
           <router-link to="/shop" class="shop-link">{{ t('nav.shop') }}</router-link>
+          <ThemeSwitcher />
           <LanguageSwitcher />
           <el-tag size="small" effect="plain" type="success">{{ t('common.running') }}</el-tag>
           <el-dropdown trigger="click">
@@ -133,6 +134,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../stores/auth'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import ThemeSwitcher from '../components/ThemeSwitcher.vue'
 import PaymentSetupBanner from '../components/PaymentSetupBanner.vue'
 import DefaultPasswordBanner from '../components/DefaultPasswordBanner.vue'
 import { APP_VERSION } from '../constants/version'
@@ -245,7 +247,7 @@ function handleLogout() {
   border-radius: 8px;
   transition: background 0.2s;
 }
-.user-dropdown:hover { background: #f1f5f9; }
+.user-dropdown:hover { background: var(--primary-light); }
 .avatar { background: linear-gradient(135deg, #4f6ef7, #7c3aed); color: #fff; font-size: 14px; }
 .user-name { font-size: 14px; color: var(--text-primary); }
 .shop-link { color: #4f6ef7; font-size: 13px; text-decoration: none; margin-right: 4px; }

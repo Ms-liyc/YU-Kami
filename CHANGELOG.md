@@ -2,6 +2,20 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.20.0] — 2026-01
+
+### 新增
+
+- 全局主题切换：浅色 / 深色 / 跟随系统
+- 管理端完整深色模式（Element Plus dark + CSS 变量）
+- `ThemeSwitcher` 组件，管理端/商城/登录页均可切换
+
+### 改进
+
+- 统一 `app-theme` 存储，兼容旧版 `shop-theme` 偏好
+- 首屏 inline 脚本避免主题闪烁（FOUC）
+- 登录、找回密码、重置密码页支持深色模式
+
 ## [1.19.0] — 2026-01
 
 ### 改进
@@ -208,6 +222,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.20.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.16.0...v1.17.0

@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <title>YU-Kami 数字商品发卡网</title>
+    <script>
+      (function () {
+        var key = localStorage.getItem('app-theme');
+        var legacy = localStorage.getItem('shop-theme');
+        var mode = key || (legacy === 'dark' ? 'dark' : legacy === 'light' ? 'light' : 'system');
+        var dark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

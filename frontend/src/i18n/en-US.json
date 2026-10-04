@@ -29,6 +29,11 @@
     "disabled": "Disabled",
     "to": "to"
   },
+  "theme": {
+    "light": "Light mode",
+    "dark": "Dark mode",
+    "system": "System"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "products": "Products",

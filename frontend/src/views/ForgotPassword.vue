@@ -1,5 +1,9 @@
 <template>
   <div class="auth-page">
+    <div class="auth-toolbar">
+      <ThemeSwitcher />
+      <LanguageSwitcher />
+    </div>
     <div class="auth-card">
       <h2>{{ t('auth.forgotPassword') }}</h2>
       <el-form @submit.prevent="submit">
@@ -20,6 +24,8 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import request from '../api/request'
+import ThemeSwitcher from '../components/ThemeSwitcher.vue'
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const { t } = useI18n()
 const username = ref('')
@@ -37,9 +43,3 @@ async function submit() {
 }
 </script>
 
-<style scoped>
-.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8fafc; }
-.auth-card { width: 400px; padding: 32px; background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,.08); }
-.auth-card h2 { margin-bottom: 20px; }
-.back-link { display: block; margin-top: 16px; text-align: center; color: #4f6ef7; font-size: 14px; }
-</style>

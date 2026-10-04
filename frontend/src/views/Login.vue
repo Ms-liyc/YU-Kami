@@ -1,5 +1,9 @@
 <template>
   <div class="login-page">
+    <div class="auth-toolbar">
+      <ThemeSwitcher />
+      <LanguageSwitcher />
+    </div>
     <div class="login-left">
       <div class="brand">
         <img src="/logo.png" alt="YU-Kami" class="brand-logo" />
@@ -58,6 +62,8 @@ import request from '../api/request'
 import { useAuthStore } from '../stores/auth'
 import { useI18n } from 'vue-i18n'
 import { useCaptcha } from '../composables/useCaptcha'
+import ThemeSwitcher from '../components/ThemeSwitcher.vue'
+import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -96,6 +102,8 @@ async function handleLogin() {
 .login-page {
   height: 100vh;
   display: flex;
+  position: relative;
+  background: var(--page-bg);
 }
 .login-left {
   flex: 1;
@@ -126,20 +134,21 @@ async function handleLogin() {
 .login-right {
   width: 480px;
   display: flex; align-items: center; justify-content: center;
-  background: #f8fafc;
+  background: var(--page-bg);
 }
 .login-card {
   width: 360px; padding: 40px;
-  background: #fff; border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+  background: var(--card-bg); border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
 }
-.login-card h2 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-.subtitle { color: #94a3b8; margin-bottom: 32px; font-size: 14px; }
+.login-card h2 { font-size: 24px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
+.subtitle { color: var(--text-secondary); margin-bottom: 32px; font-size: 14px; }
 .login-btn { width: 100%; height: 44px; font-size: 15px; margin-top: 8px; }
-.hint { text-align: center; color: #cbd5e1; font-size: 12px; margin-top: 20px; }
-.hint a { color: #4f6ef7; text-decoration: none; }
+.hint { text-align: center; color: var(--text-secondary); font-size: 12px; margin-top: 20px; }
+.hint a { color: var(--primary); text-decoration: none; }
 .captcha-row { display: flex; gap: 8px; width: 100%; }
-.captcha-img { height: 40px; border-radius: 6px; cursor: pointer; border: 1px solid #e2e8f0; flex-shrink: 0; }
+.captcha-img { height: 40px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); flex-shrink: 0; }
 
 @media (max-width: 900px) {
   .login-left { display: none; }

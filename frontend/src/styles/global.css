@@ -18,6 +18,20 @@
   --radius: 12px;
   --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
   --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+  color-scheme: light;
+}
+
+html.dark {
+  --primary-light: rgba(79, 110, 247, 0.15);
+  --header-bg: #1e293b;
+  --page-bg: #0f172a;
+  --card-bg: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.18);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -73,6 +87,59 @@ body {
 }
 
 .btn-group { display: flex; gap: 8px; }
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--page-bg);
+  position: relative;
+  padding: 24px;
+}
+
+.auth-toolbar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 32px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+
+.auth-card h2 {
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.auth-card .back-link {
+  display: block;
+  margin-top: 16px;
+  text-align: center;
+  color: var(--primary);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+html.dark .el-breadcrumb__inner,
+html.dark .el-breadcrumb__separator {
+  color: var(--text-secondary);
+}
+
+html.dark .el-breadcrumb__inner.is-link:hover {
+  color: var(--primary);
+}
 
 @media (max-width: 768px) {
   .page-card .card-header {

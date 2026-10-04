@@ -22,11 +22,7 @@
           <router-link to="/shop/redeem">{{ t('nav.redeem') }}</router-link>
         </nav>
         <div class="header-actions">
-          <el-tooltip :content="isDark ? t('shop.lightMode') : t('shop.darkMode')">
-            <el-button circle @click="toggleDark">
-              <YuIcon :name="isDark ? 'sun' : 'moon'" size="sm" />
-            </el-button>
-          </el-tooltip>
+          <ThemeSwitcher />
           <LanguageSwitcher />
           <router-link to="/login" class="admin-link">{{ t('nav.admin') }}</router-link>
           <template v-if="auth.token">
@@ -101,26 +97,25 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { useShopAuthStore } from '../stores/shopAuth'
+import { useThemeStore } from '../stores/theme'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import ThemeSwitcher from '../components/ThemeSwitcher.vue'
 import YuIcon from '../components/icons/YuIcon.vue'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const auth = useShopAuthStore()
+const theme = useThemeStore()
+const { isDark } = storeToRefs(theme)
 const showBanner = ref(true)
-const isDark = ref(localStorage.getItem('shop-theme') === 'dark')
 
 const isLanding = computed(() => route.path === '/shop' || route.path === '/shop/')
-
-function toggleDark() {
-  isDark.value = !isDark.value
-  localStorage.setItem('shop-theme', isDark.value ? 'dark' : 'light')
-}
 
 function scrollTo(id) {
   if (route.path !== '/shop') {
@@ -136,10 +131,6 @@ function handleLogout() {
   auth.logout()
   router.push('/shop')
 }
-
-onMounted(() => {
-  if (localStorage.getItem('shop-theme') === 'dark') isDark.value = true
-})
 </script>
 
 <style scoped>
