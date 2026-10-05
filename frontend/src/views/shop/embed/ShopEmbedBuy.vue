@@ -17,10 +17,10 @@
           </div>
         </el-form-item>
         <el-form-item :label="t('order.paymentMethod')">
-          <el-radio-group :model-value="'MOCK'">
-            <el-radio value="MOCK">{{ t('shop.mockPay') }}</el-radio>
-            <el-radio value="ALIPAY" disabled>{{ t('shop.alipay') }}</el-radio>
+          <el-radio-group :model-value="'ALIPAY'">
+            <el-radio value="ALIPAY">{{ t('shop.alipay') }}</el-radio>
             <el-radio value="WECHAT" disabled>{{ t('shop.wechat') }}</el-radio>
+            <el-radio value="BALANCE" disabled>{{ t('shop.balancePay') }}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>

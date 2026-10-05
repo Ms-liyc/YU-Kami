@@ -52,6 +52,8 @@ services:
       JWT_SECRET: YuChen-Kami-Docker-JWT-Secret-Change-In-Production
       HMAC_SECRET: YuChen-HMAC-Docker-Secret-Change-In-Production
       AES_KEY: YuChenAES256KeyChangeInProd!!
+      CRYPTO_HASH_ROUNDS: "3"
+      CRYPTO_AES_ROUNDS: "3"
       SWAGGER_ENABLED: "false"
       CORS_ALLOWED_ORIGINS: "http://localhost,http://127.0.0.1"
       CAPTCHA_ENABLED: "true"

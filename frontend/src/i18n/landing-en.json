@@ -37,7 +37,7 @@
   ],
   "syncFeatures": [
     { "icon": "bolt", "title": "Instant delivery", "desc": "Keys generated in seconds after payment — copy from order page, no manual work.", "pulse": true, "stat": "<3s", "statLabel": "Avg. delivery" },
-    { "icon": "payment", "title": "Multi-channel pay", "desc": "Mock pay out of the box; production Alipay and WeChat Native/JSAPI.", "stat": "3+", "statLabel": "Channels" },
+    { "icon": "payment", "title": "Multi-channel pay", "desc": "Balance, Alipay and WeChat Native/JSAPI — enable channels in admin.", "stat": "3+", "statLabel": "Channels" },
     { "icon": "coupon", "title": "Promotions", "desc": "Fixed off, discounts, holiday pricing and coupon codes — best price engine.", "stat": "Auto", "statLabel": "Pricing" },
     { "icon": "bell", "title": "Webhooks", "desc": "Async redeem notifications with HMAC-SHA256 signature verification.", "stat": "24h", "statLabel": "Key cache" }
   ],
@@ -49,7 +49,7 @@
     { "title": "Auto deliver", "desc": "Key generated instantly — shown on order page with copy." }
   ],
   "features": [
-    { "icon": "lock", "title": "Five-layer crypto", "desc": "HMAC hash + AES + Pepper — keys never stored in plaintext." },
+    { "icon": "lock", "title": "Five-layer crypto", "desc": "Multi-round HMAC + layered AES + Pepper — keys never stored in plaintext." },
     { "icon": "shield", "title": "No overselling", "desc": "Distributed lock + optimistic lock for safe concurrency." },
     { "icon": "ban", "title": "Rate limiting", "desc": "Redis sliding window against brute-force redeem and abuse." },
     { "icon": "chart", "title": "Full audit trail", "desc": "Redeem logs, order flow and admin actions — all traceable." },
@@ -73,7 +73,7 @@
   "faqs": [
     { "q": "How do I get my key after purchase?", "a": "After payment, open My Orders for delivered orders and copy the key; or use Order Lookup with your order number. Keys are cached in Redis for 24 hours." },
     { "q": "Can I look up orders without signing in?", "a": "Yes — use Order Lookup with the full order number. Viewing keys requires a delivered order on your signed-in account." },
-    { "q": "Which payment methods are supported?", "a": "Mock payment by default for testing; configure Alipay and WeChat (including JSAPI) in admin for production." },
+    { "q": "Which payment methods are supported?", "a": "Balance, Alipay and WeChat (including JSAPI). Configure merchant keys and enable channels in admin." },
     { "q": "Can I use coupons?", "a": "Yes — enter a coupon code on checkout; the pricing engine applies the best promotion and coupon price." },
     { "q": "How do I redeem an existing key?", "a": "Use the Redeem page with key and user ID; third parties can call POST /api/v1/redeem." },
     { "q": "How do I integrate third-party systems?", "a": "Webhook redeem callbacks (HMAC signed), API clients and standard REST redeem API." },

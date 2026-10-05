@@ -7,9 +7,6 @@ import lombok.Data;
 @Builder
 public class SetupStatusDTO {
 
-    /** 是否仅使用模拟支付（未对接真实渠道） */
-    private boolean mockOnly;
-
     /** 支付宝是否已配置并启用 */
     private boolean alipayReady;
 

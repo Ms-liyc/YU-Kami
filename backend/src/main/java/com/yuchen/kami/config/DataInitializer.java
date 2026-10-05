@@ -62,7 +62,6 @@ public class DataInitializer implements CommandLineRunner {
         initDemoShopUser();
         seedDemoWalletBalance();
         initDemoPromotions();
-        initPaymentChannel("MOCK", "模拟支付", true);
         initPaymentChannel("ALIPAY", "支付宝", false);
         initPaymentChannel("WECHAT", "微信支付", false);
         logPaymentSetupHint();
@@ -71,8 +70,7 @@ public class DataInitializer implements CommandLineRunner {
     private void logPaymentSetupHint() {
         if (setupService.getStatus().isNeedsPaymentSetup()) {
             log.info("============================================================");
-            log.info("支付对接提示：当前默认仅启用模拟支付（MOCK），可直接体验购买流程。");
-            log.info("如需接入支付宝/微信，请登录管理后台 → 订单管理 → 支付配置，自行填写密钥与回调地址。");
+            log.info("支付对接提示：请登录管理后台 → 订单管理 → 支付配置，配置并启用支付宝/微信支付。");
             log.info("配置说明见项目文档: docs/PAYMENT.md");
             log.info("============================================================");
         }

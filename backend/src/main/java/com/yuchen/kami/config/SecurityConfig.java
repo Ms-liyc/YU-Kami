@@ -1,5 +1,7 @@
 package com.yuchen.kami.config;
 
+import com.yuchen.kami.security.JsonAccessDeniedHandler;
+import com.yuchen.kami.security.JsonAuthenticationEntryPoint;
 import com.yuchen.kami.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +33,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JsonAuthenticationEntryPoint authenticationEntryPoint;
+    private final JsonAccessDeniedHandler accessDeniedHandler;
     private final YuKamiProperties yuKamiProperties;
 
     @Bean
@@ -45,6 +49,9 @@ public class SecurityConfig {
                         .permissionsPolicy(permissions -> permissions.policy(
                                 "geolocation=(), microphone=(), camera=()")))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/captcha").permitAll()
                             .requestMatchers("/api/admin/auth/login",

@@ -16,14 +16,15 @@
           <p class="field-hint">{{ t('shop.rechargeMin') }}</p>
         </el-form-item>
         <el-form-item :label="t('order.paymentMethod')">
-          <el-radio-group v-model="paymentMethod">
+          <el-radio-group v-if="channels.length" v-model="paymentMethod">
             <el-radio v-for="c in channels" :key="c.channel" :value="c.channel">
               {{ channelLabel(c.channel) }}
             </el-radio>
           </el-radio-group>
+          <p v-else class="field-hint">{{ t('shop.noPaymentChannel') }}</p>
           <p class="field-hint">{{ t('shop.rechargeHint') }}</p>
         </el-form-item>
-        <el-button type="primary" size="large" style="width:100%" :loading="paying" @click="handleRecharge">
+        <el-button type="primary" size="large" style="width:100%" :loading="paying" :disabled="!channels.length" @click="handleRecharge">
           {{ t('shop.recharge') }}
         </el-button>
       </el-form>
@@ -84,7 +85,7 @@ const size = ref(10)
 const total = ref(0)
 const rechargeAmount = ref(100)
 const channels = ref([])
-const paymentMethod = ref('MOCK')
+const paymentMethod = ref('')
 const qrDialog = ref(false)
 const qrCodeUrl = ref('')
 const orderNo = ref('')
@@ -92,8 +93,16 @@ const currentOrderId = ref(null)
 const polling = ref(false)
 let pollTimer = null
 
-const labels = { MOCK: 'shop.mockPay', ALIPAY: 'shop.alipay', WECHAT: 'shop.wechat' }
+const labels = { ALIPAY: 'shop.alipay', WECHAT: 'shop.wechat' }
 function channelLabel(c) { return t(labels[c] || c) }
+
+function pickRechargeChannel(list) {
+  for (const ch of ['ALIPAY', 'WECHAT']) {
+    const found = list.find(c => c.channel === ch)
+    if (found) return found.channel
+  }
+  return list[0]?.channel || ''
+}
 
 async function loadWallet() {
   const res = await shopRequest.get('/shop/wallet')
@@ -111,9 +120,7 @@ async function loadTransactions() {
 async function loadChannels() {
   const res = await shopRequest.get('/shop/wallet/recharge/channels')
   channels.value = res.data || []
-  paymentMethod.value = channels.value.find(c => c.channel === 'MOCK')?.channel
-      || channels.value[0]?.channel
-      || 'MOCK'
+  paymentMethod.value = pickRechargeChannel(channels.value)
 }
 
 async function handleRecharge() {

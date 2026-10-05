@@ -36,18 +36,19 @@
           </div>
         </el-form-item>
         <el-form-item :label="t('order.paymentMethod')">
-          <el-radio-group v-model="paymentMethod">
+          <el-radio-group v-if="channels.length" v-model="paymentMethod">
             <el-radio v-for="c in channels" :key="c.channel" :value="c.channel">
               {{ channelLabel(c.channel) }}
             </el-radio>
           </el-radio-group>
+          <p v-else class="wallet-tip">{{ t('shop.noPaymentChannel') }}</p>
           <p v-if="walletBalance !== null" class="wallet-tip">
             {{ t('shop.walletBalance') }}: ¥{{ walletBalance }}
             <router-link to="/shop/wallet">{{ t('shop.walletHistory') }}</router-link>
           </p>
         </el-form-item>
       </el-form>
-      <el-button type="primary" size="large" style="width:100%" :loading="paying" @click="handlePay">
+      <el-button type="primary" size="large" style="width:100%" :loading="paying" :disabled="!channels.length" @click="handlePay">
         {{ t('shop.pay') }}
       </el-button>
     </div>
@@ -89,7 +90,7 @@ const pricing = ref({})
 const quantity = ref(1)
 const couponCode = ref('')
 const channels = ref([])
-const paymentMethod = ref('MOCK')
+const paymentMethod = ref('')
 const loading = ref(false)
 const loadError = ref('')
 const previewing = ref(false)
@@ -110,6 +111,14 @@ const displayPrice = computed(() => product.value?.onSale ? product.value.salePr
 const labels = { MOCK: 'shop.mockPay', ALIPAY: 'shop.alipay', WECHAT: 'shop.wechat', BALANCE: 'shop.balancePay' }
 function channelLabel(c) { return t(labels[c] || c) }
 
+function pickPaymentChannel(list) {
+  for (const ch of ['BALANCE', 'ALIPAY', 'WECHAT']) {
+    const found = list.find(c => c.channel === ch)
+    if (found) return found.channel
+  }
+  return list[0]?.channel || ''
+}
+
 onMounted(async () => {
   loading.value = true
   loadError.value = ''
@@ -128,9 +137,7 @@ onMounted(async () => {
     if (wRes?.data?.balance != null) {
       walletBalance.value = Number(wRes.data.balance).toFixed(2)
     }
-    const balanceChannel = channels.value.find(c => c.channel === 'BALANCE')
-    const mockChannel = channels.value.find(c => c.channel === 'MOCK')
-    paymentMethod.value = balanceChannel?.channel || mockChannel?.channel || channels.value[0]?.channel
+    paymentMethod.value = pickPaymentChannel(channels.value)
     await previewPrice()
   } catch (e) {
     loadError.value = e?.response?.data?.message || e?.message || t('shop.productNotFound')

@@ -2,6 +2,16 @@
 
 本文件记录 YU-Kami 各版本的主要变更。完整历史亦见 [README.md](README.md#-开发路线图)。
 
+## [1.28.0] — 2026-01
+
+### 变更
+
+- **移除 MOCK 模拟支付**：仅保留支付宝、微信支付与余额支付
+- 启动时自动删除数据库中的 `MOCK` 支付渠道配置
+- 移除 `MOCK_PAYMENT_ENABLED` 环境变量与相关配置项
+- 购买/充值页在无可用渠道时显示提示并禁用支付按钮
+- 生产环境安全检测改为检查是否已启用支付宝或微信渠道
+
 ## [1.27.0] — 2026-01
 
 ### 安全
@@ -312,6 +322,7 @@
 
 详见 [README 更新日志](README.md#-开发路线图)。
 
+[1.28.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.27.0...v1.28.0
 [1.27.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.26.0...v1.27.0
 [1.26.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/Ms-liyc/YU-Kami/compare/v1.24.0...v1.25.0

@@ -26,9 +26,13 @@ request.interceptors.response.use(
     return data
   },
   err => {
-    if (err.response?.status === 401) {
-      useAuthStore().logout()
-      router.push('/login')
+    const status = err.response?.status
+    if (status === 401 || status === 403) {
+      const auth = useAuthStore()
+      if (auth.token) {
+        auth.logout()
+        router.push('/login')
+      }
     }
     ElMessage.error(err.response?.data?.message || err.message || '网络错误')
     return Promise.reject(err)

@@ -18,7 +18,6 @@ public class PaymentChannelVO {
 
     private static String channelLabel(String channel) {
         return switch (channel) {
-            case "MOCK" -> "模拟支付";
             case "ALIPAY" -> "支付宝";
             case "WECHAT" -> "微信支付";
             case "BALANCE" -> "余额支付";

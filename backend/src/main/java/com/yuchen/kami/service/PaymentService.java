@@ -33,8 +33,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -77,12 +75,6 @@ public class PaymentService {
         shopOrderMapper.updateById(order);
 
         return switch (paymentMethod) {
-            case "MOCK" -> {
-                if (!properties.getPayment().isMockEnabled()) {
-                    throw new BusinessException("模拟支付未启用");
-                }
-                yield prepayMock(order, userId);
-            }
             case "BALANCE" -> prepayBalance(order, userId);
             case "ALIPAY" -> prepayAlipay(getEnabledConfig("ALIPAY"), order);
             case "WECHAT" -> prepayWechat(getEnabledConfig("WECHAT"), order, userId, openid, wechatJsapi);
@@ -90,7 +82,7 @@ public class PaymentService {
         };
     }
 
-    /** 兼容旧接口：MOCK 即时支付 */
+    /** 兼容旧接口：仅余额等即时支付方式 */
     @Transactional
     public OrderVO pay(Long userId, Long orderId, String paymentMethod) {
         PrepayResponse prepay = prepay(userId, orderId, paymentMethod, null, null);
@@ -238,10 +230,6 @@ public class PaymentService {
         if (existing == null) {
             throw new BusinessException("支付配置不存在");
         }
-        if ("MOCK".equals(existing.getChannel()) && request.getStatus() != null
-                && request.getStatus() == 1 && !properties.getPayment().isMockEnabled()) {
-            throw new BusinessException("模拟支付已在服务端禁用，无法启用 MOCK 渠道");
-        }
         if (request.getAppId() != null) {
             existing.setAppId(request.getAppId());
         }
@@ -263,28 +251,9 @@ public class PaymentService {
 
     public List<PaymentConfigVO> listConfigViews() {
         return paymentConfigMapper.selectList(null).stream()
+                .filter(config -> !"MOCK".equals(config.getChannel()))
                 .map(PaymentConfigVO::from)
                 .toList();
-    }
-
-    private PrepayResponse prepayMock(ShopOrder order, Long userId) {
-        String paymentNo = "MOCK" + UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase();
-        completePayment(order.getOrderNo(), paymentNo);
-        if (ShopOrder.TYPE_RECHARGE.equals(order.getOrderType())) {
-            return PrepayResponse.builder()
-                    .payType("INSTANT")
-                    .orderId(order.getId())
-                    .orderNo(order.getOrderNo())
-                    .message("充值成功")
-                    .build();
-        }
-        return PrepayResponse.builder()
-                .payType("INSTANT")
-                .orderId(order.getId())
-                .orderNo(order.getOrderNo())
-                .cardKey(readCachedCardKey(order.getId()))
-                .message("模拟支付成功")
-                .build();
     }
 
     @Transactional
@@ -373,7 +342,7 @@ public class PaymentService {
     }
 
     private boolean isChannelVisible(PaymentConfig config) {
-        if ("MOCK".equals(config.getChannel()) && !properties.getPayment().isMockEnabled()) {
+        if ("MOCK".equals(config.getChannel())) {
             return false;
         }
         return config.getStatus() != null && config.getStatus() == 1;

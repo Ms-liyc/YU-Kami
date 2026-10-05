@@ -2,6 +2,7 @@ package com.yuchen.kami.controller;
 
 import com.yuchen.kami.common.PageResult;
 import com.yuchen.kami.common.Result;
+import com.yuchen.kami.config.YuKamiProperties;
 import com.yuchen.kami.dto.GenerateBatchRequest;
 import com.yuchen.kami.entity.CardBatch;
 import com.yuchen.kami.entity.CardKey;
@@ -23,6 +24,7 @@ public class CardKeyController {
 
     private final CardKeyService cardKeyService;
     private final AuditService auditService;
+    private final YuKamiProperties properties;
 
     @PostMapping("/generate")
     public Result<List<String>> generate(@Valid @RequestBody GenerateBatchRequest request,
@@ -60,13 +62,19 @@ public class CardKeyController {
     }
 
     @GetMapping("/stats")
-    public Result<Map<String, String>> encryptionInfo() {
+    public Result<Map<String, Object>> encryptionInfo() {
+        int hashRounds = properties.getCrypto().getHashRounds();
+        int aesRounds = properties.getCrypto().getAesRounds();
         return Result.ok(Map.of(
-                "storage", "HMAC-SHA256 + Pepper",
-                "meta", "AES-256-GCM",
+                "hashVersion", "v3",
+                "hashRounds", hashRounds,
+                "aesRounds", aesRounds,
+                "storage", hashRounds + "x HMAC-SHA256 + HKDF + Pepper",
+                "meta", aesRounds + "x AES-256-GCM (HKDF)",
+                "cache", aesRounds + "x AES-256-GCM",
                 "password", "BCrypt",
                 "api", "RSA-SHA256",
-                "checksum", "SHA-256"
+                "checksum", hashRounds + "x HMAC-SHA256 (8 chars)"
         ));
     }
 }

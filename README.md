@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <sub>首次部署默认启用 <b>MOCK 模拟支付</b>，可直接体验完整购买与发卡流程；真实收款需自行配置商户密钥与回调地址。</sub><br>
+  <sub>支付需自行配置并启用 <b>支付宝/微信支付</b>；买家亦可用钱包余额支付。详见 <a href="docs/PAYMENT.md">支付配置</a>。</sub><br>
   <sub>演示买家 <code>demo</code> / <code>demo123</code> · 管理端 <code>admin</code> / <code>admin123</code></sub>
 </p>
 
@@ -78,8 +78,8 @@ docker compose -f docker-compose.hub.yml up -d
 | 默认管理员 | `admin` / `admin123` |
 | 演示买家 | `demo` / `demo123` |
 
-> **支付说明**：首次部署默认启用**模拟支付（MOCK）**，无需配置即可体验购买与发卡。  
-> 真实支付宝/微信收款为**可选功能**，需部署者自行申请商户资质、在管理后台配置密钥，并按实际环境设置回调地址。详见 [docs/PAYMENT.md](docs/PAYMENT.md)。
+> **支付说明**：部署后请在管理后台配置并启用**支付宝**或**微信支付**；买家亦可使用钱包余额。  
+> 需部署者自行申请商户资质、填写密钥，并按实际环境设置回调地址。详见 [docs/PAYMENT.md](docs/PAYMENT.md)。
 
 ---
 
@@ -364,6 +364,11 @@ Content-Type: application/json
 ## 🛣️ 开发路线图
 
 ### 📅 更新日志
+
+#### v1.28.0
+
+* 💳 **真实支付**：移除 MOCK 模拟支付，仅保留支付宝/微信与余额支付
+* 🧹 **数据迁移**：启动时自动清理数据库中的 MOCK 渠道配置
 
 #### v1.27.0
 

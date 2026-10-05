@@ -9,7 +9,6 @@ import com.yuchen.kami.mapper.ShopOrderMapper;
 import com.yuchen.kami.payment.AlipayPaymentService;
 import com.yuchen.kami.payment.WechatOAuthService;
 import com.yuchen.kami.payment.WechatPaymentService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,11 +44,6 @@ class PaymentServiceTest {
     @Spy private YuKamiProperties properties = new YuKamiProperties();
 
     @InjectMocks private PaymentService paymentService;
-
-    @BeforeEach
-    void initProperties() {
-        properties.getPayment().setMockEnabled(true);
-    }
 
     @Test
     void completePayment_shouldReject_whenCancelled() {

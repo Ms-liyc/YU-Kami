@@ -55,14 +55,12 @@ public class YuKamiProperties {
     public static class Payment {
         private String baseUrl;
         private String returnUrl;
-        /** 是否允许 MOCK 模拟支付（生产环境应设为 false） */
-        private boolean mockEnabled = true;
     }
 
     @Data
     public static class Security {
         /** 逗号分隔；设为 * 则允许任意来源（不携带 Cookie 凭证） */
-        private String corsAllowedOrigins = "http://localhost:5173,http://localhost:80,http://127.0.0.1:5173";
+        private String corsAllowedOrigins = "http://localhost:5173,http://localhost:5174,http://localhost:80,http://127.0.0.1:5173,http://127.0.0.1:5174";
         private boolean swaggerEnabled = true;
         private int loginRateLimitPerMinute = 20;
         private int registerRateLimitPerMinute = 5;

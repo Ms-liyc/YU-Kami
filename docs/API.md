@@ -112,7 +112,7 @@ Content-Type: application/json
 ```json
 {
   "amount": 100,
-  "paymentMethod": "MOCK"
+  "paymentMethod": "ALIPAY"
 }
 ```
 

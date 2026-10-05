@@ -1,0 +1,8 @@
+# 本地开发配置（账号密码从 .env 或环境变量读取，勿提交仓库）
+spring:
+  datasource:
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:}
+
+server:
+  port: ${SERVER_PORT:8081}

@@ -10,7 +10,6 @@
     <template #title>{{ t('setup.paymentTitle') }}</template>
     <p class="setup-text">{{ t('setup.paymentDesc') }}</p>
     <ul class="setup-list">
-      <li>{{ t('setup.paymentMockHint') }}</li>
       <li>{{ t('setup.paymentRealHint') }}</li>
       <li v-if="status?.paymentBaseUrl">
         {{ t('setup.paymentBaseUrl') }}: <code>{{ status.paymentBaseUrl }}</code>

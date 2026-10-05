@@ -36,9 +36,13 @@ request.interceptors.response.use(
     return res.data
   },
   err => {
-    if (err.response?.status === 401) {
-      useShopAuthStore().logout()
-      if (!isEmbedPage()) router.push('/shop/login')
+    const status = err.response?.status
+    if (status === 401 || status === 403) {
+      const auth = useShopAuthStore()
+      if (auth.token) {
+        auth.logout()
+        if (!isEmbedPage()) router.push('/shop/login')
+      }
     }
     if (!isEmbedPage()) ElMessage.error(err.response?.data?.message || err.message)
     return Promise.reject(err)

@@ -22,14 +22,11 @@ public class SetupService {
     public SetupStatusDTO getStatus() {
         PaymentConfig alipay = findChannel("ALIPAY");
         PaymentConfig wechat = findChannel("WECHAT");
-        PaymentConfig mock = findChannel("MOCK");
 
         boolean alipayReady = isAlipayReady(alipay);
         boolean wechatReady = isWechatReady(wechat);
-        boolean mockEnabled = mock != null && mock.getStatus() != null && mock.getStatus() == 1;
 
         return SetupStatusDTO.builder()
-                .mockOnly(mockEnabled && !alipayReady && !wechatReady)
                 .alipayReady(alipayReady)
                 .wechatReady(wechatReady)
                 .needsPaymentSetup(!alipayReady && !wechatReady)
